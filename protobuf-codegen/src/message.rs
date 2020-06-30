@@ -507,7 +507,7 @@ impl<'a> MessageGen<'a> {
             derive.push("Debug");
         }
         w.derive(&derive);
-        serde::write_serde_attr(w, &self.customize, "derive(Serialize, Deserialize)");
+        serde::write_serde_attr(w, &self.customize, "derive(Serialize, Deserialize), serde(default)");
         w.pub_struct(&format!("{}", self.type_name), |w| {
             if !self.fields_except_oneof().is_empty() {
                 w.comment("message fields");
