@@ -1,15 +1,15 @@
 use std::fmt;
 use std::str;
 
-use crate::core::Message;
+use crate::message::Message;
 
+use crate::message_dyn::MessageDyn;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeFieldType;
 use crate::reflect::RuntimeTypeBox;
-use crate::reflect::RuntimeTypeDynamic;
 use crate::text_format::lexer::int;
 use crate::text_format::lexer::Loc;
 use crate::text_format::lexer::ParserLanguage;
@@ -81,7 +81,7 @@ impl<'a> Parser<'a> {
         Ok(self.tokenizer.next_symbol_expect_eq(':')?)
     }
 
-    fn read_enum<'e>(&mut self, e: &'e EnumDescriptor) -> ParseResult<&'e EnumValueDescriptor> {
+    fn read_enum<'e>(&mut self, e: &'e EnumDescriptor) -> ParseResult<EnumValueDescriptor> {
         self.read_colon()?;
 
         // TODO: read integer?
@@ -181,10 +181,7 @@ impl<'a> Parser<'a> {
             .and_then(|s| s.decode_bytes().map_err(From::from))?)
     }
 
-    fn read_message(
-        &mut self,
-        descriptor: &'static MessageDescriptor,
-    ) -> ParseResult<Box<dyn Message>> {
+    fn read_message(&mut self, descriptor: &MessageDescriptor) -> ParseResult<Box<dyn MessageDyn>> {
         let mut message = descriptor.new_instance();
 
         let symbol = self.tokenizer.next_symbol_expect_eq_oneof(&['{', '<'])?;
@@ -198,8 +195,8 @@ impl<'a> Parser<'a> {
 
     fn read_map_entry(
         &mut self,
-        k: &dyn RuntimeTypeDynamic,
-        v: &dyn RuntimeTypeDynamic,
+        k: &RuntimeTypeBox,
+        v: &RuntimeTypeBox,
     ) -> ParseResult<(ReflectValueBox, ReflectValueBox)> {
         let key_field_name: &str = "key";
         let value_field_name: &str = "value";
@@ -237,9 +234,12 @@ impl<'a> Parser<'a> {
         Ok((key, value))
     }
 
-    fn read_value_of_type(&mut self, t: &dyn RuntimeTypeDynamic) -> ParseResult<ReflectValueBox> {
-        Ok(match t.to_box() {
-            RuntimeTypeBox::Enum(d) => ReflectValueBox::Enum(d, self.read_enum(d)?.value()),
+    fn read_value_of_type(&mut self, t: &RuntimeTypeBox) -> ParseResult<ReflectValueBox> {
+        Ok(match t {
+            RuntimeTypeBox::Enum(d) => {
+                let value = self.read_enum(&d)?.value();
+                ReflectValueBox::Enum(d.clone(), value)
+            }
             RuntimeTypeBox::U32 => ReflectValueBox::U32(self.read_u32()?),
             RuntimeTypeBox::U64 => ReflectValueBox::U64(self.read_u64()?),
             RuntimeTypeBox::I32 => ReflectValueBox::I32(self.read_i32()?),
@@ -249,13 +249,13 @@ impl<'a> Parser<'a> {
             RuntimeTypeBox::Bool => ReflectValueBox::Bool(self.read_bool()?),
             RuntimeTypeBox::String => ReflectValueBox::String(self.read_string()?),
             RuntimeTypeBox::VecU8 => ReflectValueBox::Bytes(self.read_bytes()?),
-            RuntimeTypeBox::Message(m) => ReflectValueBox::Message(self.read_message(m)?),
+            RuntimeTypeBox::Message(m) => ReflectValueBox::Message(self.read_message(&m)?),
         })
     }
 
     fn merge_field(
         &mut self,
-        message: &mut dyn Message,
+        message: &mut dyn MessageDyn,
         descriptor: &MessageDescriptor,
     ) -> ParseResult<()> {
         let field_name = self.next_field_name()?;
@@ -270,15 +270,15 @@ impl<'a> Parser<'a> {
 
         match field.runtime_field_type() {
             RuntimeFieldType::Singular(t) => {
-                let value = self.read_value_of_type(t)?;
+                let value = self.read_value_of_type(&t)?;
                 field.set_singular_field(message, value);
             }
             RuntimeFieldType::Repeated(t) => {
-                let value = self.read_value_of_type(t)?;
+                let value = self.read_value_of_type(&t)?;
                 field.mut_repeated(message).push(value);
             }
             RuntimeFieldType::Map(k, v) => {
-                let (k, v) = self.read_map_entry(k, v)?;
+                let (k, v) = self.read_map_entry(&k, &v)?;
                 field.mut_map(message).insert(k, v);
             }
         };
@@ -286,18 +286,18 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
-    fn merge_inner(&mut self, message: &mut dyn Message) -> ParseResult<()> {
+    fn merge_inner(&mut self, message: &mut dyn MessageDyn) -> ParseResult<()> {
         loop {
             if self.tokenizer.syntax_eof()? {
                 break;
             }
-            let descriptor = message.descriptor();
-            self.merge_field(message, descriptor)?;
+            let descriptor = message.descriptor_dyn();
+            self.merge_field(message, &descriptor)?;
         }
         Ok(())
     }
 
-    fn merge(&mut self, message: &mut dyn Message) -> ParseWithLocResult<()> {
+    fn merge(&mut self, message: &mut dyn MessageDyn) -> ParseWithLocResult<()> {
         match self.merge_inner(message) {
             Ok(()) => Ok(()),
             Err(error) => Err(ParseError {
@@ -311,7 +311,7 @@ impl<'a> Parser<'a> {
 /// Parse text format message.
 ///
 /// This function does not check if message required fields are set.
-pub fn merge_from_str(message: &mut dyn Message, input: &str) -> ParseWithLocResult<()> {
+pub fn merge_from_str(message: &mut dyn MessageDyn, input: &str) -> ParseWithLocResult<()> {
     let mut parser = Parser {
         tokenizer: Tokenizer::new(input, ParserLanguage::TextFormat),
     };

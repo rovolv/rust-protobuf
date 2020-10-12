@@ -16,8 +16,8 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
-#![allow(unused_imports)]
 #![allow(unused_results)]
+#![allow(unused_mut)]
 
 //! Generated file from `google/protobuf/source_context.proto`
 
@@ -47,6 +47,20 @@ impl SourceContext {
     pub fn new() -> SourceContext {
         ::std::default::Default::default()
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "file_name",
+            |m: &SourceContext| { &m.file_name },
+            |m: &mut SourceContext| { &mut m.file_name },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<SourceContext>(
+            "SourceContext",
+            0,
+            fields,
+        )
+    }
 }
 
 impl crate::Message for SourceContext {
@@ -59,7 +73,10 @@ impl crate::Message for SourceContext {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.file_name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.file_name = is.read_string()?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -101,34 +118,21 @@ impl crate::Message for SourceContext {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> SourceContext {
         SourceContext::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                "file_name",
-                |m: &SourceContext| { &m.file_name },
-                |m: &mut SourceContext| { &mut m.file_name },
-            ));
-            crate::reflect::MessageDescriptor::new::<SourceContext>(
-                "SourceContext",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
     }
 
     fn default_instance() -> &'static SourceContext {
-        static instance: crate::rt::Lazy<SourceContext> = crate::rt::Lazy::INIT;
-        instance.get(SourceContext::new)
+        static instance: SourceContext = SourceContext {
+            file_name: ::std::string::String::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -146,13 +150,15 @@ impl ::std::fmt::Debug for SourceContext {
 }
 
 impl crate::reflect::ProtobufValue for SourceContext {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n$google/protobuf/source_context.proto\x12\x0fgoogle.protobuf\",\n\rSou\
-    rceContext\x12\x1b\n\tfile_name\x18\x01\x20\x01(\tR\x08fileNameBR\n\x13c\
-    om.google.protobufB\x12SourceContextProtoP\x01\xa2\x02\x03GPB\xaa\x02\
-    \x1eGoogle.Protobuf.WellKnownTypesJ\xac\x10\n\x06\x12\x04\x1e\0.\x01\n\
+    rceContext\x12\x1b\n\tfile_name\x18\x01\x20\x01(\tR\x08fileNameB\x95\x01\
+    \n\x13com.google.protobufB\x12SourceContextProtoP\x01ZAgoogle.golang.org\
+    /genproto/protobuf/source_context;source_context\xa2\x02\x03GPB\xaa\x02\
+    \x1eGoogle.Protobuf.WellKnownTypesJ\xc1\x10\n\x06\x12\x04\x1e\0/\x01\n\
     \xcc\x0c\n\x01\x0c\x12\x03\x1e\0\x122\xc1\x0c\x20Protocol\x20Buffers\x20\
     -\x20Google's\x20data\x20interchange\x20format\n\x20Copyright\x202008\
     \x20Google\x20Inc.\x20\x20All\x20rights\x20reserved.\n\x20https://develo\
@@ -191,27 +197,41 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x03\"\0;\n\x08\n\x01\x08\x12\x03#\0,\n\t\n\x02\x08\x01\x12\x03#\0,\n\
     \x08\n\x01\x08\x12\x03$\03\n\t\n\x02\x08\x08\x12\x03$\03\n\x08\n\x01\x08\
     \x12\x03%\0\"\n\t\n\x02\x08\n\x12\x03%\0\"\n\x08\n\x01\x08\x12\x03&\0!\n\
-    \t\n\x02\x08$\x12\x03&\0!\n\x83\x01\n\x02\x04\0\x12\x04*\0.\x01\x1aw\x20\
-    `SourceContext`\x20represents\x20information\x20about\x20the\x20source\
-    \x20of\x20a\n\x20protobuf\x20element,\x20like\x20the\x20file\x20in\x20wh\
-    ich\x20it\x20is\x20defined.\n\n\n\n\x03\x04\0\x01\x12\x03*\x08\x15\n\xa3\
-    \x01\n\x04\x04\0\x02\0\x12\x03-\x02\x17\x1a\x95\x01\x20The\x20path-quali\
-    fied\x20name\x20of\x20the\x20.proto\x20file\x20that\x20contained\x20the\
-    \x20associated\n\x20protobuf\x20element.\x20\x20For\x20example:\x20`\"go\
-    ogle/protobuf/source_context.proto\"`.\n\n\x0c\n\x05\x04\0\x02\0\x05\x12\
-    \x03-\x02\x08\n\x0c\n\x05\x04\0\x02\0\x01\x12\x03-\t\x12\n\x0c\n\x05\x04\
-    \0\x02\0\x03\x12\x03-\x15\x16b\x06proto3\
+    \t\n\x02\x08$\x12\x03&\0!\n\x08\n\x01\x08\x12\x03'\0X\n\t\n\x02\x08\x0b\
+    \x12\x03'\0X\n\x83\x01\n\x02\x04\0\x12\x04+\0/\x01\x1aw\x20`SourceContex\
+    t`\x20represents\x20information\x20about\x20the\x20source\x20of\x20a\n\
+    \x20protobuf\x20element,\x20like\x20the\x20file\x20in\x20which\x20it\x20\
+    is\x20defined.\n\n\n\n\x03\x04\0\x01\x12\x03+\x08\x15\n\xa3\x01\n\x04\
+    \x04\0\x02\0\x12\x03.\x02\x17\x1a\x95\x01\x20The\x20path-qualified\x20na\
+    me\x20of\x20the\x20.proto\x20file\x20that\x20contained\x20the\x20associa\
+    ted\n\x20protobuf\x20element.\x20\x20For\x20example:\x20`\"google/protob\
+    uf/source_context.proto\"`.\n\n\x0c\n\x05\x04\0\x02\0\x05\x12\x03.\x02\
+    \x08\n\x0c\n\x05\x04\0\x02\0\x01\x12\x03.\t\x12\n\x0c\n\x05\x04\0\x02\0\
+    \x03\x12\x03.\x15\x16b\x06proto3\
 ";
-
-static file_descriptor_proto_lazy: crate::rt::Lazy<crate::descriptor::FileDescriptorProto> = crate::rt::Lazy::INIT;
-
-fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
-    crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
-}
 
 /// `FileDescriptorProto` object which was a source for this generated file
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
+    static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
     file_descriptor_proto_lazy.get(|| {
-        parse_descriptor_proto()
+        crate::Message::parse_from_bytes(file_descriptor_proto_data).unwrap()
     })
+}
+
+/// `FileDescriptor` object which allows dynamic access to files
+pub fn file_descriptor() -> crate::reflect::FileDescriptor {
+    static file_descriptor_lazy: crate::rt::LazyV2<crate::reflect::GeneratedFileDescriptor> = crate::rt::LazyV2::INIT;
+    let file_descriptor = file_descriptor_lazy.get(|| {
+        let mut deps = ::std::vec::Vec::new();
+        let mut messages = ::std::vec::Vec::new();
+        messages.push(SourceContext::generated_message_descriptor_data());
+        let mut enums = ::std::vec::Vec::new();
+        crate::reflect::GeneratedFileDescriptor::new_generated(
+            file_descriptor_proto(),
+            deps,
+            messages,
+            enums,
+        )
+    });
+    crate::reflect::FileDescriptor::new_generated_2(file_descriptor)
 }

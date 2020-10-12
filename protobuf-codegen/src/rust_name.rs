@@ -22,7 +22,7 @@ impl RustIdent {
         &self.0
     }
 
-    pub fn _into_string(self) -> String {
+    pub fn into_string(self) -> String {
         self.0
     }
 
@@ -103,7 +103,7 @@ impl RustRelativePath {
         self.path.push(ident);
     }
 
-    pub fn _append_ident(mut self, ident: RustIdent) -> RustRelativePath {
+    pub fn append_ident(mut self, ident: RustIdent) -> RustRelativePath {
         self.push_ident(ident);
         self
     }
@@ -142,6 +142,10 @@ impl From<&'_ str> for RustRelativePath {
 }
 
 impl RustPath {
+    pub fn super_path() -> RustPath {
+        RustPath::from("super")
+    }
+
     pub fn is_absolute(&self) -> bool {
         self.absolute
     }

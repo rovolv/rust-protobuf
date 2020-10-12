@@ -1,10 +1,11 @@
-use crate::core::Message;
 use crate::json::base64;
 use crate::json::float;
+use crate::reflect::EnumDescriptor;
+use crate::reflect::MessageRef;
+use crate::reflect::ReflectFieldRef;
 use crate::reflect::ReflectMapRef;
 use crate::reflect::ReflectRepeatedRef;
 use crate::reflect::ReflectValueRef;
-use crate::reflect::{EnumDescriptor, ReflectFieldRef};
 use std::f32;
 use std::f64;
 use std::fmt;
@@ -32,6 +33,7 @@ use crate::well_known_types::Value;
 use crate::json::well_known_wrapper::WellKnownWrapper;
 
 use crate::json::rfc_3339::TmUtc;
+use crate::message_dyn::MessageDyn;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::RuntimeFieldType;
 use crate::reflect::RuntimeTypeBox;
@@ -205,7 +207,7 @@ impl<'a> PrintableToJson for ReflectValueRef<'a> {
             ReflectValueRef::String(v) => w.print_printable::<str>(v),
             ReflectValueRef::Bytes(v) => w.print_printable::<[u8]>(v),
             ReflectValueRef::Enum(d, v) => w.print_enum(d, *v),
-            ReflectValueRef::Message(v) => w.print_message(*v),
+            ReflectValueRef::Message(v) => w.print_message(v),
         }
     }
 }
@@ -402,7 +404,7 @@ impl Printer {
             if self.print_options.enum_values_int {
                 self.print_printable(&value.value())
             } else {
-                Ok(write!(self.buf, "\"{}\"", value.name())?)
+                Ok(write!(self.buf, "\"{}\"", value.get_name())?)
             }
         }
     }
@@ -412,13 +414,13 @@ impl Printer {
             self.print_printable(&v)
         } else {
             match descriptor.get_value_by_number(v) {
-                Some(value) => self.print_enum_known(value),
+                Some(value) => self.print_enum_known(&value),
                 None => self.print_printable(&v),
             }
         }
     }
 
-    fn print_message(&mut self, message: &dyn Message) -> PrintResult<()> {
+    fn print_message(&mut self, message: &MessageRef) -> PrintResult<()> {
         if let Some(duration) = message.downcast_ref::<Duration>() {
             self.print_printable(duration)
         } else if let Some(timestamp) = message.downcast_ref::<Timestamp>() {
@@ -456,35 +458,35 @@ impl Printer {
         }
     }
 
-    fn print_regular_message(&mut self, message: &dyn Message) -> Result<(), PrintError> {
-        let descriptor = message.descriptor();
+    fn print_regular_message(&mut self, message: &MessageRef) -> Result<(), PrintError> {
+        let descriptor = message.descriptor_dyn();
 
         write!(self.buf, "{{")?;
         let mut first = true;
         for field in descriptor.fields() {
             let json_field_name = if self.print_options.proto_field_name {
-                field.name()
+                field.get_name()
             } else {
                 field.json_name()
             };
 
             let field_type = field.runtime_field_type();
 
-            match field.get_reflect(message) {
+            match field.get_reflect(&**message) {
                 ReflectFieldRef::Optional(None) => {
                     if self.print_options.always_output_default_values {
                         let is_message = match field_type {
-                            RuntimeFieldType::Singular(s) => match s.to_box() {
+                            RuntimeFieldType::Singular(s) => match s {
                                 RuntimeTypeBox::Message(_) => true,
                                 _ => false,
                             },
                             _ => unreachable!(),
                         };
 
-                        let is_oneof = field.proto().has_oneof_index();
+                        let is_oneof = field.get_proto().has_oneof_index();
 
                         if !is_message && !is_oneof {
-                            let v = field.get_singular_field_or_default(message);
+                            let v = field.get_singular_field_or_default(&**message);
                             self.print_comma_but_first(&mut first)?;
                             write!(self.buf, "\"{}\": ", json_field_name)?;
                             self.print_printable(&v)?;
@@ -557,18 +559,18 @@ pub struct PrintOptions {
 
 /// Serialize message to JSON according to protobuf specification.
 pub fn print_to_string_with_options(
-    message: &dyn Message,
+    message: &dyn MessageDyn,
     print_options: &PrintOptions,
 ) -> PrintResult<String> {
     let mut printer = Printer {
         buf: String::new(),
         print_options: print_options.clone(),
     };
-    printer.print_message(message)?;
+    printer.print_message(&MessageRef::from(message))?;
     Ok(printer.buf)
 }
 
 /// Serialize message to JSON according to protobuf specification.
-pub fn print_to_string(message: &dyn Message) -> PrintResult<String> {
+pub fn print_to_string(message: &dyn MessageDyn) -> PrintResult<String> {
     print_to_string_with_options(message, &PrintOptions::default())
 }

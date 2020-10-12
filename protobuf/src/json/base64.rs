@@ -1,5 +1,7 @@
 //! Copy-pasted from the internet
 
+use std::fmt;
+
 /// Available encoding character sets
 #[derive(Clone, Copy, Debug)]
 enum _CharacterSet {
@@ -69,6 +71,8 @@ pub fn encode(input: &[u8]) -> String {
         }
     }
 
+    // `out_bytes` vec is prepopulated with `=` symbols and then only updated
+    // with base64 chars, so this unsafe is safe.
     unsafe { String::from_utf8_unchecked(out_bytes) }
 }
 
@@ -80,6 +84,17 @@ pub enum FromBase64Error {
     /// The input had an invalid length
     InvalidBase64Length,
 }
+
+impl fmt::Display for FromBase64Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            FromBase64Error::InvalidBase64Byte(_, _) => write!(f, "Invalid base64 byte"),
+            FromBase64Error::InvalidBase64Length => write!(f, "Invalid base64 length"),
+        }
+    }
+}
+
+impl std::error::Error for FromBase64Error {}
 
 pub fn decode(input: &str) -> Result<Vec<u8>, FromBase64Error> {
     let mut r = Vec::with_capacity(input.len());

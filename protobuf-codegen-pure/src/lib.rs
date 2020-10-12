@@ -28,7 +28,6 @@ extern crate protobuf_codegen;
 
 mod convert;
 
-use std::collections::HashMap;
 use std::error::Error;
 use std::fmt;
 use std::fs;
@@ -36,9 +35,12 @@ use std::io;
 use std::path::Path;
 use std::path::PathBuf;
 
+mod linked_hash_map;
 mod model;
 mod parser;
+mod path;
 
+use linked_hash_map::LinkedHashMap;
 use protobuf_codegen::amend_io_error;
 pub use protobuf_codegen::Customize;
 
@@ -163,7 +165,7 @@ impl Error for WithFileError {
 }
 
 struct Run<'a> {
-    parsed_files: HashMap<PathBuf, FileDescriptorPair>,
+    parsed_files: LinkedHashMap<PathBuf, FileDescriptorPair>,
     includes: &'a [PathBuf],
 }
 
@@ -171,7 +173,7 @@ impl<'a> Run<'a> {
     fn get_file_and_all_deps_already_parsed(
         &self,
         protobuf_path: &Path,
-        result: &mut HashMap<PathBuf, FileDescriptorPair>,
+        result: &mut LinkedHashMap<PathBuf, FileDescriptorPair>,
     ) {
         if let Some(_) = result.get(protobuf_path) {
             return;
@@ -189,10 +191,10 @@ impl<'a> Run<'a> {
     fn get_all_deps_already_parsed(
         &self,
         parsed: &model::FileDescriptor,
-        result: &mut HashMap<PathBuf, FileDescriptorPair>,
+        result: &mut LinkedHashMap<PathBuf, FileDescriptorPair>,
     ) {
-        for import in &parsed.import_paths {
-            self.get_file_and_all_deps_already_parsed(Path::new(import), result);
+        for import in &parsed.imports {
+            self.get_file_and_all_deps_already_parsed(Path::new(&import.path), result);
         }
     }
 
@@ -204,6 +206,15 @@ impl<'a> Run<'a> {
         let content = fs::read_to_string(fs_path)
             .map_err(|e| amend_io_error(e, format!("failed to read {:?}", fs_path)))?;
 
+        self.add_file_content(protobuf_path, fs_path, &content)
+    }
+
+    fn add_file_content(
+        &mut self,
+        protobuf_path: &Path,
+        fs_path: &Path,
+        content: &str,
+    ) -> io::Result<()> {
         let parsed = model::FileDescriptor::parse(content).map_err(|e| {
             io::Error::new(
                 io::ErrorKind::Other,
@@ -214,11 +225,11 @@ impl<'a> Run<'a> {
             )
         })?;
 
-        for import_path in &parsed.import_paths {
-            self.add_imported_file(Path::new(import_path))?;
+        for import in &parsed.imports {
+            self.add_imported_file(Path::new(&import.path))?;
         }
 
-        let mut this_file_deps = HashMap::new();
+        let mut this_file_deps = LinkedHashMap::new();
         self.get_all_deps_already_parsed(&parsed, &mut this_file_deps);
 
         let this_file_deps: Vec<_> = this_file_deps.into_iter().map(|(_, v)| v.parsed).collect();
@@ -250,13 +261,32 @@ impl<'a> Run<'a> {
             }
         }
 
-        Err(io::Error::new(
-            io::ErrorKind::Other,
-            format!(
-                "protobuf path {:?} is not found in import path {:?}",
-                protobuf_path, self.includes
-            ),
-        ))
+        let embedded = match protobuf_path.to_str() {
+            Some("rustproto.proto") => Some(RUSTPROTO_PROTO),
+            Some("google/protobuf/any.proto") => Some(ANY_PROTO),
+            Some("google/protobuf/api.proto") => Some(API_PROTO),
+            Some("google/protobuf/descriptor.proto") => Some(DESCRIPTOR_PROTO),
+            Some("google/protobuf/duration.proto") => Some(DURATION_PROTO),
+            Some("google/protobuf/empty.proto") => Some(EMPTY_PROTO),
+            Some("google/protobuf/field_mask.proto") => Some(FIELD_MASK_PROTO),
+            Some("google/protobuf/source_context.proto") => Some(SOURCE_CONTEXT_PROTO),
+            Some("google/protobuf/struct.proto") => Some(STRUCT_PROTO),
+            Some("google/protobuf/timestamp.proto") => Some(TIMESTAMP_PROTO),
+            Some("google/protobuf/type.proto") => Some(TYPE_PROTO),
+            Some("google/protobuf/wrappers.proto") => Some(WRAPPERS_PROTO),
+            _ => None,
+        };
+
+        match embedded {
+            Some(content) => self.add_file_content(protobuf_path, protobuf_path, content),
+            None => Err(io::Error::new(
+                io::ErrorKind::Other,
+                format!(
+                    "protobuf path {:?} is not found in import path {:?}",
+                    protobuf_path, self.includes
+                ),
+            )),
+        }
     }
 
     fn add_fs_file(&mut self, fs_path: &Path) -> io::Result<PathBuf> {
@@ -295,7 +325,7 @@ pub fn parse_and_typecheck(
     input: &[PathBuf],
 ) -> io::Result<ParsedAndTypechecked> {
     let mut run = Run {
-        parsed_files: HashMap::new(),
+        parsed_files: LinkedHashMap::new(),
         includes: includes,
     };
 
@@ -316,3 +346,17 @@ pub fn parse_and_typecheck(
         file_descriptors,
     })
 }
+
+// TODO: these include don't work when publishing to crates
+const RUSTPROTO_PROTO: &str = include_str!("../../proto/rustproto.proto");
+const ANY_PROTO: &str = include_str!("../../proto/google/protobuf/any.proto");
+const API_PROTO: &str = include_str!("../../proto/google/protobuf/api.proto");
+const DESCRIPTOR_PROTO: &str = include_str!("../../proto/google/protobuf/descriptor.proto");
+const DURATION_PROTO: &str = include_str!("../../proto/google/protobuf/duration.proto");
+const EMPTY_PROTO: &str = include_str!("../../proto/google/protobuf/empty.proto");
+const FIELD_MASK_PROTO: &str = include_str!("../../proto/google/protobuf/field_mask.proto");
+const SOURCE_CONTEXT_PROTO: &str = include_str!("../../proto/google/protobuf/source_context.proto");
+const STRUCT_PROTO: &str = include_str!("../../proto/google/protobuf/struct.proto");
+const TIMESTAMP_PROTO: &str = include_str!("../../proto/google/protobuf/timestamp.proto");
+const TYPE_PROTO: &str = include_str!("../../proto/google/protobuf/type.proto");
+const WRAPPERS_PROTO: &str = include_str!("../../proto/google/protobuf/wrappers.proto");

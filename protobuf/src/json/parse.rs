@@ -3,12 +3,13 @@ use std::num::ParseIntError;
 
 use std::f32;
 use std::f64;
+use std::fmt;
 
 use super::base64;
 
-use crate::core::Message;
 use crate::enums::ProtobufEnum;
 use crate::json::base64::FromBase64Error;
+use crate::message::Message;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::FieldDescriptor;
@@ -16,7 +17,6 @@ use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeFieldType;
 use crate::reflect::RuntimeTypeBox;
-use crate::reflect::RuntimeTypeDynamic;
 use crate::text_format::lexer::Lexer;
 use crate::text_format::lexer::LexerError;
 use crate::text_format::lexer::Loc;
@@ -30,6 +30,7 @@ use super::rfc_3339;
 use crate::text_format::lexer::JsonNumberLit;
 
 use crate::json::well_known_wrapper::WellKnownWrapper;
+use crate::message_dyn::MessageDyn;
 use crate::well_known_types::value;
 use crate::well_known_types::Any;
 use crate::well_known_types::BoolValue;
@@ -73,6 +74,43 @@ enum ParseErrorWithoutLocInner {
 #[derive(Debug)]
 struct ParseErrorWithoutLoc(ParseErrorWithoutLocInner);
 
+impl fmt::Display for ParseErrorWithoutLoc {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match &self.0 {
+            ParseErrorWithoutLocInner::TokenizerError(e) => write!(f, "{}", e),
+            ParseErrorWithoutLocInner::UnknownFieldName(n) => {
+                write!(f, "unknown field name: {}", n)
+            }
+            ParseErrorWithoutLocInner::UnknownEnumVariantName(n) => {
+                write!(f, "unknown enum variant name: {}", n)
+            }
+            ParseErrorWithoutLocInner::UnknownEnumVariantNumber(n) => {
+                write!(f, "unknown enum value: {}", n)
+            }
+            ParseErrorWithoutLocInner::FromBase64Error(e) => write!(f, "{}", e),
+            ParseErrorWithoutLocInner::IncorrectStrLit(e) => write!(f, "{}", e),
+            ParseErrorWithoutLocInner::IncorrectDuration => write!(f, "incorrect duration"),
+            ParseErrorWithoutLocInner::Rfc3339(e) => write!(f, "RFC3339 parse error: {}", e),
+            ParseErrorWithoutLocInner::ParseIntError(e) => write!(f, "{}", e),
+            ParseErrorWithoutLocInner::ParseFloatError(e) => write!(f, "{}", e),
+            ParseErrorWithoutLocInner::ExpectingBool => write!(f, "expecting bool"),
+            ParseErrorWithoutLocInner::ExpectingStrOrInt => {
+                write!(f, "expecting string or integer")
+            }
+            ParseErrorWithoutLocInner::ExpectingNumber => write!(f, "expecting number"),
+            ParseErrorWithoutLocInner::UnexpectedToken => write!(f, "unexpected token"),
+            ParseErrorWithoutLocInner::AnyParsingIsNotImplemented => {
+                write!(f, "Any parsing is not implemented")
+            }
+            ParseErrorWithoutLocInner::MessageNotInitialized => {
+                write!(f, "Message not initialized")
+            }
+        }
+    }
+}
+
+impl std::error::Error for ParseErrorWithoutLoc {}
+
 impl From<TokenizerError> for ParseErrorWithoutLoc {
     fn from(e: TokenizerError) -> Self {
         ParseErrorWithoutLoc(ParseErrorWithoutLocInner::TokenizerError(e))
@@ -109,6 +147,14 @@ pub struct ParseError {
     error: ParseErrorWithoutLoc,
     loc: Loc,
 }
+
+impl fmt::Display for ParseError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{} at {}", self.error, self.loc)
+    }
+}
+
+impl std::error::Error for ParseError {}
 
 type ParseResultWithoutLoc<A> = Result<A, ParseErrorWithoutLoc>;
 type ParseResult<A> = Result<A, ParseError>;
@@ -347,10 +393,10 @@ impl<'a> Parser<'a> {
         Ok(base64::decode(s)?)
     }
 
-    fn read_enum<'e>(
+    fn read_enum(
         &mut self,
-        descriptor: &'e EnumDescriptor,
-    ) -> ParseResultWithoutLoc<&'e EnumValueDescriptor> {
+        descriptor: &EnumDescriptor,
+    ) -> ParseResultWithoutLoc<EnumValueDescriptor> {
         if descriptor.is::<NullValue>() {
             return Ok(self.read_wk_null_value()?.descriptor());
         }
@@ -374,11 +420,11 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn parse_enum<'e>(
+    fn parse_enum(
         &self,
         name: String,
-        descriptor: &'e EnumDescriptor,
-    ) -> ParseResultWithoutLoc<&'e EnumValueDescriptor> {
+        descriptor: &EnumDescriptor,
+    ) -> ParseResultWithoutLoc<EnumValueDescriptor> {
         // TODO: can map key be int
         match descriptor.get_value_by_name(&name) {
             Some(v) => Ok(v),
@@ -396,14 +442,14 @@ impl<'a> Parser<'a> {
     fn read_message(
         &mut self,
         descriptor: &MessageDescriptor,
-    ) -> ParseResultWithoutLoc<Box<dyn Message>> {
+    ) -> ParseResultWithoutLoc<Box<dyn MessageDyn>> {
         let mut m = descriptor.new_instance();
         self.merge_inner(&mut *m)?;
         Ok(m)
     }
 
-    fn read_value(&mut self, t: &dyn RuntimeTypeDynamic) -> ParseResultWithoutLoc<ReflectValueBox> {
-        match t.to_box() {
+    fn read_value(&mut self, t: &RuntimeTypeBox) -> ParseResultWithoutLoc<ReflectValueBox> {
+        match t {
             RuntimeTypeBox::I32 => self.read_i32().map(ReflectValueBox::from),
             RuntimeTypeBox::I64 => self.read_i64().map(ReflectValueBox::from),
             RuntimeTypeBox::U32 => self.read_u32().map(ReflectValueBox::from),
@@ -413,16 +459,16 @@ impl<'a> Parser<'a> {
             RuntimeTypeBox::Bool => self.read_bool().map(ReflectValueBox::from),
             RuntimeTypeBox::String => self.read_string().map(ReflectValueBox::from),
             RuntimeTypeBox::VecU8 => self.read_bytes().map(ReflectValueBox::from),
-            RuntimeTypeBox::Enum(e) => self.read_enum(e).map(ReflectValueBox::from),
-            RuntimeTypeBox::Message(m) => self.read_message(m).map(ReflectValueBox::from),
+            RuntimeTypeBox::Enum(e) => self.read_enum(&e).map(ReflectValueBox::from),
+            RuntimeTypeBox::Message(m) => self.read_message(&m).map(ReflectValueBox::from),
         }
     }
 
     fn merge_singular_field(
         &mut self,
-        message: &mut dyn Message,
+        message: &mut dyn MessageDyn,
         field: &FieldDescriptor,
-        t: &dyn RuntimeTypeDynamic,
+        t: &RuntimeTypeBox,
     ) -> ParseResultWithoutLoc<()> {
         field.set_singular_field(message, self.read_value(t)?);
         Ok(())
@@ -453,9 +499,9 @@ impl<'a> Parser<'a> {
 
     fn merge_repeated_field(
         &mut self,
-        message: &mut dyn Message,
+        message: &mut dyn MessageDyn,
         field: &FieldDescriptor,
-        t: &dyn RuntimeTypeDynamic,
+        t: &RuntimeTypeBox,
     ) -> ParseResultWithoutLoc<()> {
         let mut repeated = field.mut_repeated(message);
         repeated.clear();
@@ -506,35 +552,28 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
-    fn parse_key(
-        &self,
-        key: String,
-        t: &dyn RuntimeTypeDynamic,
-    ) -> ParseResultWithoutLoc<ReflectValueBox> {
-        match t.to_box() {
+    fn parse_key(&self, key: String, t: &RuntimeTypeBox) -> ParseResultWithoutLoc<ReflectValueBox> {
+        match t {
             RuntimeTypeBox::I32 => self.parse_number::<i32>(&key).map(ReflectValueBox::I32),
             RuntimeTypeBox::I64 => self.parse_number::<i64>(&key).map(ReflectValueBox::I64),
             RuntimeTypeBox::U32 => self.parse_number::<u32>(&key).map(ReflectValueBox::U32),
             RuntimeTypeBox::U64 => self.parse_number::<u64>(&key).map(ReflectValueBox::U64),
-            // technically f32 and f64 cannot be map keys
-            RuntimeTypeBox::F32 => self.parse_number::<f32>(&key).map(ReflectValueBox::F32),
-            RuntimeTypeBox::F64 => self.parse_number::<f64>(&key).map(ReflectValueBox::F64),
-            RuntimeTypeBox::Bool => self.parse_bool(&key).map(ReflectValueBox::from),
+            RuntimeTypeBox::Bool => self.parse_bool(&key).map(ReflectValueBox::Bool),
             RuntimeTypeBox::String => Ok(ReflectValueBox::String(key)),
-            RuntimeTypeBox::VecU8 => self.parse_bytes(&key).map(ReflectValueBox::Bytes),
-            RuntimeTypeBox::Enum(e) => self
-                .parse_enum(key, e)
-                .map(|v| ReflectValueBox::Enum(v.enum_descriptor(), v.value())),
+            t @ RuntimeTypeBox::F32
+            | t @ RuntimeTypeBox::F64
+            | t @ RuntimeTypeBox::VecU8
+            | t @ RuntimeTypeBox::Enum(..) => panic!("{} cannot be a map key", t),
             RuntimeTypeBox::Message(_) => panic!("message cannot be a map key"),
         }
     }
 
     fn merge_map_field(
         &mut self,
-        message: &mut dyn Message,
+        message: &mut dyn MessageDyn,
         field: &FieldDescriptor,
-        kt: &dyn RuntimeTypeDynamic,
-        vt: &dyn RuntimeTypeDynamic,
+        kt: &RuntimeTypeBox,
+        vt: &RuntimeTypeBox,
     ) -> ParseResultWithoutLoc<()> {
         let mut map = field.mut_map(message);
         map.clear();
@@ -586,17 +625,17 @@ impl<'a> Parser<'a> {
 
     fn merge_field(
         &mut self,
-        message: &mut dyn Message,
+        message: &mut dyn MessageDyn,
         field: &FieldDescriptor,
     ) -> ParseResultWithoutLoc<()> {
         match field.runtime_field_type() {
-            RuntimeFieldType::Singular(t) => self.merge_singular_field(message, field, t),
-            RuntimeFieldType::Repeated(t) => self.merge_repeated_field(message, field, t),
-            RuntimeFieldType::Map(kt, vt) => self.merge_map_field(message, field, kt, vt),
+            RuntimeFieldType::Singular(t) => self.merge_singular_field(message, field, &t),
+            RuntimeFieldType::Repeated(t) => self.merge_repeated_field(message, field, &t),
+            RuntimeFieldType::Map(kt, vt) => self.merge_map_field(message, field, &kt, &vt),
         }
     }
 
-    fn merge_inner(&mut self, message: &mut dyn Message) -> ParseResultWithoutLoc<()> {
+    fn merge_inner(&mut self, message: &mut dyn MessageDyn) -> ParseResultWithoutLoc<()> {
         if let Some(duration) = message.downcast_mut() {
             return self.merge_wk_duration(duration);
         }
@@ -661,7 +700,7 @@ impl<'a> Parser<'a> {
             return self.merge_wk_struct(value);
         }
 
-        let descriptor = message.descriptor();
+        let descriptor = message.descriptor_dyn();
 
         self.tokenizer.next_symbol_expect_eq('{')?;
         let mut first = true;
@@ -677,7 +716,7 @@ impl<'a> Parser<'a> {
             match descriptor.get_field_by_name_or_json_name(&field_name) {
                 Some(field) => {
                     self.tokenizer.next_symbol_expect_eq(':')?;
-                    self.merge_field(message, field)?;
+                    self.merge_field(message, &field)?;
                 }
                 None if self.parse_options.ignore_unknown_fields => {
                     self.tokenizer.next_symbol_expect_eq(':')?;
@@ -830,7 +869,7 @@ impl<'a> Parser<'a> {
         Ok(v)
     }
 
-    fn merge(&mut self, message: &mut dyn Message) -> ParseResult<()> {
+    fn merge(&mut self, message: &mut dyn MessageDyn) -> ParseResult<()> {
         match self.merge_inner(message) {
             Ok(()) => Ok(()),
             Err(error) => Err(ParseError {
@@ -865,7 +904,7 @@ pub struct ParseOptions {
 
 /// Merge JSON into provided message
 pub fn merge_from_str_with_options(
-    message: &mut dyn Message,
+    message: &mut dyn MessageDyn,
     json: &str,
     parse_options: &ParseOptions,
 ) -> ParseResult<()> {
@@ -877,7 +916,7 @@ pub fn merge_from_str_with_options(
 }
 
 /// Merge JSON into provided message
-pub fn merge_from_str(message: &mut dyn Message, json: &str) -> ParseResult<()> {
+pub fn merge_from_str(message: &mut dyn MessageDyn, json: &str) -> ParseResult<()> {
     merge_from_str_with_options(message, json, &ParseOptions::default())
 }
 
@@ -886,10 +925,10 @@ pub fn parse_dynamic_from_str_with_options(
     d: &MessageDescriptor,
     json: &str,
     parse_options: &ParseOptions,
-) -> ParseResult<Box<dyn Message>> {
+) -> ParseResult<Box<dyn MessageDyn>> {
     let mut m = d.new_instance();
     merge_from_str_with_options(&mut *m, json, parse_options)?;
-    if let Err(_) = m.check_initialized() {
+    if let Err(_) = m.check_initialized_dyn() {
         return Err(ParseError {
             error: ParseErrorWithoutLoc(ParseErrorWithoutLocInner::MessageNotInitialized),
             loc: Loc::start(),
@@ -899,7 +938,10 @@ pub fn parse_dynamic_from_str_with_options(
 }
 
 /// Parse JSON to protobuf message.
-pub fn parse_dynamic_from_str(d: &MessageDescriptor, json: &str) -> ParseResult<Box<dyn Message>> {
+pub fn parse_dynamic_from_str(
+    d: &MessageDescriptor,
+    json: &str,
+) -> ParseResult<Box<dyn MessageDyn>> {
     parse_dynamic_from_str_with_options(d, json, &ParseOptions::default())
 }
 

@@ -1,7 +1,5 @@
 use protobuf::descriptor::*;
 
-use protobuf::prelude::*;
-
 use super::code_writer::*;
 use super::customize::customize_from_rustproto_for_message;
 use super::customize::Customize;
@@ -10,18 +8,21 @@ use super::field::*;
 use super::rust_types_values::*;
 use crate::case_convert::snake_case;
 use crate::file_and_mod::FileAndMod;
-use crate::file_descriptor::file_descriptor_proto_expr;
 use crate::inside::protobuf_crate_path;
-use crate::map::map_entry;
 use crate::oneof::OneofGen;
 use crate::oneof::OneofVariantGen;
 use crate::rust::is_rust_keyword;
+use crate::rust::EXPR_NONE;
+use crate::rust::EXPR_VEC_NEW;
 use crate::rust_name::RustIdent;
 use crate::rust_name::RustIdentWithPath;
 use crate::scope::MessageWithScope;
 use crate::scope::RootScope;
 use crate::scope::WithScope;
 use crate::serde;
+use crate::FileIndex;
+use protobuf::reflect::FileDescriptor;
+use protobuf::reflect::MessageDescriptor;
 use std::fmt;
 
 /// Protobuf message Rust type name
@@ -53,7 +54,10 @@ impl RustTypeMessage {
 
 /// Message info for codegen
 pub(crate) struct MessageGen<'a> {
+    file_descriptor: &'a FileDescriptor,
+    message_descriptor: MessageDescriptor,
     pub message: &'a MessageWithScope<'a>,
+    file_index: &'a FileIndex,
     pub root_scope: &'a RootScope<'a>,
     type_name: RustIdentWithPath,
     pub fields: Vec<FieldGen<'a>>,
@@ -65,23 +69,29 @@ pub(crate) struct MessageGen<'a> {
 
 impl<'a> MessageGen<'a> {
     pub fn new(
+        file_descriptor: &'a FileDescriptor,
         message: &'a MessageWithScope<'a>,
+        file_index: &'a FileIndex,
         root_scope: &'a RootScope<'a>,
         customize: &Customize,
         path: &'a [i32],
         info: Option<&'a SourceCodeInfo>,
     ) -> MessageGen<'a> {
+        let message_descriptor = file_descriptor
+            .message_by_package_relative_name(message.protobuf_name_to_package().get())
+            .unwrap();
+
         let mut customize = customize.clone();
         customize.update_with(&customize_from_rustproto_for_message(
-            message.message.options.get_message(),
+            message.message.get_proto().options.get_or_default(),
         ));
 
-        static FIELD_NUMBER: protobuf::rt::Lazy<i32> = protobuf::rt::Lazy::INIT;
+        static FIELD_NUMBER: protobuf::rt::LazyV2<i32> = protobuf::rt::LazyV2::INIT;
         let field_number = *FIELD_NUMBER.get(|| {
             protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
                 .get_field_by_name("field")
                 .expect("`field` must exist")
-                .proto()
+                .get_proto()
                 .get_number()
         });
 
@@ -99,12 +109,15 @@ impl<'a> MessageGen<'a> {
             message
                 .get_file_descriptor()
                 .options
-                .get_message()
+                .get_or_default()
                 .get_optimize_for()
                 == file_options::OptimizeMode::LITE_RUNTIME
         });
         MessageGen {
+            message_descriptor,
+            file_descriptor,
             message,
+            file_index,
             root_scope,
             type_name: message.rust_name().to_path(),
             fields,
@@ -113,6 +126,10 @@ impl<'a> MessageGen<'a> {
             path,
             info,
         }
+    }
+
+    fn index_in_file(&self) -> u32 {
+        self.file_index.messsage_to_index[&self.message.protobuf_name_to_package()]
     }
 
     pub fn get_file_and_mod(&self) -> FileAndMod {
@@ -244,16 +261,61 @@ impl<'a> MessageGen<'a> {
         });
     }
 
+    fn write_default_instance_lazy(&self, w: &mut CodeWriter) {
+        w.lazy_static_decl_get_simple(
+            "instance",
+            &format!("{}", self.type_name),
+            &format!("{}::new", self.type_name),
+            &format!("{}", protobuf_crate_path(&self.customize)),
+        );
+    }
+
+    fn write_default_instance_static(&self, w: &mut CodeWriter) {
+        w.stmt_block(
+            &format!("static instance: {} = {}", self.type_name, self.type_name),
+            |w| {
+                for f in &self.fields_except_oneof_and_group() {
+                    w.field_entry(
+                        f.rust_name.get(),
+                        &f.kind
+                            .default(&self.customize, &self.get_file_and_mod(), true),
+                    );
+                }
+                for o in &self.oneofs() {
+                    w.field_entry(o.oneof.field_name().get(), EXPR_NONE);
+                }
+                w.field_entry(
+                    "unknown_fields",
+                    &format!(
+                        "{}::UnknownFields::new()",
+                        protobuf_crate_path(&self.customize)
+                    ),
+                );
+                w.field_entry(
+                    "cached_size",
+                    &format!(
+                        "{}::rt::CachedSize::new()",
+                        protobuf_crate_path(&self.customize)
+                    ),
+                );
+            },
+        );
+        w.write_line("&instance");
+    }
+
     fn write_default_instance(&self, w: &mut CodeWriter) {
         w.def_fn(
             &format!("default_instance() -> &'static {}", self.type_name),
             |w| {
-                w.lazy_static_decl_get_simple(
-                    "instance",
-                    &format!("{}", self.type_name),
-                    &format!("{}::new", self.type_name),
-                    protobuf_crate_path(&self.customize),
-                );
+                let has_map_field = self.fields.iter().any(|f| match f.kind {
+                    FieldKind::Map(..) => true,
+                    _ => false,
+                });
+                if has_map_field {
+                    self.write_default_instance_lazy(w)
+                } else {
+                    self.write_default_instance_static(w)
+                }
             },
         );
     }
@@ -297,6 +359,8 @@ impl<'a> MessageGen<'a> {
             });
 
             self.write_field_accessors(w);
+            w.write_line("");
+            self.write_generated_message_descriptor_data(w);
         });
     }
 
@@ -343,43 +407,52 @@ impl<'a> MessageGen<'a> {
         });
     }
 
-    fn write_descriptor_static(&self, w: &mut CodeWriter) {
+    fn write_descriptor_static_new(&self, w: &mut CodeWriter) {
         let sig = format!(
-            "descriptor_static() -> &'static {}::reflect::MessageDescriptor",
+            "descriptor_static() -> {}::reflect::MessageDescriptor",
             protobuf_crate_path(&self.customize)
         );
         w.def_fn(&sig, |w| {
-            w.lazy_static_decl_get(
-                "descriptor",
-                &format!(
-                    "{}::reflect::MessageDescriptor",
-                    protobuf_crate_path(&self.customize)
-                ),
+            w.write_line(&format!(
+                "{}::reflect::MessageDescriptor::new_generated_2({}(), {})",
                 protobuf_crate_path(&self.customize),
-                |w| {
-                    let fields = self.fields_except_group();
-                    if fields.is_empty() {
-                        w.write_line(&format!("let fields = ::std::vec::Vec::new();"));
-                    } else {
-                        w.write_line(&format!("let mut fields = ::std::vec::Vec::new();"));
-                    }
-                    for field in fields {
-                        field.write_descriptor_field("fields", w);
-                    }
-                    w.write_line(&format!(
-                        "{}::reflect::MessageDescriptor::new::<{}>(",
-                        protobuf_crate_path(&self.customize),
-                        self.type_name,
-                    ));
-                    w.indented(|w| {
-                        w.write_line(&format!("\"{}\",", self.message.name_to_package()));
-                        w.write_line("fields,");
-                        w.write_line(&file_descriptor_proto_expr(&self.message.scope));
-                    });
-                    w.write_line(")");
-                },
-            );
+                self.message
+                    .get_scope()
+                    .rust_path_to_file()
+                    .to_reverse()
+                    .append_ident("file_descriptor".into()),
+                self.message_descriptor.get_index_in_file_for_codegen(),
+            ));
         });
+    }
+
+    fn write_generated_message_descriptor_data(&self, w: &mut CodeWriter) {
+        let sig = format!(
+            "generated_message_descriptor_data() -> {}::reflect::GeneratedMessageDescriptorData",
+            protobuf_crate_path(&self.customize)
+        );
+        w.fn_block(
+            Visibility::Path(self.message.get_scope().rust_path_to_file().to_reverse()),
+            &sig,
+            |w| {
+                let fields = self.fields_except_group();
+                w.write_line(&format!("let mut fields = {};", EXPR_VEC_NEW));
+                for field in fields {
+                    field.write_descriptor_field("fields", w);
+                }
+                w.write_line(&format!(
+                    "{}::reflect::GeneratedMessageDescriptorData::new_2::<{}>(",
+                    protobuf_crate_path(&self.customize),
+                    self.type_name,
+                ));
+                w.indented(|w| {
+                    w.write_line(&format!("\"{}\",", self.message.name_to_package()));
+                    w.write_line(&format!("{},", self.index_in_file()));
+                    w.write_line("fields,");
+                });
+                w.write_line(")");
+            },
+        );
     }
 
     fn write_is_initialized(&self, w: &mut CodeWriter) {
@@ -428,22 +501,12 @@ impl<'a> MessageGen<'a> {
                 w.write_line("");
                 self.write_unknown_fields(w);
                 w.write_line("");
-                w.def_fn(
-                    &format!(
-                        "descriptor(&self) -> &'static {}::reflect::MessageDescriptor",
-                        protobuf_crate_path(&self.customize)
-                    ),
-                    |w| {
-                        w.write_line("Self::descriptor_static()");
-                    },
-                );
-                w.write_line("");
                 w.def_fn(&format!("new() -> {}", self.type_name), |w| {
                     w.write_line(&format!("{}::new()", self.type_name));
                 });
                 if !self.lite_runtime {
                     w.write_line("");
-                    self.write_descriptor_static(w);
+                    self.write_descriptor_static_new(w);
                 }
                 w.write_line("");
                 self.write_default_instance(w);
@@ -458,8 +521,13 @@ impl<'a> MessageGen<'a> {
                 protobuf_crate_path(&self.customize)
             ),
             &format!("{}", self.type_name),
-            |_w| {},
-        );
+            |w| {
+                w.write_line(&format!(
+                    "type RuntimeType = {}::reflect::runtime_types::RuntimeTypeMessage<Self>;",
+                    protobuf_crate_path(&self.customize)
+                ));
+            },
+        )
     }
 
     fn write_impl_show(&self, w: &mut CodeWriter) {
@@ -609,7 +677,7 @@ impl<'a> MessageGen<'a> {
             .into_iter()
             .filter(|nested| {
                 // ignore map entries, because they are not used in map fields
-                map_entry(nested).is_none()
+                !nested.is_map()
             })
             .collect();
         let nested_enums = self.message.to_scope().get_enums();
@@ -628,12 +696,12 @@ impl<'a> MessageGen<'a> {
                     oneof.write(w);
                 }
 
-                static NESTED_TYPE_NUMBER: protobuf::rt::Lazy<i32> = protobuf::rt::Lazy::INIT;
+                static NESTED_TYPE_NUMBER: protobuf::rt::LazyV2<i32> = protobuf::rt::LazyV2::INIT;
                 let nested_type_number = *NESTED_TYPE_NUMBER.get(|| {
                     protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
                         .get_field_by_name("nested_type")
                         .expect("`nested_type` must exist")
-                        .proto()
+                        .get_proto()
                         .get_number()
                 });
 
@@ -647,16 +715,24 @@ impl<'a> MessageGen<'a> {
                         w.write_line("");
                     }
                     first = false;
-                    MessageGen::new(nested, self.root_scope, &self.customize, &path, self.info)
-                        .write(w);
+                    MessageGen::new(
+                        &self.file_descriptor,
+                        nested,
+                        self.file_index,
+                        self.root_scope,
+                        &self.customize,
+                        &path,
+                        self.info,
+                    )
+                    .write(w);
                 }
 
-                static ENUM_TYPE_NUMBER: protobuf::rt::Lazy<i32> = protobuf::rt::Lazy::INIT;
+                static ENUM_TYPE_NUMBER: protobuf::rt::LazyV2<i32> = protobuf::rt::LazyV2::INIT;
                 let enum_type_number = *ENUM_TYPE_NUMBER.get(|| {
                     protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
                         .get_field_by_name("enum_type")
                         .expect("`enum_type` must exist")
-                        .proto()
+                        .get_proto()
                         .get_number()
                 });
 
@@ -672,6 +748,7 @@ impl<'a> MessageGen<'a> {
                     first = false;
                     EnumGen::new(
                         enum_type,
+                        self.file_index,
                         &self.customize,
                         self.root_scope,
                         &path,

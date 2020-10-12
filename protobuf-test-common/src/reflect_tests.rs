@@ -6,13 +6,12 @@ use protobuf::reflect::MessageDescriptor;
 use protobuf::reflect::ReflectValueBox;
 use protobuf::reflect::RuntimeFieldType;
 use protobuf::reflect::RuntimeTypeBox;
-use protobuf::reflect::RuntimeTypeDynamic;
 use protobuf::well_known_types::value;
 use protobuf::well_known_types::Value;
-use protobuf::Message;
+use protobuf::{Message, MessageDyn};
 
-pub fn value_for_runtime_type(field_type: &dyn RuntimeTypeDynamic) -> ReflectValueBox {
-    match field_type.to_box() {
+pub fn value_for_runtime_type(field_type: &RuntimeTypeBox) -> ReflectValueBox {
+    match field_type {
         RuntimeTypeBox::U32 => ReflectValueBox::U32(11),
         RuntimeTypeBox::U64 => ReflectValueBox::U64(12),
         RuntimeTypeBox::I32 => ReflectValueBox::I32(13),
@@ -22,13 +21,13 @@ pub fn value_for_runtime_type(field_type: &dyn RuntimeTypeDynamic) -> ReflectVal
         RuntimeTypeBox::Bool => ReflectValueBox::Bool(true),
         RuntimeTypeBox::String => ReflectValueBox::String("here".to_owned()),
         RuntimeTypeBox::VecU8 => ReflectValueBox::Bytes(b"there".as_ref().to_owned()),
-        RuntimeTypeBox::Enum(e) => ReflectValueBox::from(&e.values()[0]),
+        RuntimeTypeBox::Enum(e) => ReflectValueBox::from(e.first_value()),
         RuntimeTypeBox::Message(m) => ReflectValueBox::Message(m.new_instance()),
     }
 }
 
-fn values_for_message_type(descriptor: &MessageDescriptor) -> Vec<Box<dyn Message>> {
-    if descriptor == Value::descriptor_static() {
+fn values_for_message_type(descriptor: &MessageDescriptor) -> Vec<Box<dyn MessageDyn>> {
+    if descriptor == &Value::descriptor_static() {
         // special handling because empty `Value` is not valid
         let mut value = Value::new();
         value.kind = Some(value::Kind::number_value(23.0));
@@ -41,8 +40,8 @@ fn values_for_message_type(descriptor: &MessageDescriptor) -> Vec<Box<dyn Messag
     }
 }
 
-pub fn values_for_runtime_type(field_type: &dyn RuntimeTypeDynamic) -> Vec<ReflectValueBox> {
-    match field_type.to_box() {
+pub fn values_for_runtime_type(field_type: &RuntimeTypeBox) -> Vec<ReflectValueBox> {
+    match field_type {
         RuntimeTypeBox::U32 => vec![
             ReflectValueBox::U32(11),
             ReflectValueBox::U32(0),
@@ -102,10 +101,10 @@ pub fn values_for_runtime_type(field_type: &dyn RuntimeTypeDynamic) -> Vec<Refle
             ReflectValueBox::Bytes(b"".as_ref().to_owned()),
         ],
         RuntimeTypeBox::Enum(e) => vec![
-            ReflectValueBox::from(&e.values()[0]),
-            ReflectValueBox::from(&e.values()[e.values().len() - 1]),
+            ReflectValueBox::from(e.values().next().unwrap()),
+            ReflectValueBox::from(e.values().last().unwrap()),
         ],
-        RuntimeTypeBox::Message(m) => values_for_message_type(m)
+        RuntimeTypeBox::Message(m) => values_for_message_type(&m)
             .into_iter()
             .map(ReflectValueBox::from)
             .collect(),
@@ -115,11 +114,11 @@ pub fn values_for_runtime_type(field_type: &dyn RuntimeTypeDynamic) -> Vec<Refle
 pub fn special_values_for_field(
     f: &FieldDescriptor,
     d: &MessageDescriptor,
-) -> Vec<Box<dyn Message>> {
+) -> Vec<Box<dyn MessageDyn>> {
     let mut r = Vec::new();
     match f.runtime_field_type() {
         RuntimeFieldType::Singular(t) => {
-            for v in values_for_runtime_type(t) {
+            for v in values_for_runtime_type(&t) {
                 let mut m = d.new_instance();
                 f.set_singular_field(&mut *m, v);
                 r.push(m);
@@ -129,15 +128,15 @@ pub fn special_values_for_field(
             // TODO: empty repeated
             // TODO: repeated of more than one element
             let mut m = d.new_instance();
-            f.mut_repeated(&mut *m).push(value_for_runtime_type(t));
+            f.mut_repeated(&mut *m).push(value_for_runtime_type(&t));
             r.push(m);
         }
         RuntimeFieldType::Map(k, v) => {
             // TODO: empty map
             // TODO: map of more than one element
             let mut m = d.new_instance();
-            let k = value_for_runtime_type(k);
-            let v = value_for_runtime_type(v);
+            let k = value_for_runtime_type(&k);
+            let v = value_for_runtime_type(&v);
             f.mut_map(&mut *m).insert(k, v);
             r.push(m);
         }
@@ -145,17 +144,17 @@ pub fn special_values_for_field(
     r
 }
 
-pub fn special_messages(d: &MessageDescriptor) -> Vec<Box<dyn Message>> {
+pub fn special_messages(d: &MessageDescriptor) -> Vec<Box<dyn MessageDyn>> {
     let mut r = Vec::new();
     for f in d.fields() {
-        r.extend(special_values_for_field(f, d));
+        r.extend(special_values_for_field(&f, d));
     }
     r
 }
 
 pub fn special_messages_typed<M: Message>() -> Vec<M> {
     let mut r = Vec::new();
-    for m in special_messages(M::descriptor_static()) {
+    for m in special_messages(&M::descriptor_static()) {
         r.push(*m.downcast_box().unwrap());
     }
     r

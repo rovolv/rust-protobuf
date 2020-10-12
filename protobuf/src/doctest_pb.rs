@@ -16,8 +16,8 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
-#![allow(unused_imports)]
 #![allow(unused_results)]
+#![allow(unused_mut)]
 
 //! Generated file from `doctest_pb.proto`
 
@@ -40,6 +40,15 @@ impl<'a> ::std::default::Default for &'a MyMessage {
 impl MyMessage {
     pub fn new() -> MyMessage {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<MyMessage>(
+            "MyMessage",
+            0,
+            fields,
+        )
     }
 }
 
@@ -86,29 +95,20 @@ impl crate::Message for MyMessage {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> MyMessage {
         MyMessage::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let fields = ::std::vec::Vec::new();
-            crate::reflect::MessageDescriptor::new::<MyMessage>(
-                "MyMessage",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
     }
 
     fn default_instance() -> &'static MyMessage {
-        static instance: crate::rt::Lazy<MyMessage> = crate::rt::Lazy::INIT;
-        instance.get(MyMessage::new)
+        static instance: MyMessage = MyMessage {
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -125,6 +125,7 @@ impl ::std::fmt::Debug for MyMessage {
 }
 
 impl crate::reflect::ProtobufValue for MyMessage {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
@@ -134,15 +135,28 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x04\x08\x11b\x06proto3\
 ";
 
-static file_descriptor_proto_lazy: crate::rt::Lazy<crate::descriptor::FileDescriptorProto> = crate::rt::Lazy::INIT;
-
-fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
-    crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
-}
-
 /// `FileDescriptorProto` object which was a source for this generated file
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
+    static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
     file_descriptor_proto_lazy.get(|| {
-        parse_descriptor_proto()
+        crate::Message::parse_from_bytes(file_descriptor_proto_data).unwrap()
     })
+}
+
+/// `FileDescriptor` object which allows dynamic access to files
+pub fn file_descriptor() -> crate::reflect::FileDescriptor {
+    static file_descriptor_lazy: crate::rt::LazyV2<crate::reflect::GeneratedFileDescriptor> = crate::rt::LazyV2::INIT;
+    let file_descriptor = file_descriptor_lazy.get(|| {
+        let mut deps = ::std::vec::Vec::new();
+        let mut messages = ::std::vec::Vec::new();
+        messages.push(MyMessage::generated_message_descriptor_data());
+        let mut enums = ::std::vec::Vec::new();
+        crate::reflect::GeneratedFileDescriptor::new_generated(
+            file_descriptor_proto(),
+            deps,
+            messages,
+            enums,
+        )
+    });
+    crate::reflect::FileDescriptor::new_generated_2(file_descriptor)
 }

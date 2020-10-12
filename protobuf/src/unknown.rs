@@ -8,9 +8,12 @@ use std::slice;
 
 use crate::clear::Clear;
 
+use crate::reflect::ReflectValueRef;
+use crate::rt;
 use crate::wire_format;
 use crate::zigzag::encode_zig_zag_32;
 use crate::zigzag::encode_zig_zag_64;
+use crate::CodedOutputStream;
 
 /// Unknown value.
 ///
@@ -43,6 +46,16 @@ impl UnknownValue {
         }
     }
 
+    /// Construct unknown value from `int64` value.
+    pub fn int32(i: i32) -> UnknownValue {
+        UnknownValue::int64(i as i64)
+    }
+
+    /// Construct unknown value from `int64` value.
+    pub fn int64(i: i64) -> UnknownValue {
+        UnknownValue::Varint(i as u64)
+    }
+
     /// Construct unknown value from `sint32` value.
     pub fn sint32(i: i32) -> UnknownValue {
         UnknownValue::Varint(encode_zig_zag_32(i) as u64)
@@ -51,6 +64,26 @@ impl UnknownValue {
     /// Construct unknown value from `sint64` value.
     pub fn sint64(i: i64) -> UnknownValue {
         UnknownValue::Varint(encode_zig_zag_64(i))
+    }
+
+    /// Construct unknown value from `float` value.
+    pub fn float(f: f32) -> UnknownValue {
+        UnknownValue::Fixed32(f.to_bits())
+    }
+
+    /// Construct unknown value from `double` value.
+    pub fn double(f: f64) -> UnknownValue {
+        UnknownValue::Fixed64(f.to_bits())
+    }
+
+    /// Construct unknown value from `sfixed32` value.
+    pub fn sfixed32(i: i32) -> UnknownValue {
+        UnknownValue::Fixed32(i as u32)
+    }
+
+    /// Construct unknown value from `sfixed64` value.
+    pub fn sfixed64(i: i64) -> UnknownValue {
+        UnknownValue::Fixed64(i as u64)
     }
 }
 
@@ -76,6 +109,15 @@ impl<'o> UnknownValueRef<'o> {
             UnknownValueRef::Fixed64(_) => wire_format::WireTypeFixed64,
             UnknownValueRef::Varint(_) => wire_format::WireTypeVarint,
             UnknownValueRef::LengthDelimited(_) => wire_format::WireTypeLengthDelimited,
+        }
+    }
+
+    pub(crate) fn to_reflect_value_ref(&'o self) -> ReflectValueRef<'o> {
+        match self {
+            UnknownValueRef::Fixed32(v) => ReflectValueRef::U32(*v),
+            UnknownValueRef::Fixed64(v) => ReflectValueRef::U64(*v),
+            UnknownValueRef::Varint(v) => ReflectValueRef::U64(*v),
+            UnknownValueRef::LengthDelimited(v) => ReflectValueRef::Bytes(v),
         }
     }
 }
@@ -176,11 +218,6 @@ pub struct UnknownFields {
     fields: Option<Box<HashMap<u32, UnknownValues>>>,
 }
 
-impl UnknownFields {
-    /// Field initializer.
-    pub const INIT: UnknownFields = UnknownFields { fields: None };
-}
-
 /// Very simple hash implementation of `Hash` for `UnknownFields`.
 /// Since map is unordered, we cannot put entry hashes into hasher,
 /// instead we summing hashes of entries.
@@ -203,8 +240,8 @@ impl Hash for UnknownFields {
 
 impl UnknownFields {
     /// Empty unknown fields
-    pub fn new() -> UnknownFields {
-        Default::default()
+    pub const fn new() -> UnknownFields {
+        UnknownFields { fields: None }
     }
 
     fn init_map(&mut self) {
@@ -249,6 +286,13 @@ impl UnknownFields {
         self.find_field(&number).add_value(value);
     }
 
+    /// Remove unknown field by number
+    pub fn remove(&mut self, field_number: u32) {
+        if let Some(fields) = &mut self.fields {
+            fields.remove(&field_number);
+        }
+    }
+
     /// Iterate over all unknowns
     pub fn iter<'s>(&'s self) -> UnknownFieldsIter<'s> {
         UnknownFieldsIter {
@@ -262,6 +306,16 @@ impl UnknownFields {
             Some(ref map) => map.get(&field_number),
             None => None,
         }
+    }
+
+    #[doc(hidden)]
+    pub fn write_to_bytes(&self) -> Vec<u8> {
+        let mut r = Vec::with_capacity(rt::unknown_fields_size(self) as usize);
+        let mut stream = CodedOutputStream::vec(&mut r);
+        stream.write_unknown_fields(self).unwrap();
+        stream.flush().unwrap();
+        drop(stream);
+        r
     }
 }
 

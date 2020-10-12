@@ -10,6 +10,7 @@ use crate::model::*;
 use protobuf::text_format::lexer::int;
 use protobuf::text_format::lexer::Tokenizer;
 use protobuf::text_format::lexer::TokenizerError;
+use protobuf_codegen::ProtobufIdent;
 
 /// Basic information about parsing error.
 #[derive(Debug)]
@@ -26,6 +27,9 @@ pub enum ParserError {
     MapFieldNotAllowed,
     StrLitDecodeError(StrLitDecodeError),
     LexerError(LexerError),
+    OneOfInGroup,
+    OneOfInOneOf,
+    OneOfInExtend,
 }
 
 impl From<TokenizerError> for ParserError {
@@ -203,13 +207,14 @@ impl MessageBodyParseMode {
 
 #[derive(Default)]
 pub struct MessageBody {
-    pub fields: Vec<Field>,
-    pub oneofs: Vec<OneOf>,
+    pub fields: Vec<WithLoc<FieldOrOneOf>>,
     pub reserved_nums: Vec<FieldNumberRange>,
     pub reserved_names: Vec<String>,
-    pub messages: Vec<Message>,
+    pub messages: Vec<WithLoc<Message>>,
     pub enums: Vec<Enumeration>,
     pub options: Vec<ProtobufOption>,
+    pub extension_ranges: Vec<FieldNumberRange>,
+    pub extensions: Vec<WithLoc<Extension>>,
 }
 
 trait NumLitEx {
@@ -310,12 +315,35 @@ impl<'a> Parser<'a> {
             .next_token_check_map(|token| Ok(token.to_num_lit()?))
     }
 
+    fn next_message_constant(&mut self) -> ParserResult<ProtobufConstantMessage> {
+        let mut r = ProtobufConstantMessage::default();
+        self.tokenizer.next_symbol_expect_eq('{')?;
+        while !self.tokenizer.lookahead_is_symbol('}')? {
+            if self.tokenizer.next_symbol_if_eq('[')? {
+                let n = self.next_full_ident()?;
+                self.tokenizer.next_symbol_expect_eq(']')?;
+                let v = self.next_message_constant()?;
+                r.extensions.insert(n, v);
+            } else {
+                let n = self.tokenizer.next_ident()?;
+                let v = if self.tokenizer.next_symbol_if_eq(':')? {
+                    self.next_constant()?
+                } else {
+                    ProtobufConstant::Message(self.next_message_constant()?)
+                };
+                r.fields.insert(n, v);
+            }
+        }
+        self.tokenizer.next_symbol_expect_eq('}')?;
+        Ok(r)
+    }
+
     // constant = fullIdent | ( [ "-" | "+" ] intLit ) | ( [ "-" | "+" ] floatLit ) |
     //            strLit | boolLit
     fn next_constant(&mut self) -> ParserResult<ProtobufConstant> {
         // https://github.com/google/protobuf/blob/a21f225824e994ebd35e8447382ea4e0cd165b3c/src/google/protobuf/unittest_custom_options.proto#L350
         if self.tokenizer.lookahead_is_symbol('{')? {
-            return Ok(ProtobufConstant::BracedExpr(self.next_braces()?));
+            return Ok(ProtobufConstant::Message(self.next_message_constant()?));
         }
 
         if let Some(b) = self.next_bool_lit_opt()? {
@@ -382,12 +410,18 @@ impl<'a> Parser<'a> {
     // Import Statement
 
     // import = "import" [ "weak" | "public" ] strLit ";"
-    fn next_import_opt(&mut self) -> ParserResult<Option<String>> {
+    fn next_import_opt(&mut self) -> ParserResult<Option<Import>> {
         if self.tokenizer.next_ident_if_eq("import")? {
-            self.tokenizer.next_ident_if_in(&["weak", "public"])?;
-            let import_path = self.tokenizer.next_str_lit()?.decode_utf8()?;
+            let vis = if self.tokenizer.next_ident_if_eq("weak")? {
+                ImportVis::Weak
+            } else if self.tokenizer.next_ident_if_eq("public")? {
+                ImportVis::Public
+            } else {
+                ImportVis::Default
+            };
+            let path = self.tokenizer.next_str_lit()?.decode_utf8()?;
             self.tokenizer.next_symbol_expect_eq(';')?;
-            Ok(Some(import_path))
+            Ok(Some(Import { path, vis }))
         } else {
             Ok(None)
         }
@@ -408,29 +442,30 @@ impl<'a> Parser<'a> {
 
     // Option
 
-    fn next_ident_or_braced(&mut self) -> ParserResult<String> {
-        let mut ident_or_braced = String::new();
+    fn next_ident(&mut self) -> ParserResult<ProtobufIdent> {
+        Ok(ProtobufIdent::from(self.tokenizer.next_ident()?))
+    }
+
+    fn next_option_name_component(&mut self) -> ParserResult<ProtobufOptionNameComponent> {
         if self.tokenizer.next_symbol_if_eq('(')? {
-            ident_or_braced.push('(');
-            ident_or_braced.push_str(&self.next_full_ident()?);
+            let mut ext = String::new();
+            ext.push_str(&self.next_full_ident()?);
             self.tokenizer.next_symbol_expect_eq(')')?;
-            ident_or_braced.push(')');
+            Ok(ProtobufOptionNameComponent::Ext(ext))
         } else {
-            ident_or_braced.push_str(&self.tokenizer.next_ident()?);
+            Ok(ProtobufOptionNameComponent::Direct(self.next_ident()?))
         }
-        Ok(ident_or_braced)
     }
 
     // https://github.com/google/protobuf/issues/4563
     // optionName = ( ident | "(" fullIdent ")" ) { "." ident }
-    fn next_option_name(&mut self) -> ParserResult<String> {
-        let mut option_name = String::new();
-        option_name.push_str(&self.next_ident_or_braced()?);
+    fn next_option_name(&mut self) -> ParserResult<ProtobufOptionName> {
+        let mut components = Vec::new();
+        components.push(self.next_option_name_component()?);
         while self.tokenizer.next_symbol_if_eq('.')? {
-            option_name.push('.');
-            option_name.push_str(&self.next_ident_or_braced()?);
+            components.push(self.next_option_name_component()?);
         }
-        Ok(option_name)
+        Ok(ProtobufOptionName { components })
     }
 
     // option = "option" optionName  "=" constant ";"
@@ -507,6 +542,7 @@ impl<'a> Parser<'a> {
     }
 
     fn next_field_number(&mut self) -> ParserResult<i32> {
+        // TODO: not all integers are valid field numbers
         self.tokenizer.next_token_check_map(|token| match token {
             &Token::IntLit(i) => i.to_i32(),
             _ => Err(ParserError::IncorrectInput),
@@ -536,7 +572,8 @@ impl<'a> Parser<'a> {
 
     // field = label type fieldName "=" fieldNumber [ "[" fieldOptions "]" ] ";"
     // group = label "group" groupName "=" fieldNumber messageBody
-    fn next_field(&mut self, mode: MessageBodyParseMode) -> ParserResult<Field> {
+    fn next_field(&mut self, mode: MessageBodyParseMode) -> ParserResult<WithLoc<Field>> {
+        let loc = self.tokenizer.lookahead_loc();
         let rule = if self.clone().tokenizer.next_ident_if_eq("map")? {
             if !mode.map_allowed() {
                 return Err(ParserError::MapFieldNotAllowed);
@@ -557,13 +594,25 @@ impl<'a> Parser<'a> {
 
             let MessageBody { fields, .. } = self.next_message_body(mode)?;
 
-            Ok(Field {
-                name,
+            let fields = fields
+                .into_iter()
+                .map(|fo| match fo.t {
+                    FieldOrOneOf::Field(f) => Ok(f),
+                    FieldOrOneOf::OneOf(_) => Err(ParserError::OneOfInGroup),
+                })
+                .collect::<Result<_, ParserError>>()?;
+
+            let field = Field {
+                // The field name is a lowercased version of the type name
+                // (which has been verified to start with an uppercase letter).
+                // https://git.io/JvxAP
+                name: name.to_ascii_lowercase(),
                 rule,
-                typ: FieldType::Group(fields),
+                typ: FieldType::Group(Group { name: name, fields }),
                 number,
                 options: Vec::new(),
-            })
+            };
+            Ok(WithLoc { t: field, loc })
         } else {
             let typ = self.next_field_type()?;
             let name = self.tokenizer.next_ident()?.to_owned();
@@ -579,13 +628,14 @@ impl<'a> Parser<'a> {
                 self.tokenizer.next_symbol_expect_eq(']')?;
             }
             self.tokenizer.next_symbol_expect_eq(';')?;
-            Ok(Field {
+            let field = Field {
                 name,
                 rule,
                 typ,
                 number,
                 options,
-            })
+            };
+            Ok(WithLoc { t: field, loc })
         }
     }
 
@@ -594,8 +644,21 @@ impl<'a> Parser<'a> {
     fn next_oneof_opt(&mut self) -> ParserResult<Option<OneOf>> {
         if self.tokenizer.next_ident_if_eq("oneof")? {
             let name = self.tokenizer.next_ident()?.to_owned();
-            let MessageBody { fields, .. } = self.next_message_body(MessageBodyParseMode::Oneof)?;
-            Ok(Some(OneOf { name, fields }))
+            let MessageBody {
+                fields, options, ..
+            } = self.next_message_body(MessageBodyParseMode::Oneof)?;
+            let fields = fields
+                .into_iter()
+                .map(|fo| match fo.t {
+                    FieldOrOneOf::Field(f) => Ok(f),
+                    FieldOrOneOf::OneOf(_) => Err(ParserError::OneOfInOneOf),
+                })
+                .collect::<Result<_, ParserError>>()?;
+            Ok(Some(OneOf {
+                name,
+                fields,
+                options,
+            }))
         } else {
             Ok(None)
         }
@@ -627,7 +690,7 @@ impl<'a> Parser<'a> {
         let from = self.next_field_number()?;
         let to = if self.tokenizer.next_ident_if_eq("to")? {
             if self.tokenizer.next_ident_if_eq("max")? {
-                i32::max_value()
+                0x20000000 - 1
             } else {
                 self.next_field_number()?
             }
@@ -687,11 +750,11 @@ impl<'a> Parser<'a> {
     // Enum definition
 
     // enumValueOption = optionName "=" constant
-    fn next_enum_value_option(&mut self) -> ParserResult<()> {
-        self.next_option_name()?;
+    fn next_enum_value_option(&mut self) -> ParserResult<ProtobufOption> {
+        let name = self.next_option_name()?;
         self.tokenizer.next_symbol_expect_eq('=')?;
-        self.next_constant()?;
-        Ok(())
+        let value = self.next_constant()?;
+        Ok(ProtobufOption { name, value })
     }
 
     // https://github.com/google/protobuf/issues/4561
@@ -714,15 +777,20 @@ impl<'a> Parser<'a> {
         let name = self.tokenizer.next_ident()?.to_owned();
         self.tokenizer.next_symbol_expect_eq('=')?;
         let number = self.next_enum_value()?;
+        let mut options = Vec::new();
         if self.tokenizer.next_symbol_if_eq('[')? {
-            self.next_enum_value_option()?;
+            options.push(self.next_enum_value_option()?);
             while self.tokenizer.next_symbol_if_eq(',')? {
-                self.next_enum_value_option()?;
+                options.push(self.next_enum_value_option()?);
             }
             self.tokenizer.next_symbol_expect_eq(']')?;
         }
 
-        Ok(EnumValue { name, number })
+        Ok(EnumValue {
+            name,
+            number,
+            options,
+        })
     }
 
     // enum = "enum" enumName enumBody
@@ -769,6 +837,8 @@ impl<'a> Parser<'a> {
         let mut r = MessageBody::default();
 
         while self.tokenizer.lookahead_if_symbol()? != Some('}') {
+            let loc = self.tokenizer.lookahead_loc();
+
             // emptyStatement
             if self.tokenizer.next_symbol_if_eq(';')? {
                 continue;
@@ -782,15 +852,18 @@ impl<'a> Parser<'a> {
                 }
 
                 if let Some(oneof) = self.next_oneof_opt()? {
-                    r.oneofs.push(oneof);
+                    let one_of = FieldOrOneOf::OneOf(oneof);
+                    r.fields.push(WithLoc { t: one_of, loc });
                     continue;
                 }
 
-                if let Some(_extensions) = self.next_extensions_opt()? {
+                if let Some(extension_ranges) = self.next_extensions_opt()? {
+                    r.extension_ranges.extend(extension_ranges);
                     continue;
                 }
 
-                if let Some(_extend) = self.next_extend_opt()? {
+                if let Some(extensions) = self.next_extend_opt()? {
+                    r.extensions.extend(extensions);
                     continue;
                 }
 
@@ -821,7 +894,8 @@ impl<'a> Parser<'a> {
                 self.tokenizer.next_ident_if_eq_error("option")?;
             }
 
-            r.fields.push(self.next_field(mode)?);
+            let field = FieldOrOneOf::Field(self.next_field(mode)?);
+            r.fields.push(WithLoc { t: field, loc });
         }
 
         self.tokenizer.next_symbol_expect_eq('}')?;
@@ -830,7 +904,9 @@ impl<'a> Parser<'a> {
     }
 
     // message = "message" messageName messageBody
-    fn next_message_opt(&mut self) -> ParserResult<Option<Message>> {
+    fn next_message_opt(&mut self) -> ParserResult<Option<WithLoc<Message>>> {
+        let loc = self.tokenizer.lookahead_loc();
+
         if self.tokenizer.next_ident_if_eq("message")? {
             let name = self.tokenizer.next_ident()?.to_owned();
 
@@ -841,24 +917,27 @@ impl<'a> Parser<'a> {
 
             let MessageBody {
                 fields,
-                oneofs,
                 reserved_nums,
                 reserved_names,
                 messages,
                 enums,
                 options,
+                extensions,
+                extension_ranges,
             } = self.next_message_body(mode)?;
 
-            Ok(Some(Message {
+            let message = Message {
                 name,
                 fields,
-                oneofs,
                 reserved_nums,
                 reserved_names,
                 messages,
                 enums,
                 options,
-            }))
+                extensions,
+                extension_ranges,
+            };
+            Ok(Some(WithLoc { t: message, loc }))
         } else {
             Ok(None)
         }
@@ -867,7 +946,7 @@ impl<'a> Parser<'a> {
     // Extend
 
     // extend = "extend" messageType "{" {field | group | emptyStatement} "}"
-    fn next_extend_opt(&mut self) -> ParserResult<Option<Vec<Extension>>> {
+    fn next_extend_opt(&mut self) -> ParserResult<Option<Vec<WithLoc<Extension>>>> {
         let mut clone = self.clone();
         if clone.tokenizer.next_ident_if_eq("extend")? {
             // According to spec `extend` is only for `proto2`, but it is used in `proto3`
@@ -884,11 +963,22 @@ impl<'a> Parser<'a> {
 
             let MessageBody { fields, .. } = self.next_message_body(mode)?;
 
+            // TODO: is oneof allowed in extend?
+            let fields: Vec<WithLoc<Field>> = fields
+                .into_iter()
+                .map(|fo| match fo.t {
+                    FieldOrOneOf::Field(f) => Ok(f),
+                    FieldOrOneOf::OneOf(_) => Err(ParserError::OneOfInExtend),
+                })
+                .collect::<Result<_, ParserError>>()?;
+
             let extensions = fields
                 .into_iter()
                 .map(|field| {
                     let extendee = extendee.clone();
-                    Extension { extendee, field }
+                    let loc = field.loc;
+                    let extension = Extension { extendee, field };
+                    WithLoc { t: extension, loc }
                 })
                 .collect();
 
@@ -899,24 +989,6 @@ impl<'a> Parser<'a> {
     }
 
     // Service definition
-
-    fn next_braces(&mut self) -> ParserResult<String> {
-        let mut r = String::new();
-        self.tokenizer.next_symbol_expect_eq('{')?;
-        r.push('{');
-        loop {
-            if self.tokenizer.lookahead_if_symbol()? == Some('{') {
-                r.push_str(&self.next_braces()?);
-                continue;
-            }
-            let next = self.tokenizer.next_some()?;
-            r.push_str(&next.format());
-            if let Token::Symbol('}') = next {
-                break;
-            }
-        }
-        Ok(r)
-    }
 
     fn next_options_or_colon(&mut self) -> ParserResult<Vec<ProtobufOption>> {
         let mut options = Vec::new();
@@ -1049,8 +1121,8 @@ impl<'a> Parser<'a> {
         let syntax = self.next_syntax()?.unwrap_or(Syntax::Proto2);
         self.syntax = syntax;
 
-        let mut import_paths = Vec::new();
-        let mut package = String::new();
+        let mut imports = Vec::new();
+        let mut package = None;
         let mut messages = Vec::new();
         let mut enums = Vec::new();
         let mut extensions = Vec::new();
@@ -1058,13 +1130,13 @@ impl<'a> Parser<'a> {
         let mut services = Vec::new();
 
         while !self.tokenizer.syntax_eof()? {
-            if let Some(import_path) = self.next_import_opt()? {
-                import_paths.push(import_path);
+            if let Some(import) = self.next_import_opt()? {
+                imports.push(import);
                 continue;
             }
 
             if let Some(next_package) = self.next_package_opt()? {
-                package = next_package.to_owned();
+                package = Some(next_package);
                 continue;
             }
 
@@ -1101,7 +1173,7 @@ impl<'a> Parser<'a> {
         }
 
         Ok(FileDescriptor {
-            import_paths,
+            imports,
             package,
             syntax,
             messages,
@@ -1158,18 +1230,24 @@ mod test {
     fn test_field_default_value_int() {
         let msg = r#"  optional int64 f = 4 [default = 12];  "#;
         let mess = parse(msg, |p| p.next_field(MessageBodyParseMode::MessageProto2));
-        assert_eq!("f", mess.name);
-        assert_eq!("default", mess.options[0].name);
-        assert_eq!("12", mess.options[0].value.format());
+        assert_eq!("f", mess.t.name);
+        assert_eq!(
+            ProtobufOptionName::simple("default"),
+            mess.t.options[0].name
+        );
+        assert_eq!("12", mess.t.options[0].value.format());
     }
 
     #[test]
     fn test_field_default_value_float() {
         let msg = r#"  optional float f = 2 [default = 10.0];  "#;
         let mess = parse(msg, |p| p.next_field(MessageBodyParseMode::MessageProto2));
-        assert_eq!("f", mess.name);
-        assert_eq!("default", mess.options[0].name);
-        assert_eq!("10.0", mess.options[0].value.format());
+        assert_eq!("f", mess.t.name);
+        assert_eq!(
+            ProtobufOptionName::simple("default"),
+            mess.t.options[0].name
+        );
+        assert_eq!("10", mess.t.options[0].value.format());
     }
 
     #[test]
@@ -1189,7 +1267,7 @@ mod test {
     }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!(10, mess.fields.len());
+        assert_eq!(10, mess.t.fields.len());
     }
 
     #[test]
@@ -1227,7 +1305,7 @@ mod test {
 
         assert_eq!(
             vec!["test_import_nested_imported_pb.proto"],
-            desc.import_paths
+            desc.imports.into_iter().map(|i| i.path).collect::<Vec<_>>()
         );
     }
 
@@ -1242,7 +1320,18 @@ mod test {
     }
     "#;
         let desc = parse(msg, |p| p.next_proto());
-        assert_eq!("foo.bar".to_string(), desc.package);
+        assert_eq!(Some("foo.bar".to_string()), desc.package);
+    }
+
+    #[test]
+    fn test_no_package() {
+        let msg = r#"
+    message A {
+        optional int32 a = 1;
+    }
+    "#;
+        let desc = parse(msg, |p| p.next_proto());
+        assert_eq!(None, desc.package);
     }
 
     #[test]
@@ -1257,7 +1346,7 @@ mod test {
     }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!(1, mess.messages.len());
+        assert_eq!(1, mess.t.messages.len());
     }
 
     #[test]
@@ -1268,8 +1357,8 @@ mod test {
     }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!(1, mess.fields.len());
-        match mess.fields[0].typ {
+        assert_eq!(1, mess.t.fields.len());
+        match mess.t.regular_fields_for_test()[0].typ {
             FieldType::Map(ref f) => match &**f {
                 &(FieldType::String, FieldType::Int32) => (),
                 ref f => panic!("Expecting Map<String, Int32> found {:?}", f),
@@ -1292,8 +1381,8 @@ mod test {
     }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!(1, mess.oneofs.len());
-        assert_eq!(3, mess.oneofs[0].fields.len());
+        assert_eq!(1, mess.t.oneofs_for_test().len());
+        assert_eq!(3, mess.t.oneofs_for_test()[0].fields.len());
     }
 
     #[test]
@@ -1313,13 +1402,13 @@ mod test {
                 FieldNumberRange { from: 17, to: 20 },
                 FieldNumberRange { from: 30, to: 30 }
             ],
-            mess.reserved_nums
+            mess.t.reserved_nums
         );
         assert_eq!(
             vec!["foo".to_string(), "bar".to_string()],
-            mess.reserved_names
+            mess.t.reserved_names
         );
-        assert_eq!(2, mess.fields.len());
+        assert_eq!(2, mess.t.fields.len());
     }
 
     #[test]
@@ -1329,8 +1418,16 @@ mod test {
         }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!("default", mess.fields[0].options[0].name);
-        assert_eq!("17", mess.fields[0].options[0].value.format());
+        assert_eq!(
+            ProtobufOptionName::simple("default"),
+            mess.t.regular_fields_for_test()[0].options[0].name
+        );
+        assert_eq!(
+            "17",
+            mess.t.regular_fields_for_test()[0].options[0]
+                .value
+                .format()
+        );
     }
 
     #[test]
@@ -1342,7 +1439,9 @@ mod test {
         let mess = parse_opt(msg, |p| p.next_message_opt());
         assert_eq!(
             r#""ab\nc d\"g\'h\0\"z""#,
-            mess.fields[0].options[0].value.format()
+            mess.t.regular_fields_for_test()[0].options[0]
+                .value
+                .format()
         );
     }
 
@@ -1355,7 +1454,9 @@ mod test {
         let mess = parse_opt(msg, |p| p.next_message_opt());
         assert_eq!(
             r#""ab\nc d\xfeE\"g\'h\0\"z""#,
-            mess.fields[0].options[0].value.format()
+            mess.t.regular_fields_for_test()[0].options[0]
+                .value
+                .format()
         );
     }
 
@@ -1373,14 +1474,14 @@ mod test {
         }"#;
         let mess = parse_opt(msg, |p| p.next_message_opt());
 
-        assert_eq!("Identifier", mess.fields[1].name);
-        if let FieldType::Group(ref group_fields) = mess.fields[1].typ {
-            assert_eq!(2, group_fields.len());
+        assert_eq!("identifier", mess.t.regular_fields_for_test()[1].name);
+        if let FieldType::Group(Group { fields, .. }) = &mess.t.regular_fields_for_test()[1].typ {
+            assert_eq!(2, fields.len());
         } else {
             panic!("expecting group");
         }
 
-        assert_eq!("bbb", mess.fields[2].name);
+        assert_eq!("bbb", mess.t.regular_fields_for_test()[2].name);
     }
 
     #[test]
@@ -1429,9 +1530,12 @@ mod test {
 
         let fd = FileDescriptor::parse(proto).expect("fd");
         assert_eq!(3, fd.extensions.len());
-        assert_eq!("google.protobuf.FileOptions", fd.extensions[0].extendee);
-        assert_eq!("google.protobuf.FileOptions", fd.extensions[1].extendee);
-        assert_eq!("google.protobuf.MessageOptions", fd.extensions[2].extendee);
-        assert_eq!(17003, fd.extensions[2].field.number);
+        assert_eq!("google.protobuf.FileOptions", fd.extensions[0].t.extendee);
+        assert_eq!("google.protobuf.FileOptions", fd.extensions[1].t.extendee);
+        assert_eq!(
+            "google.protobuf.MessageOptions",
+            fd.extensions[2].t.extendee
+        );
+        assert_eq!(17003, fd.extensions[2].t.field.t.number);
     }
 }

@@ -1,11 +1,7 @@
-use protobuf::prelude::*;
-
-use crate::protobuf_name::ProtobufAbsolutePath;
+use crate::protobuf_abs_path::ProtobufAbsolutePath;
 use crate::rust;
 use protobuf::descriptor::*;
 use protobuf::rt;
-use protobuf::text_format;
-use protobuf::text_format::lexer::float;
 use protobuf::wire_format;
 
 use crate::code_writer::CodeWriter;
@@ -19,6 +15,8 @@ use crate::inside::protobuf_crate_path;
 use crate::map::map_entry;
 use crate::message::RustTypeMessage;
 use crate::oneof::OneofField;
+use crate::rust::EXPR_NONE;
+use crate::rust::EXPR_VEC_NEW;
 use crate::rust_name::RustIdent;
 use crate::rust_name::RustIdentWithPath;
 use crate::rust_name::RustRelativePath;
@@ -30,6 +28,7 @@ use crate::scope::RootScope;
 use crate::scope::WithScope;
 use crate::serde;
 use crate::syntax::Syntax;
+use protobuf::reflect::ReflectValueRef;
 use protobuf::wire_format::WireType;
 
 mod accessor;
@@ -139,17 +138,13 @@ fn field_type_size(field_type: field_descriptor_proto::Type) -> Option<u32> {
     }
 }
 
-/// Optional fields can be stored are `Option<T>`, `SingularField<T>` or `SingularPtrField<T>`.
+/// Optional fields can be stored are `Option<T>` or `SingularPtrField<T>`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum OptionKind {
     /// Field is `Option<T>`
     Option,
-    /// Field is `Option<Box<T>>`
-    OptionBox,
-    /// Field is `SingularField<T>`
-    SingularField,
     /// Field is `SingularPtrField<T>`
-    SingularPtrField,
+    MessageField,
 }
 
 impl OptionKind {
@@ -157,9 +152,7 @@ impl OptionKind {
         let element_type = Box::new(element_type);
         match self {
             OptionKind::Option => RustType::Option(element_type),
-            OptionKind::OptionBox => RustType::Option(Box::new(RustType::Uniq(element_type))),
-            OptionKind::SingularField => RustType::SingularField(element_type),
-            OptionKind::SingularPtrField => RustType::SingularPtrField(element_type),
+            OptionKind::MessageField => RustType::MessageField(element_type),
         }
     }
 
@@ -167,40 +160,24 @@ impl OptionKind {
     fn as_ref_type(&self, element_type: RustType) -> RustType {
         match self {
             OptionKind::Option => RustType::Option(Box::new(element_type.ref_type())),
-            OptionKind::OptionBox => RustType::Option(Box::new(RustType::Ref(Box::new(
-                RustType::Uniq(Box::new(element_type)),
-            )))),
-            OptionKind::SingularField => RustType::SingularField(Box::new(element_type.ref_type())),
-            OptionKind::SingularPtrField => {
-                RustType::SingularPtrField(Box::new(element_type.ref_type()))
-            }
+            OptionKind::MessageField => RustType::MessageField(Box::new(element_type.ref_type())),
         }
     }
 
     fn _as_option_ref(&self, v: &str) -> String {
         match self {
-            OptionKind::OptionBox => format!("{}.as_ref().map(|v| &**v)", v),
-            OptionKind::Option | OptionKind::SingularField | OptionKind::SingularPtrField => {
-                format!("{}.as_ref()", v)
-            }
+            OptionKind::Option | OptionKind::MessageField => format!("{}.as_ref()", v),
         }
     }
 
     fn unwrap_or_else(&self, what: &str, default_value: &str) -> String {
         match self {
-            OptionKind::OptionBox => {
-                format!("{}.map(|v| *v).unwrap_or_else(|| {})", what, default_value)
-            }
             _ => format!("{}.unwrap_or_else(|| {})", what, default_value),
         }
     }
 
     fn unwrap_ref_or_else(&self, what: &str, default_value: &str) -> String {
         match self {
-            OptionKind::OptionBox => format!(
-                "{}.map(|v| v.as_ref()).unwrap_or_else(|| {})",
-                what, default_value
-            ),
             _ => format!("{}.unwrap_or_else(|| {})", what, default_value),
         }
     }
@@ -208,17 +185,8 @@ impl OptionKind {
     fn wrap_value(&self, value: &str, customize: &Customize) -> String {
         match self {
             OptionKind::Option => format!("::std::option::Option::Some({})", value),
-            OptionKind::OptionBox => {
-                // TODO: could reuse allocated memory
-                format!("::std::option::Option::Some(Box::new({}))", value)
-            }
-            OptionKind::SingularField => format!(
-                "{}::SingularField::some({})",
-                protobuf_crate_path(customize),
-                value
-            ),
-            OptionKind::SingularPtrField => format!(
-                "{}::SingularPtrField::some({})",
+            OptionKind::MessageField => format!(
+                "{}::MessageField::some({})",
                 protobuf_crate_path(customize),
                 value
             ),
@@ -261,13 +229,22 @@ impl<'a> SingularField<'a> {
             SingularFieldFlag::WithoutFlag => self.elem.rust_storage_elem_type(reference),
         }
     }
+
+    fn default_value(
+        &self,
+        customize: &Customize,
+        reference: &FileAndMod,
+        const_expr: bool,
+    ) -> String {
+        self.rust_storage_type(reference)
+            .default_value(customize, const_expr)
+    }
 }
 
 /// Repeated field can be `Vec<T>` or `RepeatedField<T>`.
 #[derive(Eq, PartialEq, Copy, Clone)]
 pub enum RepeatedFieldKind {
     Vec,
-    RepeatedField,
 }
 
 impl RepeatedFieldKind {
@@ -275,7 +252,12 @@ impl RepeatedFieldKind {
         let element_type = Box::new(element_type);
         match self {
             RepeatedFieldKind::Vec => RustType::Vec(element_type),
-            RepeatedFieldKind::RepeatedField => RustType::RepeatedField(element_type),
+        }
+    }
+
+    fn default(&self) -> String {
+        match self {
+            RepeatedFieldKind::Vec => EXPR_VEC_NEW.to_owned(),
         }
     }
 }
@@ -284,24 +266,20 @@ impl RepeatedFieldKind {
 pub(crate) struct RepeatedField<'a> {
     pub elem: FieldElem<'a>,
     pub packed: bool,
-    pub repeated_field_vec: bool,
 }
 
 impl<'a> RepeatedField<'a> {
     fn kind(&self) -> RepeatedFieldKind {
-        if !self.elem.is_copy()
-            && self.elem.primitive_type_variant() != PrimitiveTypeVariant::Carllerche
-            && !self.repeated_field_vec
-        {
-            RepeatedFieldKind::RepeatedField
-        } else {
-            RepeatedFieldKind::Vec
-        }
+        RepeatedFieldKind::Vec
     }
 
     fn rust_type(&self, reference: &FileAndMod) -> RustType {
         self.kind()
             .wrap_element(self.elem.rust_storage_elem_type(reference))
+    }
+
+    fn default(&self) -> String {
+        self.kind().default()
     }
 }
 
@@ -322,6 +300,22 @@ pub(crate) enum FieldKind<'a> {
     Map(MapField<'a>),
     // part of oneof
     Oneof(OneofField<'a>),
+}
+
+impl<'a> FieldKind<'a> {
+    pub fn default(
+        &self,
+        customize: &Customize,
+        reference: &FileAndMod,
+        const_expr: bool,
+    ) -> String {
+        match self {
+            FieldKind::Singular(s) => s.default_value(customize, reference, const_expr),
+            FieldKind::Repeated(r) => r.default(),
+            FieldKind::Oneof(..) => EXPR_NONE.to_owned(),
+            FieldKind::Map(..) => panic!("map fields cannot have field value"),
+        }
+    }
 }
 
 #[derive(Clone)]
@@ -370,6 +364,7 @@ impl<'a> FieldElemEnum<'a> {
         RustType::Enum(
             self.rust_name_relative(reference),
             self.default_value.rust_name(),
+            self.default_value.proto.get_proto().get_number(),
         )
     }
 
@@ -377,6 +372,7 @@ impl<'a> FieldElemEnum<'a> {
         RustType::EnumOrUnknown(
             self.rust_name_relative(reference),
             self.default_value.rust_name(),
+            self.default_value.proto.get_proto().get_number(),
         )
     }
 
@@ -484,12 +480,13 @@ fn field_elem<'a>(
     customize: &Customize,
     current_file_path: &RustRelativePath,
 ) -> FieldElem<'a> {
-    if field.field.get_field_type() == field_descriptor_proto::Type::TYPE_GROUP {
+    if field.field.get_proto().get_field_type() == field_descriptor_proto::Type::TYPE_GROUP {
         FieldElem::Group
-    } else if field.field.has_type_name() {
-        let message_or_enum = root_scope
-            .find_message_or_enum(&ProtobufAbsolutePath::from(field.field.get_type_name()));
-        match (field.field.get_field_type(), message_or_enum) {
+    } else if field.field.get_proto().has_type_name() {
+        let message_or_enum = root_scope.find_message_or_enum(&ProtobufAbsolutePath::from(
+            field.field.get_proto().get_type_name(),
+        ));
+        match (field.field.get_proto().get_field_type(), message_or_enum) {
             (
                 field_descriptor_proto::Type::TYPE_MESSAGE,
                 MessageOrEnumWithScope::Message(message),
@@ -512,20 +509,23 @@ fn field_elem<'a>(
                 field_descriptor_proto::Type::TYPE_ENUM,
                 MessageOrEnumWithScope::Enum(enum_with_scope),
             ) => {
-                let default_value = if field.field.has_default_value() {
-                    enum_with_scope.value_by_name(field.field.get_default_value())
+                let default_value = if field.field.get_proto().has_default_value() {
+                    enum_with_scope.value_by_name(field.field.get_proto().get_default_value())
                 } else {
                     enum_with_scope.values()[0].clone()
                 };
                 FieldElem::Enum(FieldElemEnum { default_value })
             }
-            _ => panic!("unknown named type: {:?}", field.field.get_field_type()),
+            _ => panic!(
+                "unknown named type: {:?}",
+                field.field.get_proto().get_field_type()
+            ),
         }
-    } else if field.field.has_field_type() {
+    } else if field.field.get_proto().has_field_type() {
         let carllerche_for_bytes = customize.carllerche_bytes_for_bytes.unwrap_or(false);
         let carllerche_for_string = customize.carllerche_bytes_for_string.unwrap_or(false);
 
-        let elem = match field.field.get_field_type() {
+        let elem = match field.field.get_proto().get_field_type() {
             field_descriptor_proto::Type::TYPE_STRING if carllerche_for_string => {
                 FieldElem::Primitive(
                     field_descriptor_proto::Type::TYPE_STRING,
@@ -579,7 +579,7 @@ impl<'a> FieldGen<'a> {
     ) -> FieldGen<'a> {
         let mut customize = customize.clone();
         customize.update_with(&customize_from_rustproto_for_field(
-            field.field.options.get_message(),
+            field.field.get_proto().options.get_or_default(),
         ));
 
         let elem = field_elem(
@@ -593,8 +593,9 @@ impl<'a> FieldGen<'a> {
         let syntax = field.message.scope.file_scope.syntax();
 
         let field_may_have_custom_default_value = syntax == Syntax::PROTO2
-            && field.field.get_label() != field_descriptor_proto::Label::LABEL_REPEATED
-            && field.field.get_field_type() != field_descriptor_proto::Type::TYPE_MESSAGE;
+            && field.field.get_proto().get_label() != field_descriptor_proto::Label::LABEL_REPEATED
+            && field.field.get_proto().get_field_type()
+                != field_descriptor_proto::Type::TYPE_MESSAGE;
 
         let default_expose_field = !field_may_have_custom_default_value;
         let expose_field = customize.expose_fields.unwrap_or(default_expose_field);
@@ -609,54 +610,44 @@ impl<'a> FieldGen<'a> {
         let generate_getter =
             customize.generate_getter.unwrap_or(default_generate_getter) || field.is_oneof();
 
-        let kind = if field.field.get_label() == field_descriptor_proto::Label::LABEL_REPEATED {
-            match (elem, true) {
+        let kind = if field.field.get_proto().get_label()
+            == field_descriptor_proto::Label::LABEL_REPEATED
+        {
+            match elem {
                 // map field
-                (
-                    FieldElem::Message(FieldElemMessage {
-                        message,
-                        map_entry: Some(key_value),
-                        ..
-                    }),
-                    true,
-                ) => FieldKind::Map(MapField {
+                FieldElem::Message(FieldElemMessage {
+                    message,
+                    map_entry: Some(key_value),
+                    ..
+                }) => FieldKind::Map(MapField {
                     message: message.clone(),
                     key: key_value.0.clone(),
                     value: key_value.1.clone(),
                 }),
                 // regular repeated field
-                (elem, _) => FieldKind::Repeated(RepeatedField {
+                elem => FieldKind::Repeated(RepeatedField {
                     elem,
-                    packed: field.field.options.get_message().get_packed(),
-                    repeated_field_vec: customize.repeated_field_vec.unwrap_or(false),
+                    packed: field
+                        .field
+                        .get_proto()
+                        .options
+                        .get_or_default()
+                        .get_packed(),
                 }),
             }
         } else if let Some(oneof) = field.oneof() {
             FieldKind::Oneof(OneofField::parse(&oneof, &field, elem, root_scope))
         } else {
             let flag = if field.message.scope.file_scope.syntax() == Syntax::PROTO3
-                && field.field.get_field_type() != field_descriptor_proto::Type::TYPE_MESSAGE
+                && field.field.get_proto().get_field_type()
+                    != field_descriptor_proto::Type::TYPE_MESSAGE
             {
                 SingularFieldFlag::WithoutFlag
             } else {
-                let required =
-                    field.field.get_label() == field_descriptor_proto::Label::LABEL_REQUIRED;
-                let option_kind = match field.field.get_field_type() {
-                    field_descriptor_proto::Type::TYPE_MESSAGE => {
-                        if customize.singular_field_option_box.unwrap_or(false) {
-                            OptionKind::OptionBox
-                        } else if customize.singular_field_option.unwrap_or(false) {
-                            OptionKind::Option
-                        } else {
-                            OptionKind::SingularPtrField
-                        }
-                    }
-                    field_descriptor_proto::Type::TYPE_STRING
-                    | field_descriptor_proto::Type::TYPE_BYTES
-                        if elem.primitive_type_variant() == PrimitiveTypeVariant::Default =>
-                    {
-                        OptionKind::SingularField
-                    }
+                let required = field.field.get_proto().get_label()
+                    == field_descriptor_proto::Label::LABEL_REQUIRED;
+                let option_kind = match field.field.get_proto().get_field_type() {
+                    field_descriptor_proto::Type::TYPE_MESSAGE => OptionKind::MessageField,
                     _ => OptionKind::Option,
                 };
 
@@ -672,8 +663,8 @@ impl<'a> FieldGen<'a> {
             root_scope,
             syntax: field.message.get_scope().file_scope.syntax(),
             rust_name: rust_field_name_for_protobuf_field_name(&field.field.get_name()),
-            proto_type: field.field.get_field_type(),
-            wire_type: field_type_wire_type(field.field.get_field_type()),
+            proto_type: field.field.get_proto().get_field_type(),
+            wire_type: field_type_wire_type(field.field.get_proto().get_field_type()),
             serde_name: field.field.get_name().to_string(),
             proto_field: field,
             kind,
@@ -859,19 +850,7 @@ impl<'a> FieldGen<'a> {
         type_is_copy(self.proto_type)
     }
 
-    fn defaut_value_from_proto_float(&self) -> String {
-        assert!(self.proto_field.field.has_default_value());
-
-        let type_name = match self.proto_type {
-            field_descriptor_proto::Type::TYPE_FLOAT => "f32",
-            field_descriptor_proto::Type::TYPE_DOUBLE => "f64",
-            _ => unreachable!(),
-        };
-        let proto_default = self.proto_field.field.get_default_value();
-
-        let f = float::parse_protobuf_float(proto_default)
-            .expect(&format!("failed to parse float: {:?}", proto_default));
-
+    fn defaut_value_from_proto_float(f: f64, type_name: &str) -> String {
         if f.is_nan() {
             format!("::std::{}::NAN", type_name)
         } else if f.is_infinite() {
@@ -886,51 +865,30 @@ impl<'a> FieldGen<'a> {
     }
 
     fn singular_or_oneof_default_value_from_proto(&self, elem: &FieldElem) -> Option<String> {
-        if let &FieldElem::Enum(ref e) = elem {
-            Some(format!(
-                "{}",
-                e.default_value_rust_expr(&self.get_file_and_mod())
-            ))
-        } else if self.proto_field.field.has_default_value() {
-            let proto_default = self.proto_field.field.get_default_value();
-            Some(match self.proto_type {
-                // For numeric types, contains the original text representation of the value
-                field_descriptor_proto::Type::TYPE_DOUBLE
-                | field_descriptor_proto::Type::TYPE_FLOAT => self.defaut_value_from_proto_float(),
-                field_descriptor_proto::Type::TYPE_INT32
-                | field_descriptor_proto::Type::TYPE_SINT32
-                | field_descriptor_proto::Type::TYPE_SFIXED32 => format!("{}i32", proto_default),
-                field_descriptor_proto::Type::TYPE_UINT32
-                | field_descriptor_proto::Type::TYPE_FIXED32 => format!("{}u32", proto_default),
-                field_descriptor_proto::Type::TYPE_INT64
-                | field_descriptor_proto::Type::TYPE_SINT64
-                | field_descriptor_proto::Type::TYPE_SFIXED64 => format!("{}i64", proto_default),
-                field_descriptor_proto::Type::TYPE_UINT64
-                | field_descriptor_proto::Type::TYPE_FIXED64 => format!("{}u64", proto_default),
-
-                // For booleans, "true" or "false"
-                field_descriptor_proto::Type::TYPE_BOOL => format!("{}", proto_default),
-                // For strings, contains the default text contents (not escaped in any way)
-                field_descriptor_proto::Type::TYPE_STRING => rust::quote_escape_str(proto_default),
-                // For bytes, contains the C escaped value.  All bytes >= 128 are escaped
-                field_descriptor_proto::Type::TYPE_BYTES => rust::quote_escape_bytes(
-                    &text_format::lexer::StrLit {
-                        escaped: proto_default.to_owned(),
-                    }
-                    .decode_bytes()
-                    .expect("decoded bytes default value"),
-                ),
-                // TODO: resolve outer message prefix
-                field_descriptor_proto::Type::TYPE_GROUP
-                | field_descriptor_proto::Type::TYPE_ENUM => unreachable!(),
-                field_descriptor_proto::Type::TYPE_MESSAGE => panic!(
-                    "default value is not implemented for type: {:?}",
-                    self.proto_type
-                ),
-            })
-        } else {
-            None
+        if !self.proto_field.field.get_proto().has_default_value() {
+            return None;
         }
+
+        let default_value = self.proto_field.field.singular_default_value();
+        Some(match default_value {
+            ReflectValueRef::Bool(b) => format!("{}", b),
+            ReflectValueRef::I32(v) => format!("{}i32", v),
+            ReflectValueRef::I64(v) => format!("{}i64", v),
+            ReflectValueRef::U32(v) => format!("{}u32", v),
+            ReflectValueRef::U64(v) => format!("{}u64", v),
+            ReflectValueRef::String(v) => rust::quote_escape_str(v),
+            ReflectValueRef::Bytes(v) => rust::quote_escape_bytes(v),
+            ReflectValueRef::F32(v) => Self::defaut_value_from_proto_float(v as f64, "f32"),
+            ReflectValueRef::F64(v) => Self::defaut_value_from_proto_float(v as f64, "f64"),
+            ReflectValueRef::Enum(_e, _v) => {
+                if let &FieldElem::Enum(ref e) = elem {
+                    format!("{}", e.default_value_rust_expr(&self.get_file_and_mod()))
+                } else {
+                    unreachable!()
+                }
+            }
+            t => panic!("default value is not implemented for type: {:?}", t),
+        })
     }
 
     fn default_value_from_proto(&self) -> Option<String> {
@@ -969,9 +927,12 @@ impl<'a> FieldGen<'a> {
     // default value to be returned from fn get_xxx
     fn get_xxx_default_value_rust(&self) -> String {
         match self.kind {
-            FieldKind::Singular(..) | FieldKind::Oneof(..) => self
-                .default_value_from_proto()
-                .unwrap_or_else(|| self.get_xxx_return_type().default_value(&self.customize)),
+            FieldKind::Singular(..) | FieldKind::Oneof(..) => {
+                self.default_value_from_proto().unwrap_or_else(|| {
+                    self.get_xxx_return_type()
+                        .default_value(&self.customize, false)
+                })
+            }
             _ => unreachable!(),
         }
     }
@@ -989,7 +950,7 @@ impl<'a> FieldGen<'a> {
                                 .scope
                                 .get_file_and_mod(self.customize.clone()),
                         )
-                        .default_value_typed(&self.customize)
+                        .default_value_typed(&self.customize, false)
                 })
             }
             _ => unreachable!(),
@@ -997,7 +958,7 @@ impl<'a> FieldGen<'a> {
     }
 
     pub fn reconstruct_def(&self) -> String {
-        let prefix = match (self.proto_field.field.get_label(), self.syntax) {
+        let prefix = match (self.proto_field.field.get_proto().get_label(), self.syntax) {
             (field_descriptor_proto::Label::LABEL_REPEATED, _) => "repeated ",
             (_, Syntax::PROTO3) => "",
             (field_descriptor_proto::Label::LABEL_OPTIONAL, _) => "optional ",
@@ -1006,7 +967,7 @@ impl<'a> FieldGen<'a> {
         format!(
             "{}{} {} = {}",
             prefix,
-            field_type_protobuf_name(&self.proto_field.field),
+            field_type_protobuf_name(self.proto_field.field.get_proto()),
             self.proto_field.name(),
             self.proto_field.number()
         )
@@ -1238,9 +1199,6 @@ impl<'a> FieldGen<'a> {
 
         match self.kind {
             FieldKind::Map(..) => tags.push("default".to_string()),
-            FieldKind::Repeated(..) if self.customize.repeated_field_vec == Some(true) => {
-                tags.push("default".to_string());
-            }
             _ => {}
         }
 
@@ -1317,7 +1275,7 @@ impl<'a> FieldGen<'a> {
                                     .scope
                                     .get_file_and_mod(self.customize.clone())
                             )
-                            .default_value(&self.customize)
+                            .default_value(&self.customize, false)
                         ),
                         |w| {
                             let v = RustValueTyped {
@@ -1497,7 +1455,7 @@ impl<'a> FieldGen<'a> {
                 // with default value
                 match singular.flag {
                     SingularFieldFlag::WithFlag { option_kind, .. } => match option_kind {
-                        OptionKind::SingularField | OptionKind::SingularPtrField => {
+                        OptionKind::MessageField => {
                             let self_field = self.self_field();
                             w.write_line(&format!("{}.set_default();", self_field));
                         }
@@ -1514,7 +1472,7 @@ impl<'a> FieldGen<'a> {
                                             .scope
                                             .get_file_and_mod(self.customize.clone()),
                                     )
-                                    .default_value_typed(&self.customize)
+                                    .default_value_typed(&self.customize, false)
                                     .into_type(
                                         singular.elem.rust_storage_elem_type(
                                             &self
@@ -1615,15 +1573,8 @@ impl<'a> FieldGen<'a> {
         let into_what_suffix = match *r {
             RepeatedField {
                 elem: FieldElem::Message(..),
-                repeated_field_vec,
                 ..
-            } => {
-                if repeated_field_vec {
-                    "_vec"
-                } else {
-                    "_repeated_field"
-                }
-            }
+            } => "_vec",
             _ => "",
         };
         w.write_line(&format!(
@@ -1651,11 +1602,9 @@ impl<'a> FieldGen<'a> {
                 ..
             } => "singular_proto3",
         };
-        let type_params = match s.elem {
-            FieldElem::Message(ref m, ..) => {
-                format!("::<{}, _>", m.rust_name_relative(&self.get_file_and_mod()))
-            }
-            _ => "".to_owned(),
+        let suffix = match s.elem {
+            FieldElem::Message(..) => "into_field",
+            _ => "into",
         };
         let carllerche = match s.elem.primitive_type_variant() {
             PrimitiveTypeVariant::Carllerche => "carllerche_",
@@ -1663,12 +1612,12 @@ impl<'a> FieldGen<'a> {
         };
         let type_name_for_fn = protobuf_name(self.proto_type);
         w.write_line(&format!(
-            "{}::rt::read_{}_{}{}_into{}(wire_type, is, &mut self.{})?;",
+            "{}::rt::read_{}_{}{}_{}(wire_type, is, &mut self.{})?;",
             protobuf_crate_path(&self.customize),
             singular_or_proto3,
             carllerche,
             type_name_for_fn,
-            type_params,
+            suffix,
             self.rust_name,
         ));
     }
@@ -1771,9 +1720,7 @@ impl<'a> FieldGen<'a> {
         w: &mut CodeWriter,
     ) {
         match s.elem {
-            FieldElem::Message(..)
-            | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_STRING, ..)
-            | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_BYTES, ..) => {
+            FieldElem::Message(..) => {
                 self.write_merge_from_field_message_string_bytes(w);
             }
             _ => {
@@ -2480,7 +2427,7 @@ impl<'a> FieldGen<'a> {
                             .scope
                             .get_file_and_mod(self.customize.clone()),
                     )
-                    .default_value_typed(&self.customize)
+                    .default_value_typed(&self.customize, false)
                     .into_type(take_xxx_return_type.clone(), &self.customize)
                     .value,
             );
@@ -2506,7 +2453,7 @@ impl<'a> FieldGen<'a> {
                                         .scope
                                         .get_file_and_mod(self.customize.clone()),
                                 )
-                                .default_value(&self.customize),
+                                .default_value(&self.customize, false),
                         ),
                     );
                 } else {
@@ -2530,7 +2477,7 @@ impl<'a> FieldGen<'a> {
                         .scope
                         .get_file_and_mod(self.customize.clone())
                 )
-                .default_value(&self.customize)
+                .default_value(&self.customize, false)
             )),
         }
     }
@@ -2557,7 +2504,7 @@ impl<'a> FieldGen<'a> {
                     w.write_line(&format!(
                         "::std::mem::replace(&mut self.{}, {})",
                         self.rust_name,
-                        take_xxx_return_type.default_value(&self.customize)
+                        take_xxx_return_type.default_value(&self.customize, false)
                     ));
                 }
             },

@@ -16,8 +16,8 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
-#![allow(unused_imports)]
 #![allow(unused_results)]
+#![allow(unused_mut)]
 
 //! Generated file from `google/protobuf/wrappers.proto`
 
@@ -46,6 +46,20 @@ impl<'a> ::std::default::Default for &'a DoubleValue {
 impl DoubleValue {
     pub fn new() -> DoubleValue {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &DoubleValue| { &m.value },
+            |m: &mut DoubleValue| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<DoubleValue>(
+            "DoubleValue",
+            0,
+            fields,
+        )
     }
 }
 
@@ -104,34 +118,21 @@ impl crate::Message for DoubleValue {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> DoubleValue {
         DoubleValue::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeDouble>(
-                "value",
-                |m: &DoubleValue| { &m.value },
-                |m: &mut DoubleValue| { &mut m.value },
-            ));
-            crate::reflect::MessageDescriptor::new::<DoubleValue>(
-                "DoubleValue",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
     }
 
     fn default_instance() -> &'static DoubleValue {
-        static instance: crate::rt::Lazy<DoubleValue> = crate::rt::Lazy::INIT;
-        instance.get(DoubleValue::new)
+        static instance: DoubleValue = DoubleValue {
+            value: 0.,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -149,6 +150,7 @@ impl ::std::fmt::Debug for DoubleValue {
 }
 
 impl crate::reflect::ProtobufValue for DoubleValue {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `float`.
@@ -176,6 +178,20 @@ impl<'a> ::std::default::Default for &'a FloatValue {
 impl FloatValue {
     pub fn new() -> FloatValue {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &FloatValue| { &m.value },
+            |m: &mut FloatValue| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<FloatValue>(
+            "FloatValue",
+            1,
+            fields,
+        )
     }
 }
 
@@ -234,34 +250,21 @@ impl crate::Message for FloatValue {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> FloatValue {
         FloatValue::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeFloat>(
-                "value",
-                |m: &FloatValue| { &m.value },
-                |m: &mut FloatValue| { &mut m.value },
-            ));
-            crate::reflect::MessageDescriptor::new::<FloatValue>(
-                "FloatValue",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 1)
     }
 
     fn default_instance() -> &'static FloatValue {
-        static instance: crate::rt::Lazy<FloatValue> = crate::rt::Lazy::INIT;
-        instance.get(FloatValue::new)
+        static instance: FloatValue = FloatValue {
+            value: 0.,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -279,6 +282,7 @@ impl ::std::fmt::Debug for FloatValue {
 }
 
 impl crate::reflect::ProtobufValue for FloatValue {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `int64`.
@@ -306,6 +310,20 @@ impl<'a> ::std::default::Default for &'a Int64Value {
 impl Int64Value {
     pub fn new() -> Int64Value {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &Int64Value| { &m.value },
+            |m: &mut Int64Value| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<Int64Value>(
+            "Int64Value",
+            2,
+            fields,
+        )
     }
 }
 
@@ -364,34 +382,21 @@ impl crate::Message for Int64Value {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> Int64Value {
         Int64Value::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt64>(
-                "value",
-                |m: &Int64Value| { &m.value },
-                |m: &mut Int64Value| { &mut m.value },
-            ));
-            crate::reflect::MessageDescriptor::new::<Int64Value>(
-                "Int64Value",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
     }
 
     fn default_instance() -> &'static Int64Value {
-        static instance: crate::rt::Lazy<Int64Value> = crate::rt::Lazy::INIT;
-        instance.get(Int64Value::new)
+        static instance: Int64Value = Int64Value {
+            value: 0,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -409,6 +414,7 @@ impl ::std::fmt::Debug for Int64Value {
 }
 
 impl crate::reflect::ProtobufValue for Int64Value {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `uint64`.
@@ -436,6 +442,20 @@ impl<'a> ::std::default::Default for &'a UInt64Value {
 impl UInt64Value {
     pub fn new() -> UInt64Value {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &UInt64Value| { &m.value },
+            |m: &mut UInt64Value| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<UInt64Value>(
+            "UInt64Value",
+            3,
+            fields,
+        )
     }
 }
 
@@ -494,34 +514,21 @@ impl crate::Message for UInt64Value {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> UInt64Value {
         UInt64Value::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeUint64>(
-                "value",
-                |m: &UInt64Value| { &m.value },
-                |m: &mut UInt64Value| { &mut m.value },
-            ));
-            crate::reflect::MessageDescriptor::new::<UInt64Value>(
-                "UInt64Value",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 3)
     }
 
     fn default_instance() -> &'static UInt64Value {
-        static instance: crate::rt::Lazy<UInt64Value> = crate::rt::Lazy::INIT;
-        instance.get(UInt64Value::new)
+        static instance: UInt64Value = UInt64Value {
+            value: 0,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -539,6 +546,7 @@ impl ::std::fmt::Debug for UInt64Value {
 }
 
 impl crate::reflect::ProtobufValue for UInt64Value {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `int32`.
@@ -566,6 +574,20 @@ impl<'a> ::std::default::Default for &'a Int32Value {
 impl Int32Value {
     pub fn new() -> Int32Value {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &Int32Value| { &m.value },
+            |m: &mut Int32Value| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<Int32Value>(
+            "Int32Value",
+            4,
+            fields,
+        )
     }
 }
 
@@ -624,34 +646,21 @@ impl crate::Message for Int32Value {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> Int32Value {
         Int32Value::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
-                "value",
-                |m: &Int32Value| { &m.value },
-                |m: &mut Int32Value| { &mut m.value },
-            ));
-            crate::reflect::MessageDescriptor::new::<Int32Value>(
-                "Int32Value",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 4)
     }
 
     fn default_instance() -> &'static Int32Value {
-        static instance: crate::rt::Lazy<Int32Value> = crate::rt::Lazy::INIT;
-        instance.get(Int32Value::new)
+        static instance: Int32Value = Int32Value {
+            value: 0,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -669,6 +678,7 @@ impl ::std::fmt::Debug for Int32Value {
 }
 
 impl crate::reflect::ProtobufValue for Int32Value {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `uint32`.
@@ -696,6 +706,20 @@ impl<'a> ::std::default::Default for &'a UInt32Value {
 impl UInt32Value {
     pub fn new() -> UInt32Value {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &UInt32Value| { &m.value },
+            |m: &mut UInt32Value| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<UInt32Value>(
+            "UInt32Value",
+            5,
+            fields,
+        )
     }
 }
 
@@ -754,34 +778,21 @@ impl crate::Message for UInt32Value {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> UInt32Value {
         UInt32Value::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeUint32>(
-                "value",
-                |m: &UInt32Value| { &m.value },
-                |m: &mut UInt32Value| { &mut m.value },
-            ));
-            crate::reflect::MessageDescriptor::new::<UInt32Value>(
-                "UInt32Value",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 5)
     }
 
     fn default_instance() -> &'static UInt32Value {
-        static instance: crate::rt::Lazy<UInt32Value> = crate::rt::Lazy::INIT;
-        instance.get(UInt32Value::new)
+        static instance: UInt32Value = UInt32Value {
+            value: 0,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -799,6 +810,7 @@ impl ::std::fmt::Debug for UInt32Value {
 }
 
 impl crate::reflect::ProtobufValue for UInt32Value {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `bool`.
@@ -826,6 +838,20 @@ impl<'a> ::std::default::Default for &'a BoolValue {
 impl BoolValue {
     pub fn new() -> BoolValue {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &BoolValue| { &m.value },
+            |m: &mut BoolValue| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<BoolValue>(
+            "BoolValue",
+            6,
+            fields,
+        )
     }
 }
 
@@ -884,34 +910,21 @@ impl crate::Message for BoolValue {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> BoolValue {
         BoolValue::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
-                "value",
-                |m: &BoolValue| { &m.value },
-                |m: &mut BoolValue| { &mut m.value },
-            ));
-            crate::reflect::MessageDescriptor::new::<BoolValue>(
-                "BoolValue",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 6)
     }
 
     fn default_instance() -> &'static BoolValue {
-        static instance: crate::rt::Lazy<BoolValue> = crate::rt::Lazy::INIT;
-        instance.get(BoolValue::new)
+        static instance: BoolValue = BoolValue {
+            value: false,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -929,6 +942,7 @@ impl ::std::fmt::Debug for BoolValue {
 }
 
 impl crate::reflect::ProtobufValue for BoolValue {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `string`.
@@ -957,6 +971,20 @@ impl StringValue {
     pub fn new() -> StringValue {
         ::std::default::Default::default()
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &StringValue| { &m.value },
+            |m: &mut StringValue| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<StringValue>(
+            "StringValue",
+            7,
+            fields,
+        )
+    }
 }
 
 impl crate::Message for StringValue {
@@ -969,7 +997,10 @@ impl crate::Message for StringValue {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.value)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.value = is.read_string()?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -1011,34 +1042,21 @@ impl crate::Message for StringValue {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> StringValue {
         StringValue::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                "value",
-                |m: &StringValue| { &m.value },
-                |m: &mut StringValue| { &mut m.value },
-            ));
-            crate::reflect::MessageDescriptor::new::<StringValue>(
-                "StringValue",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 7)
     }
 
     fn default_instance() -> &'static StringValue {
-        static instance: crate::rt::Lazy<StringValue> = crate::rt::Lazy::INIT;
-        instance.get(StringValue::new)
+        static instance: StringValue = StringValue {
+            value: ::std::string::String::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -1056,6 +1074,7 @@ impl ::std::fmt::Debug for StringValue {
 }
 
 impl crate::reflect::ProtobufValue for StringValue {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `bytes`.
@@ -1084,6 +1103,20 @@ impl BytesValue {
     pub fn new() -> BytesValue {
         ::std::default::Default::default()
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &BytesValue| { &m.value },
+            |m: &mut BytesValue| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<BytesValue>(
+            "BytesValue",
+            8,
+            fields,
+        )
+    }
 }
 
 impl crate::Message for BytesValue {
@@ -1096,7 +1129,10 @@ impl crate::Message for BytesValue {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_proto3_bytes_into(wire_type, is, &mut self.value)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.value = is.read_bytes()?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -1138,34 +1174,21 @@ impl crate::Message for BytesValue {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> BytesValue {
         BytesValue::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBytes>(
-                "value",
-                |m: &BytesValue| { &m.value },
-                |m: &mut BytesValue| { &mut m.value },
-            ));
-            crate::reflect::MessageDescriptor::new::<BytesValue>(
-                "BytesValue",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 8)
     }
 
     fn default_instance() -> &'static BytesValue {
-        static instance: crate::rt::Lazy<BytesValue> = crate::rt::Lazy::INIT;
-        instance.get(BytesValue::new)
+        static instance: BytesValue = BytesValue {
+            value: ::std::vec::Vec::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -1183,6 +1206,7 @@ impl ::std::fmt::Debug for BytesValue {
 }
 
 impl crate::reflect::ProtobufValue for BytesValue {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
@@ -1197,8 +1221,8 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x05value\x18\x01\x20\x01(\tR\x05value\"\"\n\nBytesValue\x12\x14\n\x05va\
     lue\x18\x01\x20\x01(\x0cR\x05valueB|\n\x13com.google.protobufB\rWrappers\
     ProtoP\x01Z*github.com/golang/protobuf/ptypes/wrappers\xf8\x01\x01\xa2\
-    \x02\x03GPB\xaa\x02\x1eGoogle.Protobuf.WellKnownTypesJ\xae\x1d\n\x06\x12\
-    \x04#\0u\x01\n\xc3\x0e\n\x01\x0c\x12\x03#\0\x122\xc1\x0c\x20Protocol\x20\
+    \x02\x03GPB\xaa\x02\x1eGoogle.Protobuf.WellKnownTypesJ\xc6\x1f\n\x06\x12\
+    \x04(\0z\x01\n\xdb\x10\n\x01\x0c\x12\x03(\0\x122\xc1\x0c\x20Protocol\x20\
     Buffers\x20-\x20Google's\x20data\x20interchange\x20format\n\x20Copyright\
     \x202008\x20Google\x20Inc.\x20\x20All\x20rights\x20reserved.\n\x20https:\
     //developers.google.com/protocol-buffers/\n\n\x20Redistribution\x20and\
@@ -1231,84 +1255,111 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     ETHER\x20IN\x20CONTRACT,\x20STRICT\x20LIABILITY,\x20OR\x20TORT\n\x20(INC\
     LUDING\x20NEGLIGENCE\x20OR\x20OTHERWISE)\x20ARISING\x20IN\x20ANY\x20WAY\
     \x20OUT\x20OF\x20THE\x20USE\n\x20OF\x20THIS\x20SOFTWARE,\x20EVEN\x20IF\
-    \x20ADVISED\x20OF\x20THE\x20POSSIBILITY\x20OF\x20SUCH\x20DAMAGE.\n2\xf4\
-    \x01\x20Wrappers\x20for\x20primitive\x20(non-message)\x20types.\x20These\
+    \x20ADVISED\x20OF\x20THE\x20POSSIBILITY\x20OF\x20SUCH\x20DAMAGE.\n2\x8c\
+    \x04\x20Wrappers\x20for\x20primitive\x20(non-message)\x20types.\x20These\
     \x20types\x20are\x20useful\n\x20for\x20embedding\x20primitives\x20in\x20\
     the\x20`google.protobuf.Any`\x20type\x20and\x20for\x20places\n\x20where\
     \x20we\x20need\x20to\x20distinguish\x20between\x20the\x20absence\x20of\
     \x20a\x20primitive\n\x20typed\x20field\x20and\x20its\x20default\x20value\
-    .\n\n\x08\n\x01\x02\x12\x03%\0\x18\n\x08\n\x01\x08\x12\x03'\0;\n\t\n\x02\
-    \x08%\x12\x03'\0;\n\x08\n\x01\x08\x12\x03(\0\x1f\n\t\n\x02\x08\x1f\x12\
-    \x03(\0\x1f\n\x08\n\x01\x08\x12\x03)\0A\n\t\n\x02\x08\x0b\x12\x03)\0A\n\
-    \x08\n\x01\x08\x12\x03*\0,\n\t\n\x02\x08\x01\x12\x03*\0,\n\x08\n\x01\x08\
-    \x12\x03+\0.\n\t\n\x02\x08\x08\x12\x03+\0.\n\x08\n\x01\x08\x12\x03,\0\"\
-    \n\t\n\x02\x08\n\x12\x03,\0\"\n\x08\n\x01\x08\x12\x03-\0!\n\t\n\x02\x08$\
-    \x12\x03-\0!\ng\n\x02\x04\0\x12\x042\05\x01\x1a[\x20Wrapper\x20message\
+    .\n\n\x20These\x20wrappers\x20have\x20no\x20meaningful\x20use\x20within\
+    \x20repeated\x20fields\x20as\x20they\x20lack\n\x20the\x20ability\x20to\
+    \x20detect\x20presence\x20on\x20individual\x20elements.\n\x20These\x20wr\
+    appers\x20have\x20no\x20meaningful\x20use\x20within\x20a\x20map\x20or\
+    \x20a\x20oneof\x20since\n\x20individual\x20entries\x20of\x20a\x20map\x20\
+    or\x20fields\x20of\x20a\x20oneof\x20can\x20already\x20detect\x20presence\
+    .\n\n\x08\n\x01\x02\x12\x03*\0\x18\n\x08\n\x01\x08\x12\x03,\0;\n\t\n\x02\
+    \x08%\x12\x03,\0;\n\x08\n\x01\x08\x12\x03-\0\x1f\n\t\n\x02\x08\x1f\x12\
+    \x03-\0\x1f\n\x08\n\x01\x08\x12\x03.\0A\n\t\n\x02\x08\x0b\x12\x03.\0A\n\
+    \x08\n\x01\x08\x12\x03/\0,\n\t\n\x02\x08\x01\x12\x03/\0,\n\x08\n\x01\x08\
+    \x12\x030\0.\n\t\n\x02\x08\x08\x12\x030\0.\n\x08\n\x01\x08\x12\x031\0\"\
+    \n\t\n\x02\x08\n\x12\x031\0\"\n\x08\n\x01\x08\x12\x032\0!\n\t\n\x02\x08$\
+    \x12\x032\0!\ng\n\x02\x04\0\x12\x047\0:\x01\x1a[\x20Wrapper\x20message\
     \x20for\x20`double`.\n\n\x20The\x20JSON\x20representation\x20for\x20`Dou\
-    bleValue`\x20is\x20JSON\x20number.\n\n\n\n\x03\x04\0\x01\x12\x032\x08\
-    \x13\n\x20\n\x04\x04\0\x02\0\x12\x034\x02\x13\x1a\x13\x20The\x20double\
-    \x20value.\n\n\x0c\n\x05\x04\0\x02\0\x05\x12\x034\x02\x08\n\x0c\n\x05\
-    \x04\0\x02\0\x01\x12\x034\t\x0e\n\x0c\n\x05\x04\0\x02\0\x03\x12\x034\x11\
-    \x12\ne\n\x02\x04\x01\x12\x04:\0=\x01\x1aY\x20Wrapper\x20message\x20for\
+    bleValue`\x20is\x20JSON\x20number.\n\n\n\n\x03\x04\0\x01\x12\x037\x08\
+    \x13\n\x20\n\x04\x04\0\x02\0\x12\x039\x02\x13\x1a\x13\x20The\x20double\
+    \x20value.\n\n\x0c\n\x05\x04\0\x02\0\x05\x12\x039\x02\x08\n\x0c\n\x05\
+    \x04\0\x02\0\x01\x12\x039\t\x0e\n\x0c\n\x05\x04\0\x02\0\x03\x12\x039\x11\
+    \x12\ne\n\x02\x04\x01\x12\x04?\0B\x01\x1aY\x20Wrapper\x20message\x20for\
     \x20`float`.\n\n\x20The\x20JSON\x20representation\x20for\x20`FloatValue`\
-    \x20is\x20JSON\x20number.\n\n\n\n\x03\x04\x01\x01\x12\x03:\x08\x12\n\x1f\
-    \n\x04\x04\x01\x02\0\x12\x03<\x02\x12\x1a\x12\x20The\x20float\x20value.\
-    \n\n\x0c\n\x05\x04\x01\x02\0\x05\x12\x03<\x02\x07\n\x0c\n\x05\x04\x01\
-    \x02\0\x01\x12\x03<\x08\r\n\x0c\n\x05\x04\x01\x02\0\x03\x12\x03<\x10\x11\
-    \ne\n\x02\x04\x02\x12\x04B\0E\x01\x1aY\x20Wrapper\x20message\x20for\x20`\
+    \x20is\x20JSON\x20number.\n\n\n\n\x03\x04\x01\x01\x12\x03?\x08\x12\n\x1f\
+    \n\x04\x04\x01\x02\0\x12\x03A\x02\x12\x1a\x12\x20The\x20float\x20value.\
+    \n\n\x0c\n\x05\x04\x01\x02\0\x05\x12\x03A\x02\x07\n\x0c\n\x05\x04\x01\
+    \x02\0\x01\x12\x03A\x08\r\n\x0c\n\x05\x04\x01\x02\0\x03\x12\x03A\x10\x11\
+    \ne\n\x02\x04\x02\x12\x04G\0J\x01\x1aY\x20Wrapper\x20message\x20for\x20`\
     int64`.\n\n\x20The\x20JSON\x20representation\x20for\x20`Int64Value`\x20i\
-    s\x20JSON\x20string.\n\n\n\n\x03\x04\x02\x01\x12\x03B\x08\x12\n\x1f\n\
-    \x04\x04\x02\x02\0\x12\x03D\x02\x12\x1a\x12\x20The\x20int64\x20value.\n\
-    \n\x0c\n\x05\x04\x02\x02\0\x05\x12\x03D\x02\x07\n\x0c\n\x05\x04\x02\x02\
-    \0\x01\x12\x03D\x08\r\n\x0c\n\x05\x04\x02\x02\0\x03\x12\x03D\x10\x11\ng\
-    \n\x02\x04\x03\x12\x04J\0M\x01\x1a[\x20Wrapper\x20message\x20for\x20`uin\
+    s\x20JSON\x20string.\n\n\n\n\x03\x04\x02\x01\x12\x03G\x08\x12\n\x1f\n\
+    \x04\x04\x02\x02\0\x12\x03I\x02\x12\x1a\x12\x20The\x20int64\x20value.\n\
+    \n\x0c\n\x05\x04\x02\x02\0\x05\x12\x03I\x02\x07\n\x0c\n\x05\x04\x02\x02\
+    \0\x01\x12\x03I\x08\r\n\x0c\n\x05\x04\x02\x02\0\x03\x12\x03I\x10\x11\ng\
+    \n\x02\x04\x03\x12\x04O\0R\x01\x1a[\x20Wrapper\x20message\x20for\x20`uin\
     t64`.\n\n\x20The\x20JSON\x20representation\x20for\x20`UInt64Value`\x20is\
-    \x20JSON\x20string.\n\n\n\n\x03\x04\x03\x01\x12\x03J\x08\x13\n\x20\n\x04\
-    \x04\x03\x02\0\x12\x03L\x02\x13\x1a\x13\x20The\x20uint64\x20value.\n\n\
-    \x0c\n\x05\x04\x03\x02\0\x05\x12\x03L\x02\x08\n\x0c\n\x05\x04\x03\x02\0\
-    \x01\x12\x03L\t\x0e\n\x0c\n\x05\x04\x03\x02\0\x03\x12\x03L\x11\x12\ne\n\
-    \x02\x04\x04\x12\x04R\0U\x01\x1aY\x20Wrapper\x20message\x20for\x20`int32\
+    \x20JSON\x20string.\n\n\n\n\x03\x04\x03\x01\x12\x03O\x08\x13\n\x20\n\x04\
+    \x04\x03\x02\0\x12\x03Q\x02\x13\x1a\x13\x20The\x20uint64\x20value.\n\n\
+    \x0c\n\x05\x04\x03\x02\0\x05\x12\x03Q\x02\x08\n\x0c\n\x05\x04\x03\x02\0\
+    \x01\x12\x03Q\t\x0e\n\x0c\n\x05\x04\x03\x02\0\x03\x12\x03Q\x11\x12\ne\n\
+    \x02\x04\x04\x12\x04W\0Z\x01\x1aY\x20Wrapper\x20message\x20for\x20`int32\
     `.\n\n\x20The\x20JSON\x20representation\x20for\x20`Int32Value`\x20is\x20\
-    JSON\x20number.\n\n\n\n\x03\x04\x04\x01\x12\x03R\x08\x12\n\x1f\n\x04\x04\
-    \x04\x02\0\x12\x03T\x02\x12\x1a\x12\x20The\x20int32\x20value.\n\n\x0c\n\
-    \x05\x04\x04\x02\0\x05\x12\x03T\x02\x07\n\x0c\n\x05\x04\x04\x02\0\x01\
-    \x12\x03T\x08\r\n\x0c\n\x05\x04\x04\x02\0\x03\x12\x03T\x10\x11\ng\n\x02\
-    \x04\x05\x12\x04Z\0]\x01\x1a[\x20Wrapper\x20message\x20for\x20`uint32`.\
+    JSON\x20number.\n\n\n\n\x03\x04\x04\x01\x12\x03W\x08\x12\n\x1f\n\x04\x04\
+    \x04\x02\0\x12\x03Y\x02\x12\x1a\x12\x20The\x20int32\x20value.\n\n\x0c\n\
+    \x05\x04\x04\x02\0\x05\x12\x03Y\x02\x07\n\x0c\n\x05\x04\x04\x02\0\x01\
+    \x12\x03Y\x08\r\n\x0c\n\x05\x04\x04\x02\0\x03\x12\x03Y\x10\x11\ng\n\x02\
+    \x04\x05\x12\x04_\0b\x01\x1a[\x20Wrapper\x20message\x20for\x20`uint32`.\
     \n\n\x20The\x20JSON\x20representation\x20for\x20`UInt32Value`\x20is\x20J\
-    SON\x20number.\n\n\n\n\x03\x04\x05\x01\x12\x03Z\x08\x13\n\x20\n\x04\x04\
-    \x05\x02\0\x12\x03\\\x02\x13\x1a\x13\x20The\x20uint32\x20value.\n\n\x0c\
-    \n\x05\x04\x05\x02\0\x05\x12\x03\\\x02\x08\n\x0c\n\x05\x04\x05\x02\0\x01\
-    \x12\x03\\\t\x0e\n\x0c\n\x05\x04\x05\x02\0\x03\x12\x03\\\x11\x12\no\n\
-    \x02\x04\x06\x12\x04b\0e\x01\x1ac\x20Wrapper\x20message\x20for\x20`bool`\
-    .\n\n\x20The\x20JSON\x20representation\x20for\x20`BoolValue`\x20is\x20JS\
-    ON\x20`true`\x20and\x20`false`.\n\n\n\n\x03\x04\x06\x01\x12\x03b\x08\x11\
-    \n\x1e\n\x04\x04\x06\x02\0\x12\x03d\x02\x11\x1a\x11\x20The\x20bool\x20va\
-    lue.\n\n\x0c\n\x05\x04\x06\x02\0\x05\x12\x03d\x02\x06\n\x0c\n\x05\x04\
-    \x06\x02\0\x01\x12\x03d\x07\x0c\n\x0c\n\x05\x04\x06\x02\0\x03\x12\x03d\
-    \x0f\x10\ng\n\x02\x04\x07\x12\x04j\0m\x01\x1a[\x20Wrapper\x20message\x20\
-    for\x20`string`.\n\n\x20The\x20JSON\x20representation\x20for\x20`StringV\
-    alue`\x20is\x20JSON\x20string.\n\n\n\n\x03\x04\x07\x01\x12\x03j\x08\x13\
-    \n\x20\n\x04\x04\x07\x02\0\x12\x03l\x02\x13\x1a\x13\x20The\x20string\x20\
-    value.\n\n\x0c\n\x05\x04\x07\x02\0\x05\x12\x03l\x02\x08\n\x0c\n\x05\x04\
-    \x07\x02\0\x01\x12\x03l\t\x0e\n\x0c\n\x05\x04\x07\x02\0\x03\x12\x03l\x11\
-    \x12\ne\n\x02\x04\x08\x12\x04r\0u\x01\x1aY\x20Wrapper\x20message\x20for\
+    SON\x20number.\n\n\n\n\x03\x04\x05\x01\x12\x03_\x08\x13\n\x20\n\x04\x04\
+    \x05\x02\0\x12\x03a\x02\x13\x1a\x13\x20The\x20uint32\x20value.\n\n\x0c\n\
+    \x05\x04\x05\x02\0\x05\x12\x03a\x02\x08\n\x0c\n\x05\x04\x05\x02\0\x01\
+    \x12\x03a\t\x0e\n\x0c\n\x05\x04\x05\x02\0\x03\x12\x03a\x11\x12\no\n\x02\
+    \x04\x06\x12\x04g\0j\x01\x1ac\x20Wrapper\x20message\x20for\x20`bool`.\n\
+    \n\x20The\x20JSON\x20representation\x20for\x20`BoolValue`\x20is\x20JSON\
+    \x20`true`\x20and\x20`false`.\n\n\n\n\x03\x04\x06\x01\x12\x03g\x08\x11\n\
+    \x1e\n\x04\x04\x06\x02\0\x12\x03i\x02\x11\x1a\x11\x20The\x20bool\x20valu\
+    e.\n\n\x0c\n\x05\x04\x06\x02\0\x05\x12\x03i\x02\x06\n\x0c\n\x05\x04\x06\
+    \x02\0\x01\x12\x03i\x07\x0c\n\x0c\n\x05\x04\x06\x02\0\x03\x12\x03i\x0f\
+    \x10\ng\n\x02\x04\x07\x12\x04o\0r\x01\x1a[\x20Wrapper\x20message\x20for\
+    \x20`string`.\n\n\x20The\x20JSON\x20representation\x20for\x20`StringValu\
+    e`\x20is\x20JSON\x20string.\n\n\n\n\x03\x04\x07\x01\x12\x03o\x08\x13\n\
+    \x20\n\x04\x04\x07\x02\0\x12\x03q\x02\x13\x1a\x13\x20The\x20string\x20va\
+    lue.\n\n\x0c\n\x05\x04\x07\x02\0\x05\x12\x03q\x02\x08\n\x0c\n\x05\x04\
+    \x07\x02\0\x01\x12\x03q\t\x0e\n\x0c\n\x05\x04\x07\x02\0\x03\x12\x03q\x11\
+    \x12\ne\n\x02\x04\x08\x12\x04w\0z\x01\x1aY\x20Wrapper\x20message\x20for\
     \x20`bytes`.\n\n\x20The\x20JSON\x20representation\x20for\x20`BytesValue`\
-    \x20is\x20JSON\x20string.\n\n\n\n\x03\x04\x08\x01\x12\x03r\x08\x12\n\x1f\
-    \n\x04\x04\x08\x02\0\x12\x03t\x02\x12\x1a\x12\x20The\x20bytes\x20value.\
-    \n\n\x0c\n\x05\x04\x08\x02\0\x05\x12\x03t\x02\x07\n\x0c\n\x05\x04\x08\
-    \x02\0\x01\x12\x03t\x08\r\n\x0c\n\x05\x04\x08\x02\0\x03\x12\x03t\x10\x11\
+    \x20is\x20JSON\x20string.\n\n\n\n\x03\x04\x08\x01\x12\x03w\x08\x12\n\x1f\
+    \n\x04\x04\x08\x02\0\x12\x03y\x02\x12\x1a\x12\x20The\x20bytes\x20value.\
+    \n\n\x0c\n\x05\x04\x08\x02\0\x05\x12\x03y\x02\x07\n\x0c\n\x05\x04\x08\
+    \x02\0\x01\x12\x03y\x08\r\n\x0c\n\x05\x04\x08\x02\0\x03\x12\x03y\x10\x11\
     b\x06proto3\
 ";
 
-static file_descriptor_proto_lazy: crate::rt::Lazy<crate::descriptor::FileDescriptorProto> = crate::rt::Lazy::INIT;
-
-fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
-    crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
-}
-
 /// `FileDescriptorProto` object which was a source for this generated file
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
+    static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
     file_descriptor_proto_lazy.get(|| {
-        parse_descriptor_proto()
+        crate::Message::parse_from_bytes(file_descriptor_proto_data).unwrap()
     })
+}
+
+/// `FileDescriptor` object which allows dynamic access to files
+pub fn file_descriptor() -> crate::reflect::FileDescriptor {
+    static file_descriptor_lazy: crate::rt::LazyV2<crate::reflect::GeneratedFileDescriptor> = crate::rt::LazyV2::INIT;
+    let file_descriptor = file_descriptor_lazy.get(|| {
+        let mut deps = ::std::vec::Vec::new();
+        let mut messages = ::std::vec::Vec::new();
+        messages.push(DoubleValue::generated_message_descriptor_data());
+        messages.push(FloatValue::generated_message_descriptor_data());
+        messages.push(Int64Value::generated_message_descriptor_data());
+        messages.push(UInt64Value::generated_message_descriptor_data());
+        messages.push(Int32Value::generated_message_descriptor_data());
+        messages.push(UInt32Value::generated_message_descriptor_data());
+        messages.push(BoolValue::generated_message_descriptor_data());
+        messages.push(StringValue::generated_message_descriptor_data());
+        messages.push(BytesValue::generated_message_descriptor_data());
+        let mut enums = ::std::vec::Vec::new();
+        crate::reflect::GeneratedFileDescriptor::new_generated(
+            file_descriptor_proto(),
+            deps,
+            messages,
+            enums,
+        )
+    });
+    crate::reflect::FileDescriptor::new_generated_2(file_descriptor)
 }

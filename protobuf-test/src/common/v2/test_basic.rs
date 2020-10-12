@@ -1,9 +1,8 @@
-use protobuf::*;
-
 use protobuf_test_common::hex::decode_hex;
 use protobuf_test_common::*;
 
 use super::test_basic_pb::*;
+use protobuf::{descriptor, reflect, CodedInputStream, Message, ProtobufEnum};
 
 #[test]
 fn test1() {
@@ -76,7 +75,7 @@ fn test_empty() {
 
 #[test]
 fn test_read_junk() {
-    assert!(parse_from_bytes::<Test1>(&decode_hex("00")).is_err());
+    assert!(Test1::parse_from_bytes(&decode_hex("00")).is_err());
 }
 
 #[test]
@@ -136,14 +135,8 @@ fn test_types_repeated() {
     message.set_sfixed32_field([29i32, -30].to_vec());
     message.set_sfixed64_field([30i64].to_vec());
     message.set_bool_field([true, true].to_vec());
-    message.set_string_field(RepeatedField::from_slice(&[
-        "thirty two".to_string(),
-        "thirty three".to_string(),
-    ]));
-    message.set_bytes_field(RepeatedField::from_slice(&[
-        [33u8, 34].to_vec(),
-        [35u8].to_vec(),
-    ]));
+    message.set_string_field(vec!["thirty two".to_string(), "thirty three".to_string()]);
+    message.set_bytes_field(vec![[33u8, 34].to_vec(), [35u8].to_vec()]);
     message.set_enum_field(
         [
             TestEnumDescriptor::BLUE.into(),
@@ -170,14 +163,8 @@ fn test_types_repeated_packed() {
     message.set_sfixed32_field([29i32, -30].to_vec());
     message.set_sfixed64_field([30i64].to_vec());
     message.set_bool_field([true, true].to_vec());
-    message.set_string_field(RepeatedField::from_slice(&[
-        "thirty two".to_string(),
-        "thirty three".to_string(),
-    ]));
-    message.set_bytes_field(RepeatedField::from_slice(&[
-        [33u8, 34].to_vec(),
-        [35u8].to_vec(),
-    ]));
+    message.set_string_field(vec!["thirty two".to_string(), "thirty three".to_string()]);
+    message.set_bytes_field(vec![[33u8, 34].to_vec(), [35u8].to_vec()]);
     message.set_enum_field(
         [
             TestEnumDescriptor::BLUE.into(),
@@ -203,7 +190,7 @@ fn test_default_instance() {
 
 #[test]
 fn test_message_descriptor() {
-    assert_eq!("TestDescriptor", TestDescriptor::new().descriptor().name());
+    assert_eq!("TestDescriptor", TestDescriptor::descriptor_static().name());
 
     let d = reflect::MessageDescriptor::for_type::<TestDescriptor>();
     assert_eq!("TestDescriptor", d.name());
@@ -222,19 +209,19 @@ fn test_message_descriptor() {
 #[test]
 fn test_enum_descriptor() {
     let d = TestEnumDescriptor::RED.enum_descriptor();
-    assert_eq!("TestEnumDescriptor", d.name());
+    assert_eq!("TestEnumDescriptor", d.get_name());
     assert_eq!(
         "TestEnumDescriptor",
-        reflect::EnumDescriptor::for_type::<TestEnumDescriptor>().name()
+        reflect::EnumDescriptor::for_type::<TestEnumDescriptor>().get_name()
     );
-    assert_eq!("GREEN", d.get_value_by_name("GREEN").unwrap().name());
+    assert_eq!("GREEN", d.get_value_by_name("GREEN").unwrap().get_name());
 }
 
 #[test]
 fn test_invalid_tag() {
     // 01 is invalid tag, because field number for that tag would be 0
     let bytes = decode_hex("01 02 03");
-    let r = parse_from_bytes::<TestInvalidTag>(&bytes);
+    let r = TestInvalidTag::parse_from_bytes(&bytes);
     assert!(r.is_err());
 }
 
@@ -242,7 +229,7 @@ fn test_invalid_tag() {
 fn test_truncated_no_varint() {
     // 08 is valid tag that should be followed by varint
     let bytes = decode_hex("08");
-    let r = parse_from_bytes::<TestTruncated>(&bytes);
+    let r = TestTruncated::parse_from_bytes(&bytes);
     assert!(r.is_err());
 }
 
@@ -251,7 +238,7 @@ fn test_truncated_middle_of_varint() {
     // 08 is field 1, wire type varint
     // 96 is non-final byte of varint
     let bytes = decode_hex("08 96");
-    let r = parse_from_bytes::<TestTruncated>(&bytes);
+    let r = TestTruncated::parse_from_bytes(&bytes);
     assert!(r.is_err());
 }
 
@@ -260,7 +247,7 @@ fn test_truncated_middle_of_length_delimited() {
     // 0a is field 1, wire type length delimited
     // 03 is length 3
     let bytes = decode_hex("0a 03 10");
-    let r = parse_from_bytes::<TestTruncated>(&bytes);
+    let r = TestTruncated::parse_from_bytes(&bytes);
     assert!(r.is_err());
 }
 
@@ -269,7 +256,7 @@ fn test_truncated_repeated_packed() {
     // 12 is field 2, wire type length delimited
     // 04 is length 4
     let bytes = decode_hex("12 04 10 20");
-    let r = parse_from_bytes::<TestTruncated>(&bytes);
+    let r = TestTruncated::parse_from_bytes(&bytes);
     assert!(r.is_err());
 }
 

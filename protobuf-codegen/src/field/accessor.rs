@@ -10,7 +10,6 @@ use crate::field::SingularField;
 use crate::field::SingularFieldFlag;
 use crate::inside::protobuf_crate_path;
 use crate::oneof::OneofField;
-use crate::rust_types_values::ProtobufTypeGen;
 use crate::rust_types_values::RustType;
 use crate::scope::WithScope;
 use protobuf::descriptor::field_descriptor_proto;
@@ -90,28 +89,22 @@ impl FieldGen<'_> {
     }
 
     fn accessor_fn_map(&self, map_field: &MapField) -> AccessorFn {
-        let MapField {
-            ref key, ref value, ..
-        } = map_field;
+        let MapField { .. } = map_field;
         AccessorFn {
-            name: "make_map_accessor".to_owned(),
-            type_params: vec![
-                key.lib_protobuf_type(&self.get_file_and_mod()),
-                value.lib_protobuf_type(&self.get_file_and_mod()),
-            ],
+            name: "make_map_simpler_accessor".to_owned(),
+            type_params: vec![format!("_"), format!("_")],
             callback_params: self.make_accessor_fns_lambda(),
         }
     }
 
     fn accessor_fn_repeated(&self, repeated_field: &RepeatedField) -> AccessorFn {
-        let RepeatedField { ref elem, .. } = repeated_field;
+        let RepeatedField { .. } = repeated_field;
         let name = match repeated_field.kind() {
-            RepeatedFieldKind::Vec => "make_vec_accessor",
-            RepeatedFieldKind::RepeatedField => "make_repeated_field_accessor",
+            RepeatedFieldKind::Vec => "make_vec_simpler_accessor",
         };
         AccessorFn {
             name: name.to_owned(),
-            type_params: vec![elem.lib_protobuf_type(&self.get_file_and_mod())],
+            type_params: vec![format!("_")],
             callback_params: self.make_accessor_fns_lambda(),
         }
     }
@@ -130,8 +123,8 @@ impl FieldGen<'_> {
             }
         } else {
             AccessorFn {
-                name: "make_simple_field_accessor".to_owned(),
-                type_params: vec![elem.lib_protobuf_type(&self.get_file_and_mod())],
+                name: "make_simpler_field_accessor".to_owned(),
+                type_params: vec![format!("_")],
                 callback_params: self.make_accessor_fns_lambda(),
             }
         }
@@ -143,29 +136,23 @@ impl FieldGen<'_> {
         _option_kind: OptionKind,
     ) -> AccessorFn {
         match elem {
-            FieldElem::Message(..) => AccessorFn {
-                name: "make_option_accessor".to_owned(),
-                type_params: vec![
-                    elem.lib_protobuf_type(&self.get_file_and_mod()),
-                    "_".to_owned(),
-                ],
+            FieldElem::Message(m) => AccessorFn {
+                name: "make_message_field_accessor".to_owned(),
+                type_params: vec![format!(
+                    "{}",
+                    m.rust_name_relative(&self.get_file_and_mod())
+                )],
                 callback_params: self.make_accessor_fns_lambda(),
             },
             FieldElem::Primitive(field_descriptor_proto::Type::TYPE_STRING, ..)
             | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_BYTES, ..) => AccessorFn {
-                name: "make_option_get_ref_accessor".to_owned(),
-                type_params: vec![
-                    elem.lib_protobuf_type(&self.get_file_and_mod()),
-                    "_".to_owned(),
-                ],
+                name: "make_option_get_ref_simpler_accessor".to_owned(),
+                type_params: vec!["_".to_owned()],
                 callback_params: self.make_accessor_fns_lambda_get(),
             },
             FieldElem::Primitive(..) => AccessorFn {
-                name: "make_option_get_copy_accessor".to_owned(),
-                type_params: vec![
-                    elem.lib_protobuf_type(&self.get_file_and_mod()),
-                    "_".to_owned(),
-                ],
+                name: "make_option_get_copy_simpler_accessor".to_owned(),
+                type_params: vec!["_".to_owned()],
                 callback_params: self.make_accessor_fns_lambda_get(),
             },
             FieldElem::Enum(ref en) => AccessorFn {
@@ -192,23 +179,18 @@ impl FieldGen<'_> {
             .scope
             .get_file_and_mod(self.customize.clone());
 
-        if let FieldElem::Enum(ref en) = oneof.elem {
+        if let FieldElem::Enum(..) = oneof.elem {
             return AccessorFn {
-                name: "make_oneof_copy_has_get_set_accessors".to_owned(),
-                type_params: vec![ProtobufTypeGen::Enum(
-                    en.rust_name_relative(&self.get_file_and_mod()),
-                )
-                .rust_type(&self.customize)],
+                name: "make_oneof_copy_has_get_set_simpler_accessors".to_owned(),
+                type_params: vec![format!("_")],
                 callback_params: self.make_accessor_fns_has_get_set(),
             };
         }
 
         if elem.is_copy() {
             return AccessorFn {
-                name: "make_oneof_copy_has_get_set_accessors".to_owned(),
-                type_params: vec![elem
-                    .protobuf_type_gen(&self.get_file_and_mod())
-                    .rust_type(&self.customize)],
+                name: "make_oneof_copy_has_get_set_simpler_accessors".to_owned(),
+                type_params: vec![format!("_")],
                 callback_params: self.make_accessor_fns_has_get_set(),
             };
         }
@@ -223,10 +205,8 @@ impl FieldGen<'_> {
 
         // string or bytes
         AccessorFn {
-            name: "make_oneof_deref_has_get_set_accessor".to_owned(),
-            type_params: vec![elem
-                .protobuf_type_gen(&self.get_file_and_mod())
-                .rust_type(&self.customize)],
+            name: "make_oneof_deref_has_get_set_simpler_accessor".to_owned(),
+            type_params: vec![format!("_")],
             callback_params: self.make_accessor_fns_has_get_set(),
         }
     }
@@ -250,7 +230,7 @@ impl FieldGen<'_> {
     pub fn write_descriptor_field(&self, fields_var: &str, w: &mut CodeWriter) {
         let accessor_fn = self.accessor_fn();
         w.write_line(&format!(
-            "{}.push({}::reflect::rt::{}(",
+            "{}.push({}::reflect::rt::v2::{}(",
             fields_var,
             protobuf_crate_path(&self.customize),
             accessor_fn.sig()

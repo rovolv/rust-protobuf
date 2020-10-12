@@ -10,27 +10,10 @@ use crate::bytes::Bytes;
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
 
-use crate::core::parse_from_bytes;
-use crate::core::Message;
 use crate::enums::ProtobufEnum;
 use crate::enums::ProtobufEnumOrUnknown;
 use crate::error::ProtobufResult;
-use crate::reflect::runtime_types::RuntimeTypeBool;
-#[cfg(feature = "bytes")]
-use crate::reflect::runtime_types::RuntimeTypeCarllercheBytes;
-#[cfg(feature = "bytes")]
-use crate::reflect::runtime_types::RuntimeTypeCarllercheChars;
-use crate::reflect::runtime_types::RuntimeTypeEnum;
-use crate::reflect::runtime_types::RuntimeTypeF32;
-use crate::reflect::runtime_types::RuntimeTypeF64;
-use crate::reflect::runtime_types::RuntimeTypeI32;
-use crate::reflect::runtime_types::RuntimeTypeI64;
-use crate::reflect::runtime_types::RuntimeTypeMessage;
-use crate::reflect::runtime_types::RuntimeTypeString;
-use crate::reflect::runtime_types::RuntimeTypeU32;
-use crate::reflect::runtime_types::RuntimeTypeU64;
-use crate::reflect::runtime_types::RuntimeTypeVecU8;
-use crate::reflect::runtime_types::{RuntimeType, RuntimeTypeEnumOrUnknown};
+use crate::message::Message;
 use crate::reflect::type_dynamic::ProtobufTypeDynamicImpl;
 use crate::reflect::ProtobufValue;
 use crate::rt;
@@ -45,8 +28,8 @@ pub use crate::reflect::type_dynamic::ProtobufTypeDynamic;
 
 /// Encapsulate type-specific serialization and conversion logic
 pub trait ProtobufType: Send + Sync + Clone + 'static {
-    /// Rust runtime type for this protobuf type.
-    type RuntimeType: RuntimeType;
+    /// Rust type for this protobuf type.
+    type ProtobufValue: ProtobufValue;
 
     /// Dynamic version of this
     fn dynamic() -> &'static dyn ProtobufTypeDynamic
@@ -60,22 +43,17 @@ pub trait ProtobufType: Send + Sync + Clone + 'static {
     const WIRE_TYPE: WireType;
 
     /// Read a value from `CodedInputStream`
-    fn read(is: &mut CodedInputStream)
-        -> ProtobufResult<<Self::RuntimeType as RuntimeType>::Value>;
+    fn read(is: &mut CodedInputStream) -> ProtobufResult<Self::ProtobufValue>;
 
     /// Take a value from `UnknownValues`
-    fn get_from_unknown(
-        _unknown_values: &UnknownValues,
-    ) -> Option<<Self::RuntimeType as RuntimeType>::Value>;
+    fn get_from_unknown(_unknown_values: &UnknownValues) -> Option<Self::ProtobufValue>;
 
     /// Compute serialized size of a value
-    fn compute_size(value: &<Self::RuntimeType as RuntimeType>::Value) -> u32;
+    fn compute_size(value: &Self::ProtobufValue) -> u32;
 
     /// Compute size adding length prefix if wire type is length delimited
     /// (i. e. string, bytes, message)
-    fn compute_size_with_length_delimiter(
-        value: &<Self::RuntimeType as RuntimeType>::Value,
-    ) -> u32 {
+    fn compute_size_with_length_delimiter(value: &Self::ProtobufValue) -> u32 {
         let size = Self::compute_size(value);
         if Self::WIRE_TYPE == WireType::WireTypeLengthDelimited {
             rt::compute_raw_varint32_size(size) + size
@@ -86,15 +64,13 @@ pub trait ProtobufType: Send + Sync + Clone + 'static {
 
     /// Get previously computed size
     #[inline]
-    fn get_cached_size(value: &<Self::RuntimeType as RuntimeType>::Value) -> u32 {
+    fn get_cached_size(value: &Self::ProtobufValue) -> u32 {
         Self::compute_size(value)
     }
 
     /// Get previously cached size with length prefix
     #[inline]
-    fn get_cached_size_with_length_delimiter(
-        value: &<Self::RuntimeType as RuntimeType>::Value,
-    ) -> u32 {
+    fn get_cached_size_with_length_delimiter(value: &Self::ProtobufValue) -> u32 {
         let size = Self::get_cached_size(value);
         if Self::WIRE_TYPE == WireType::WireTypeLengthDelimited {
             rt::compute_raw_varint32_size(size) + size
@@ -106,7 +82,7 @@ pub trait ProtobufType: Send + Sync + Clone + 'static {
     /// Write a value with previously cached size
     fn write_with_cached_size(
         field_number: u32,
-        value: &<Self::RuntimeType as RuntimeType>::Value,
+        value: &Self::ProtobufValue,
         os: &mut CodedOutputStream,
     ) -> ProtobufResult<()>;
 }
@@ -185,16 +161,12 @@ pub struct ProtobufTypeEnumOrUnknown<E: ProtobufEnum>(marker::PhantomData<E>);
 pub struct ProtobufTypeMessage<M: Message>(marker::PhantomData<M>);
 
 impl ProtobufType for ProtobufTypeFloat {
-    type RuntimeType = RuntimeTypeF32;
+    type ProtobufValue = f32;
 
     const WIRE_TYPE: WireType = WireType::WireTypeFixed32;
 
     fn read(is: &mut CodedInputStream) -> ProtobufResult<f32> {
         is.read_float()
-    }
-
-    fn compute_size(_value: &f32) -> u32 {
-        Self::ENCODED_SIZE
     }
 
     fn get_from_unknown(unknown_values: &UnknownValues) -> Option<f32> {
@@ -204,6 +176,10 @@ impl ProtobufType for ProtobufTypeFloat {
             .rev()
             .next()
             .map(|&bits| f32::from_bits(bits))
+    }
+
+    fn compute_size(_value: &f32) -> u32 {
+        Self::ENCODED_SIZE
     }
 
     fn write_with_cached_size(
@@ -220,7 +196,7 @@ impl ProtobufTypeFixed for ProtobufTypeFloat {
 }
 
 impl ProtobufType for ProtobufTypeDouble {
-    type RuntimeType = RuntimeTypeF64;
+    type ProtobufValue = f64;
 
     const WIRE_TYPE: WireType = WireType::WireTypeFixed64;
 
@@ -255,7 +231,7 @@ impl ProtobufTypeFixed for ProtobufTypeDouble {
 }
 
 impl ProtobufType for ProtobufTypeInt32 {
-    type RuntimeType = RuntimeTypeI32;
+    type ProtobufValue = i32;
 
     const WIRE_TYPE: WireType = WireType::WireTypeVarint;
 
@@ -285,7 +261,7 @@ impl ProtobufType for ProtobufTypeInt32 {
 }
 
 impl ProtobufType for ProtobufTypeInt64 {
-    type RuntimeType = RuntimeTypeI64;
+    type ProtobufValue = i64;
 
     const WIRE_TYPE: WireType = WireType::WireTypeVarint;
 
@@ -311,7 +287,7 @@ impl ProtobufType for ProtobufTypeInt64 {
 }
 
 impl ProtobufType for ProtobufTypeUint32 {
-    type RuntimeType = RuntimeTypeU32;
+    type ProtobufValue = u32;
 
     const WIRE_TYPE: WireType = WireType::WireTypeVarint;
 
@@ -337,7 +313,7 @@ impl ProtobufType for ProtobufTypeUint32 {
 }
 
 impl ProtobufType for ProtobufTypeUint64 {
-    type RuntimeType = RuntimeTypeU64;
+    type ProtobufValue = u64;
 
     const WIRE_TYPE: WireType = WireType::WireTypeVarint;
 
@@ -363,7 +339,7 @@ impl ProtobufType for ProtobufTypeUint64 {
 }
 
 impl ProtobufType for ProtobufTypeSint32 {
-    type RuntimeType = RuntimeTypeI32;
+    type ProtobufValue = i32;
 
     const WIRE_TYPE: WireType = WireType::WireTypeVarint;
 
@@ -389,7 +365,7 @@ impl ProtobufType for ProtobufTypeSint32 {
 }
 
 impl ProtobufType for ProtobufTypeSint64 {
-    type RuntimeType = RuntimeTypeI64;
+    type ProtobufValue = i64;
 
     const WIRE_TYPE: WireType = WireType::WireTypeVarint;
 
@@ -415,7 +391,7 @@ impl ProtobufType for ProtobufTypeSint64 {
 }
 
 impl ProtobufType for ProtobufTypeFixed32 {
-    type RuntimeType = RuntimeTypeU32;
+    type ProtobufValue = u32;
 
     const WIRE_TYPE: WireType = WireType::WireTypeFixed32;
 
@@ -445,7 +421,7 @@ impl ProtobufTypeFixed for ProtobufTypeFixed32 {
 }
 
 impl ProtobufType for ProtobufTypeFixed64 {
-    type RuntimeType = RuntimeTypeU64;
+    type ProtobufValue = u64;
 
     const WIRE_TYPE: WireType = WireType::WireTypeFixed64;
 
@@ -475,7 +451,7 @@ impl ProtobufTypeFixed for ProtobufTypeFixed64 {
 }
 
 impl ProtobufType for ProtobufTypeSfixed32 {
-    type RuntimeType = RuntimeTypeI32;
+    type ProtobufValue = i32;
 
     const WIRE_TYPE: WireType = WireType::WireTypeFixed32;
 
@@ -505,7 +481,7 @@ impl ProtobufTypeFixed for ProtobufTypeSfixed32 {
 }
 
 impl ProtobufType for ProtobufTypeSfixed64 {
-    type RuntimeType = RuntimeTypeI64;
+    type ProtobufValue = i64;
 
     const WIRE_TYPE: WireType = WireType::WireTypeFixed64;
 
@@ -535,7 +511,7 @@ impl ProtobufTypeFixed for ProtobufTypeSfixed64 {
 }
 
 impl ProtobufType for ProtobufTypeBool {
-    type RuntimeType = RuntimeTypeBool;
+    type ProtobufValue = bool;
 
     const WIRE_TYPE: WireType = WireType::WireTypeVarint;
 
@@ -561,7 +537,7 @@ impl ProtobufType for ProtobufTypeBool {
 }
 
 impl ProtobufType for ProtobufTypeString {
-    type RuntimeType = RuntimeTypeString;
+    type ProtobufValue = String;
 
     const WIRE_TYPE: WireType = WireType::WireTypeLengthDelimited;
 
@@ -589,7 +565,7 @@ impl ProtobufType for ProtobufTypeString {
 }
 
 impl ProtobufType for ProtobufTypeBytes {
-    type RuntimeType = RuntimeTypeVecU8;
+    type ProtobufValue = Vec<u8>;
 
     const WIRE_TYPE: WireType = WireType::WireTypeLengthDelimited;
 
@@ -616,7 +592,7 @@ impl ProtobufType for ProtobufTypeBytes {
 
 #[cfg(feature = "bytes")]
 impl ProtobufType for ProtobufTypeCarllercheBytes {
-    type RuntimeType = RuntimeTypeCarllercheBytes;
+    type ProtobufValue = bytes::Bytes;
 
     const WIRE_TYPE: WireType = ProtobufTypeBytes::WIRE_TYPE;
 
@@ -643,7 +619,7 @@ impl ProtobufType for ProtobufTypeCarllercheBytes {
 
 #[cfg(feature = "bytes")]
 impl ProtobufType for ProtobufTypeCarllercheChars {
-    type RuntimeType = RuntimeTypeCarllercheChars;
+    type ProtobufValue = Chars;
 
     const WIRE_TYPE: WireType = ProtobufTypeBytes::WIRE_TYPE;
 
@@ -669,7 +645,7 @@ impl ProtobufType for ProtobufTypeCarllercheChars {
 }
 
 impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnum<E> {
-    type RuntimeType = RuntimeTypeEnum<E>;
+    type ProtobufValue = E;
 
     const WIRE_TYPE: WireType = WireType::WireTypeVarint;
 
@@ -697,7 +673,7 @@ impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufType
 }
 
 impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnumOrUnknown<E> {
-    type RuntimeType = RuntimeTypeEnumOrUnknown<E>;
+    type ProtobufValue = ProtobufEnumOrUnknown<E>;
 
     const WIRE_TYPE: WireType = WireType::WireTypeVarint;
 
@@ -724,7 +700,7 @@ impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufType
 }
 
 impl<M: Message + Clone + ProtobufValue + Default> ProtobufType for ProtobufTypeMessage<M> {
-    type RuntimeType = RuntimeTypeMessage<M>;
+    type ProtobufValue = M;
 
     const WIRE_TYPE: WireType = WireType::WireTypeLengthDelimited;
 
@@ -739,7 +715,7 @@ impl<M: Message + Clone + ProtobufValue + Default> ProtobufType for ProtobufType
             .iter()
             .rev()
             .next()
-            .map(|bytes| parse_from_bytes(bytes).expect("cannot parse message"))
+            .map(|bytes| M::parse_from_bytes(bytes).expect("cannot parse message"))
     }
 
     fn compute_size(value: &M) -> u32 {
@@ -752,7 +728,7 @@ impl<M: Message + Clone + ProtobufValue + Default> ProtobufType for ProtobufType
 
     fn write_with_cached_size(
         field_number: u32,
-        value: &<Self::RuntimeType as RuntimeType>::Value,
+        value: &Self::ProtobufValue,
         os: &mut CodedOutputStream,
     ) -> ProtobufResult<()> {
         os.write_tag(field_number, WireType::WireTypeLengthDelimited)?;

@@ -1,12 +1,14 @@
 // TODO: used by grpc-rust, should move it into separate crate.
 #![doc(hidden)]
 
+use crate::rust_name::RustRelativePath;
 use std::io::Write;
 
 /// Field visibility.
-pub enum Visibility {
+pub(crate) enum Visibility {
     Public,
     Default,
+    Path(RustRelativePath),
 }
 
 pub struct CodeWriter<'a> {
@@ -69,8 +71,8 @@ impl<'a> CodeWriter<'a> {
         self.write_line("#![allow(non_snake_case)]");
         self.write_line("#![allow(non_upper_case_globals)]");
         self.write_line("#![allow(trivial_casts)]");
-        self.write_line("#![allow(unused_imports)]");
         self.write_line("#![allow(unused_results)]");
+        self.write_line("#![allow(unused_mut)]");
     }
 
     pub fn todo(&mut self, message: &str) {
@@ -108,7 +110,7 @@ impl<'a> CodeWriter<'a> {
 
     pub fn lazy_static(&mut self, name: &str, ty: &str, protobuf_crate_path: &str) {
         self.write_line(&format!(
-            "static {}: {}::rt::Lazy<{}> = {}::rt::Lazy::INIT;",
+            "static {}: {}::rt::LazyV2<{}> = {}::rt::LazyV2::INIT;",
             name, protobuf_crate_path, ty, protobuf_crate_path,
         ));
     }
@@ -246,10 +248,11 @@ impl<'a> CodeWriter<'a> {
         self.write_line(&format!("pub {}: {},", name, field_type));
     }
 
-    pub fn field_decl_vis(&mut self, vis: Visibility, name: &str, field_type: &str) {
+    pub(crate) fn field_decl_vis(&mut self, vis: Visibility, name: &str, field_type: &str) {
         match vis {
             Visibility::Public => self.pub_field_decl(name, field_type),
             Visibility::Default => self.field_decl(name, field_type),
+            Visibility::Path(..) => unimplemented!(),
         }
     }
 
@@ -276,6 +279,14 @@ impl<'a> CodeWriter<'a> {
             self.write_line("///");
         } else {
             self.write_line(&format!("/// {}", comment));
+        }
+    }
+
+    pub fn mod_doc(&mut self, comment: &str) {
+        if comment.is_empty() {
+            self.write_line("//!");
+        } else {
+            self.write_line(&format!("//! {}", comment));
         }
     }
 
@@ -312,7 +323,7 @@ impl<'a> CodeWriter<'a> {
     /// let id = MessageDescriptor::for_type::<FileDescriptorProto>()
     ///     .get_field_by_name("message_type")
     ///     .expect("`message_type` must exist")
-    ///     .proto()
+    ///     .get_proto()
     ///     .get_number();
     ///
     /// assert_eq!(id, 4);
@@ -354,14 +365,15 @@ impl<'a> CodeWriter<'a> {
         self.write_line(&format!("fn {};", sig));
     }
 
-    pub fn fn_block<F>(&mut self, public: bool, sig: &str, cb: F)
+    pub(crate) fn fn_block<F>(&mut self, vis: Visibility, sig: &str, cb: F)
     where
         F: FnOnce(&mut CodeWriter),
     {
-        if public {
-            self.expr_block(&format!("pub fn {}", sig), cb);
-        } else {
-            self.expr_block(&format!("fn {}", sig), cb);
+        match vis {
+            Visibility::Public => self.expr_block(&format!("pub fn {}", sig), cb),
+            Visibility::Default => self.expr_block(&format!("fn {}", sig), cb),
+            Visibility::Path(p) if p.is_empty() => self.expr_block(&format!("fn {}", sig), cb),
+            Visibility::Path(p) => self.expr_block(&format!("pub(in {}) fn {}", p, sig), cb),
         }
     }
 
@@ -369,14 +381,14 @@ impl<'a> CodeWriter<'a> {
     where
         F: FnOnce(&mut CodeWriter),
     {
-        self.fn_block(true, sig, cb);
+        self.fn_block(Visibility::Public, sig, cb);
     }
 
     pub fn def_fn<F>(&mut self, sig: &str, cb: F)
     where
         F: Fn(&mut CodeWriter),
     {
-        self.fn_block(false, sig, cb);
+        self.fn_block(Visibility::Default, sig, cb);
     }
 
     pub fn def_mod<F>(&mut self, name: &str, cb: F)

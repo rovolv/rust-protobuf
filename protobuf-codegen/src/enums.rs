@@ -2,18 +2,17 @@ use std::collections::HashSet;
 
 use protobuf::descriptor::*;
 
-use protobuf::prelude::*;
-
 use super::code_writer::*;
 use super::customize::Customize;
-use crate::file_descriptor::file_descriptor_proto_expr;
 use crate::inside::protobuf_crate_path;
+use crate::rust::EXPR_NONE;
 use crate::rust_name::RustIdent;
 use crate::rust_name::RustIdentWithPath;
 use crate::scope::RootScope;
 use crate::scope::WithScope;
 use crate::scope::{EnumValueWithContext, EnumWithScope};
 use crate::serde;
+use crate::FileIndex;
 
 #[derive(Clone)]
 pub(crate) struct EnumValueGen<'a> {
@@ -34,7 +33,7 @@ impl<'a> EnumValueGen<'a> {
 
     // enum value
     fn number(&self) -> i32 {
-        self.value.proto.get_number()
+        self.value.proto.get_proto().get_number()
     }
 
     // name of enum variant in generated rust code
@@ -52,6 +51,7 @@ impl<'a> EnumValueGen<'a> {
 // Codegen for enum definition
 pub(crate) struct EnumGen<'a> {
     enum_with_scope: &'a EnumWithScope<'a>,
+    file_index: &'a FileIndex,
     type_name: RustIdentWithPath,
     lite_runtime: bool,
     customize: Customize,
@@ -62,6 +62,7 @@ pub(crate) struct EnumGen<'a> {
 impl<'a> EnumGen<'a> {
     pub fn new(
         enum_with_scope: &'a EnumWithScope<'a>,
+        file_index: &'a FileIndex,
         customize: &Customize,
         _root_scope: &RootScope,
         path: &'a [i32],
@@ -72,7 +73,7 @@ impl<'a> EnumGen<'a> {
                 .get_scope()
                 .get_file_descriptor()
                 .options
-                .get_message()
+                .get_or_default()
                 .get_optimize_for()
                 == file_options::OptimizeMode::LITE_RUNTIME
         });
@@ -84,14 +85,20 @@ impl<'a> EnumGen<'a> {
             customize: customize.clone(),
             path,
             info,
+            file_index,
         }
+    }
+
+    fn index_in_file(&self) -> u32 {
+        self.file_index.enum_to_index[&self.enum_with_scope.protobuf_name_to_package()]
     }
 
     fn allow_alias(&self) -> bool {
         self.enum_with_scope
             .en
+            .get_proto()
             .options
-            .get_message()
+            .get_or_default()
             .get_allow_alias()
     }
 
@@ -109,7 +116,7 @@ impl<'a> EnumGen<'a> {
         for p in self.enum_with_scope.values() {
             // skipping non-unique enums
             // TODO: should support it
-            if !used.insert(p.proto.get_number()) {
+            if !used.insert(p.proto.get_proto().get_number()) {
                 continue;
             }
             r.push(EnumValueGen::parse(p, &self.type_name));
@@ -131,6 +138,14 @@ impl<'a> EnumGen<'a> {
         self.write_impl_default(w);
         w.write_line("");
         self.write_impl_value(w);
+        w.write_line("");
+        self.write_impl_self(w);
+    }
+
+    fn write_impl_self(&self, w: &mut CodeWriter) {
+        w.impl_self_block(&format!("{}", self.type_name), |w| {
+            self.write_generated_enum_descriptor_data(w);
+        });
     }
 
     fn write_enum(&self, w: &mut CodeWriter) {
@@ -213,7 +228,7 @@ impl<'a> EnumGen<'a> {
                                     value.rust_name_outer()
                                 ));
                             }
-                            w.write_line(&format!("_ => ::std::option::Option::None"));
+                            w.write_line(&format!("_ => {}", EXPR_NONE));
                         });
                     },
                 );
@@ -232,30 +247,52 @@ impl<'a> EnumGen<'a> {
 
                 if !self.lite_runtime {
                     w.write_line("");
-                    let sig = format!(
-                        "enum_descriptor_static() -> &'static {}::reflect::EnumDescriptor",
-                        protobuf_crate_path(&self.customize)
-                    );
-                    w.def_fn(&sig, |w| {
-                        w.lazy_static_decl_get(
-                            "descriptor",
-                            &format!(
-                                "{}::reflect::EnumDescriptor",
-                                protobuf_crate_path(&self.customize)
-                            ),
-                            protobuf_crate_path(&self.customize),
-                            |w| {
-                                w.write_line(&format!(
-                                    "{}::reflect::EnumDescriptor::new::<{}>(\"{}\", {})",
-                                    protobuf_crate_path(&self.customize),
-                                    self.type_name,
-                                    self.enum_with_scope.name_to_package(),
-                                    file_descriptor_proto_expr(&self.enum_with_scope.scope)
-                                ));
-                            },
-                        );
-                    });
+                    self.write_enum_descriptor_static(w);
                 }
+            },
+        );
+    }
+
+    fn write_enum_descriptor_static(&self, w: &mut CodeWriter) {
+        let sig = format!(
+            "enum_descriptor_static() -> {}::reflect::EnumDescriptor",
+            protobuf_crate_path(&self.customize)
+        );
+        w.def_fn(&sig, |w| {
+            w.write_line(&format!(
+                "{}::reflect::EnumDescriptor::new_generated_2({}(), {})",
+                protobuf_crate_path(&self.customize),
+                self.enum_with_scope
+                    .get_scope()
+                    .rust_path_to_file()
+                    .to_reverse()
+                    .append_ident("file_descriptor".into()),
+                self.index_in_file(),
+            ));
+        });
+    }
+
+    fn write_generated_enum_descriptor_data(&self, w: &mut CodeWriter) {
+        let sig = format!(
+            "generated_enum_descriptor_data() -> {}::reflect::GeneratedEnumDescriptorData",
+            protobuf_crate_path(&self.customize)
+        );
+        w.fn_block(
+            Visibility::Path(
+                self.enum_with_scope
+                    .get_scope()
+                    .rust_path_to_file()
+                    .to_reverse(),
+            ),
+            &sig,
+            |w| {
+                w.write_line(&format!(
+                    "{}::reflect::GeneratedEnumDescriptorData::new_2::<{}>(\"{}\", {})",
+                    protobuf_crate_path(&self.customize),
+                    self.type_name,
+                    self.enum_with_scope.name_to_package(),
+                    self.index_in_file(),
+                ));
             },
         );
     }
@@ -267,7 +304,12 @@ impl<'a> EnumGen<'a> {
                 protobuf_crate_path(&self.customize)
             ),
             &format!("{}", self.type_name),
-            |_w| {},
+            |w| {
+                w.write_line(&format!(
+                    "type RuntimeType = {}::reflect::runtime_types::RuntimeTypeEnum<Self>;",
+                    protobuf_crate_path(&self.customize)
+                ));
+            },
         )
     }
 
@@ -302,7 +344,7 @@ impl<'a> EnumGen<'a> {
 
     fn write_impl_default(&self, w: &mut CodeWriter) {
         let first_value = &self.enum_with_scope.values()[0];
-        if first_value.proto.get_number() != 0 {
+        if first_value.proto.get_proto().get_number() != 0 {
             // This warning is emitted only for proto2
             // (because in proto3 first enum variant number is always 0).
             // `Default` implemented unconditionally to simplify certain

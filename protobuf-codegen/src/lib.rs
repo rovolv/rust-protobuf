@@ -13,8 +13,6 @@ use std::path::{Path, PathBuf};
 use protobuf::descriptor::*;
 use protobuf::Message;
 
-use protobuf::prelude::*;
-
 mod amend_io_error_util;
 pub mod case_convert;
 mod compiler_plugin;
@@ -24,12 +22,13 @@ mod extensions;
 mod field;
 mod file;
 pub(crate) mod file_and_mod;
-mod file_descriptor;
 mod inside;
 mod map;
 mod message;
 mod oneof;
-mod protobuf_name;
+mod protobuf_abs_path;
+mod protobuf_ident;
+mod protobuf_rel_path;
 mod rust_name;
 mod rust_types_values;
 mod serde;
@@ -51,15 +50,21 @@ use self::extensions::*;
 use self::message::*;
 #[doc(hidden)]
 pub use amend_io_error_util::amend_io_error;
-use file::proto_path_to_rust_mod;
-use map::map_entry;
 use scope::FileScope;
 use scope::RootScope;
 
+use crate::file::{proto_path_to_fn_file_descriptor, proto_path_to_rust_mod};
 use inside::protobuf_crate_path;
-pub use protobuf_name::ProtobufAbsolutePath;
-pub use protobuf_name::ProtobufIdent;
-pub use protobuf_name::ProtobufRelativePath;
+pub use protobuf_abs_path::ProtobufAbsolutePath;
+pub use protobuf_ident::ProtobufIdent;
+pub use protobuf_rel_path::ProtobufRelativePath;
+
+use crate::rust::EXPR_VEC_NEW;
+use crate::scope::WithScope;
+use crate::well_known_types::gen_well_known_types_mod;
+#[doc(hidden)]
+pub use file::proto_name_to_rs;
+use protobuf::reflect::FileDescriptor;
 
 fn escape_byte(s: &mut String, b: u8) {
     if b == b'\n' {
@@ -80,12 +85,82 @@ fn escape_byte(s: &mut String, b: u8) {
     }
 }
 
-fn write_file_descriptor_data(
-    file: &FileDescriptorProto,
+fn write_file_descriptor(
+    file_descriptor: &FileDescriptor,
     customize: &Customize,
     w: &mut CodeWriter,
 ) {
-    let fdp_bytes = file.write_to_bytes().unwrap();
+    w.write_line("/// `FileDescriptor` object which allows dynamic access to files");
+    w.pub_fn(
+        &format!(
+            "file_descriptor() -> {}::reflect::FileDescriptor",
+            protobuf_crate_path(customize)
+        ),
+        |w| {
+            w.lazy_static(
+                "file_descriptor_lazy",
+                &format!(
+                    "{}::reflect::GeneratedFileDescriptor",
+                    protobuf_crate_path(customize)
+                ),
+                &format!("{}", protobuf_crate_path(customize)),
+            );
+            w.block(
+                "let file_descriptor = file_descriptor_lazy.get(|| {",
+                "});",
+                |w| {
+                    w.write_line(&format!("let mut deps = {};", EXPR_VEC_NEW));
+                    for f in &file_descriptor.proto().dependency {
+                        w.write_line(&format!(
+                            "deps.push({}());",
+                            proto_path_to_fn_file_descriptor(f, customize)
+                        ));
+                    }
+
+                    let scope = FileScope { file_descriptor };
+
+                    w.write_line(&format!("let mut messages = {};", EXPR_VEC_NEW));
+                    for m in scope.find_messages_except_map() {
+                        if m.is_map() {
+                            continue;
+                        }
+                        w.write_line(&format!(
+                            "messages.push({}::generated_message_descriptor_data());",
+                            m.rust_name_to_file(),
+                        ));
+                    }
+
+                    w.write_line(&format!("let mut enums = {};", EXPR_VEC_NEW));
+                    for e in scope.find_enums() {
+                        w.write_line(&format!(
+                            "enums.push({}::generated_enum_descriptor_data());",
+                            e.rust_name_to_file(),
+                        ));
+                    }
+
+                    w.write_line(&format!(
+                        "{}::reflect::GeneratedFileDescriptor::new_generated(",
+                        protobuf_crate_path(&customize),
+                    ));
+                    w.indented(|w| {
+                        w.write_line(&format!("file_descriptor_proto(),"));
+                        w.write_line(&format!("deps,"));
+                        w.write_line(&format!("messages,"));
+                        w.write_line(&format!("enums,"));
+                    });
+                    w.write_line(")");
+                },
+            );
+            w.write_line(&format!(
+                "{}::reflect::FileDescriptor::new_generated_2(file_descriptor)",
+                protobuf_crate_path(&customize),
+            ));
+        },
+    );
+}
+
+fn write_file_descriptor_data(file: &FileDescriptor, customize: &Customize, w: &mut CodeWriter) {
+    let fdp_bytes = file.proto().write_to_bytes().unwrap();
     w.write_line("static file_descriptor_proto_data: &'static [u8] = b\"\\");
     w.indented(|w| {
         const MAX_LINE_LEN: usize = 72;
@@ -115,28 +190,6 @@ fn write_file_descriptor_data(
     });
     w.write_line("\";");
     w.write_line("");
-    w.lazy_static(
-        "file_descriptor_proto_lazy",
-        &format!(
-            "{}::descriptor::FileDescriptorProto",
-            protobuf_crate_path(customize)
-        ),
-        protobuf_crate_path(customize),
-    );
-    w.write_line("");
-    w.def_fn(
-        &format!(
-            "parse_descriptor_proto() -> {}::descriptor::FileDescriptorProto",
-            protobuf_crate_path(customize)
-        ),
-        |w| {
-            w.write_line(&format!(
-                "{}::parse_from_bytes(file_descriptor_proto_data).unwrap()",
-                protobuf_crate_path(customize)
-            ));
-        },
-    );
-    w.write_line("");
     w.write_line("/// `FileDescriptorProto` object which was a source for this generated file");
     w.pub_fn(
         &format!(
@@ -144,34 +197,83 @@ fn write_file_descriptor_data(
             protobuf_crate_path(customize)
         ),
         |w| {
+            w.lazy_static(
+                "file_descriptor_proto_lazy",
+                &format!(
+                    "{}::descriptor::FileDescriptorProto",
+                    protobuf_crate_path(customize)
+                ),
+                &format!("{}", protobuf_crate_path(customize)),
+            );
             w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
-                w.write_line("parse_descriptor_proto()");
+                w.write_line(&format!(
+                    "{}::Message::parse_from_bytes(file_descriptor_proto_data).unwrap()",
+                    protobuf_crate_path(customize)
+                ));
             });
         },
     );
+    w.write_line("");
+    write_file_descriptor(file, &customize, w);
+}
+
+pub(crate) struct FileIndex {
+    messsage_to_index: HashMap<ProtobufRelativePath, u32>,
+    enum_to_index: HashMap<ProtobufRelativePath, u32>,
+}
+
+impl FileIndex {
+    fn index(file_scope: &FileScope) -> FileIndex {
+        FileIndex {
+            messsage_to_index: file_scope
+                .find_messages()
+                .into_iter()
+                .map(|m| m.protobuf_name_to_package())
+                .enumerate()
+                .map(|(i, n)| (n, i as u32))
+                .collect(),
+            enum_to_index: file_scope
+                .find_enums()
+                .into_iter()
+                .map(|m| m.protobuf_name_to_package())
+                .enumerate()
+                .map(|(i, n)| (n, i as u32))
+                .collect(),
+        }
+    }
+}
+
+struct GenFileResult {
+    compiler_plugin_result: compiler_plugin::GenResult,
+    mod_name: String,
 }
 
 fn gen_file(
-    file: &FileDescriptorProto,
-    _files_map: &HashMap<&Path, &FileDescriptorProto>,
+    file_descriptor: &FileDescriptor,
+    _files_map: &HashMap<&Path, &FileDescriptor>,
     root_scope: &RootScope,
     customize: &Customize,
     parser: &str,
-) -> Option<compiler_plugin::GenResult> {
+) -> GenFileResult {
     // TODO: use it
     let mut customize = customize.clone();
     // options specified in invocation have precedence over options specified in file
     customize.update_with(&customize_from_rustproto_for_file(
-        file.options.get_message(),
+        file_descriptor.proto().options.get_or_default(),
     ));
 
-    let scope = FileScope {
-        file_descriptor: file,
-    }
-    .to_scope();
+    let file_scope = FileScope { file_descriptor };
+    let scope = file_scope.to_scope();
     let lite_runtime = customize.lite_runtime.unwrap_or_else(|| {
-        file.options.get_message().get_optimize_for() == file_options::OptimizeMode::LITE_RUNTIME
+        file_descriptor
+            .proto()
+            .options
+            .get_or_default()
+            .get_optimize_for()
+            == file_options::OptimizeMode::LITE_RUNTIME
     });
+
+    let file_index = FileIndex::index(&file_scope);
 
     let mut v = Vec::new();
 
@@ -181,7 +283,10 @@ fn gen_file(
         w.write_generated_by("rust-protobuf", env!("CARGO_PKG_VERSION"), parser);
 
         w.write_line("");
-        w.write_line(&format!("//! Generated file from `{}`", file.get_name()));
+        w.write_line(&format!(
+            "//! Generated file from `{}`",
+            file_descriptor.proto().get_name()
+        ));
         if customize.inside_protobuf != Some(true) {
             w.write_line("");
             w.write_line("/// Generated files are compatible only with the same version");
@@ -193,39 +298,41 @@ fn gen_file(
             ));
         }
 
-        static NESTED_TYPE_NUMBER: protobuf::rt::Lazy<i32> = protobuf::rt::Lazy::INIT;
+        static NESTED_TYPE_NUMBER: protobuf::rt::LazyV2<i32> = protobuf::rt::LazyV2::INIT;
         let message_type_number = *NESTED_TYPE_NUMBER.get(|| {
             protobuf::reflect::MessageDescriptor::for_type::<FileDescriptorProto>()
                 .get_field_by_name("message_type")
                 .expect("`message_type` must exist")
-                .proto()
+                .get_proto()
                 .get_number()
         });
 
         let mut path = vec![message_type_number, 0];
         for (id, message) in scope.get_messages().iter().enumerate() {
             // ignore map entries, because they are not used in map fields
-            if map_entry(message).is_none() {
+            if !message.is_map() {
                 path[1] = id as i32;
 
                 w.write_line("");
                 MessageGen::new(
+                    file_descriptor,
                     message,
+                    &file_index,
                     &root_scope,
                     &customize,
                     &path,
-                    file.source_code_info.as_ref(),
+                    file_descriptor.proto().source_code_info.as_ref(),
                 )
                 .write(&mut w);
             }
         }
 
-        static ENUM_TYPE_NUMBER: protobuf::rt::Lazy<i32> = protobuf::rt::Lazy::INIT;
+        static ENUM_TYPE_NUMBER: protobuf::rt::LazyV2<i32> = protobuf::rt::LazyV2::INIT;
         let enum_type_number = *ENUM_TYPE_NUMBER.get(|| {
             protobuf::reflect::MessageDescriptor::for_type::<FileDescriptorProto>()
                 .get_field_by_name("enum_type")
                 .expect("`enum_type` must exist")
-                .proto()
+                .get_proto()
                 .get_number()
         });
 
@@ -236,26 +343,45 @@ fn gen_file(
             w.write_line("");
             EnumGen::new(
                 enum_type,
+                &file_index,
                 &customize,
                 root_scope,
                 &path,
-                file.source_code_info.as_ref(),
+                file_descriptor.proto().source_code_info.as_ref(),
             )
             .write(&mut w);
         }
 
-        write_extensions(file, &root_scope, &mut w, &customize);
+        write_extensions(file_descriptor, &root_scope, &mut w, &customize);
 
         if !lite_runtime {
             w.write_line("");
-            write_file_descriptor_data(file, &customize, &mut w);
+            write_file_descriptor_data(file_descriptor, &customize, &mut w);
         }
     }
 
-    Some(compiler_plugin::GenResult {
-        name: format!("{}.rs", proto_path_to_rust_mod(file.get_name())),
+    GenFileResult {
+        compiler_plugin_result: compiler_plugin::GenResult {
+            name: proto_name_to_rs(file_descriptor.proto().get_name()),
+            content: v,
+        },
+        mod_name: proto_path_to_rust_mod(file_descriptor.proto().get_name()).into_string(),
+    }
+}
+
+fn gen_mod_rs(mods: &[String]) -> compiler_plugin::GenResult {
+    let mut v = Vec::new();
+    let mut w = CodeWriter::new(&mut v);
+    w.comment("@generated");
+    w.write_line("");
+    for m in mods {
+        w.write_line(&format!("pub mod {};", m));
+    }
+    drop(w);
+    compiler_plugin::GenResult {
+        name: "mod.rs".to_owned(),
         content: v,
-    })
+    }
 }
 
 // This function is also used externally by cargo plugin
@@ -267,15 +393,19 @@ pub fn gen(
     files_to_generate: &[PathBuf],
     customize: &Customize,
 ) -> Vec<compiler_plugin::GenResult> {
+    let file_descriptors = FileDescriptor::new_dynamic_fds(file_descriptors.to_vec());
+
     let root_scope = RootScope {
-        file_descriptors: file_descriptors,
+        file_descriptors: &file_descriptors,
     };
 
     let mut results: Vec<compiler_plugin::GenResult> = Vec::new();
-    let files_map: HashMap<&Path, &FileDescriptorProto> = file_descriptors
+    let files_map: HashMap<&Path, &FileDescriptor> = file_descriptors
         .iter()
-        .map(|f| (Path::new(f.get_name()), f))
+        .map(|f| (Path::new(f.proto().get_name()), f))
         .collect();
+
+    let mut mods = Vec::new();
 
     for file_name in files_to_generate {
         let file = files_map.get(file_name.as_path()).expect(&format!(
@@ -283,8 +413,19 @@ pub fn gen(
             file_name,
             files_map.keys()
         ));
-        results.extend(gen_file(file, &files_map, &root_scope, customize, parser));
+        let gen_file_result = gen_file(file, &files_map, &root_scope, customize, parser);
+        results.push(gen_file_result.compiler_plugin_result);
+        mods.push(gen_file_result.mod_name);
     }
+
+    if customize.inside_protobuf.unwrap_or(false) {
+        results.push(gen_well_known_types_mod(&file_descriptors));
+    }
+
+    if customize.gen_mod_rs.unwrap_or(false) {
+        results.push(gen_mod_rs(&mods));
+    }
+
     results
 }
 

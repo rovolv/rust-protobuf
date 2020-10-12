@@ -16,8 +16,8 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
-#![allow(unused_imports)]
 #![allow(unused_results)]
+#![allow(unused_mut)]
 
 //! Generated file from `google/protobuf/descriptor.proto`
 
@@ -27,7 +27,7 @@
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct FileDescriptorSet {
     // message fields
-    pub file: crate::RepeatedField<FileDescriptorProto>,
+    pub file: ::std::vec::Vec<FileDescriptorProto>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -44,6 +44,20 @@ impl<'a> ::std::default::Default for &'a FileDescriptorSet {
 impl FileDescriptorSet {
     pub fn new() -> FileDescriptorSet {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "file",
+            |m: &FileDescriptorSet| { &m.file },
+            |m: &mut FileDescriptorSet| { &mut m.file },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<FileDescriptorSet>(
+            "FileDescriptorSet",
+            0,
+            fields,
+        )
     }
 }
 
@@ -62,7 +76,7 @@ impl crate::Message for FileDescriptorSet {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.file)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.file)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -105,34 +119,21 @@ impl crate::Message for FileDescriptorSet {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> FileDescriptorSet {
         FileDescriptorSet::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FileDescriptorProto>>(
-                "file",
-                |m: &FileDescriptorSet| { &m.file },
-                |m: &mut FileDescriptorSet| { &mut m.file },
-            ));
-            crate::reflect::MessageDescriptor::new::<FileDescriptorSet>(
-                "FileDescriptorSet",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
     }
 
     fn default_instance() -> &'static FileDescriptorSet {
-        static instance: crate::rt::Lazy<FileDescriptorSet> = crate::rt::Lazy::INIT;
-        instance.get(FileDescriptorSet::new)
+        static instance: FileDescriptorSet = FileDescriptorSet {
+            file: ::std::vec::Vec::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -150,6 +151,7 @@ impl ::std::fmt::Debug for FileDescriptorSet {
 }
 
 impl crate::reflect::ProtobufValue for FileDescriptorSet {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  Describes a complete .proto file.
@@ -157,29 +159,29 @@ impl crate::reflect::ProtobufValue for FileDescriptorSet {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct FileDescriptorProto {
     // message fields
-    name: crate::SingularField<::std::string::String>,
-    package: crate::SingularField<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    package: ::std::option::Option<::std::string::String>,
     ///  Names of files imported by this file.
-    pub dependency: crate::RepeatedField<::std::string::String>,
+    pub dependency: ::std::vec::Vec<::std::string::String>,
     ///  Indexes of the public imported files in the dependency list above.
     pub public_dependency: ::std::vec::Vec<i32>,
     ///  Indexes of the weak imported files in the dependency list.
     ///  For Google-internal migration only. Do not use.
     pub weak_dependency: ::std::vec::Vec<i32>,
     ///  All top-level definitions in this file.
-    pub message_type: crate::RepeatedField<DescriptorProto>,
-    pub enum_type: crate::RepeatedField<EnumDescriptorProto>,
-    pub service: crate::RepeatedField<ServiceDescriptorProto>,
-    pub extension: crate::RepeatedField<FieldDescriptorProto>,
-    pub options: crate::SingularPtrField<FileOptions>,
+    pub message_type: ::std::vec::Vec<DescriptorProto>,
+    pub enum_type: ::std::vec::Vec<EnumDescriptorProto>,
+    pub service: ::std::vec::Vec<ServiceDescriptorProto>,
+    pub extension: ::std::vec::Vec<FieldDescriptorProto>,
+    pub options: crate::MessageField<FileOptions>,
     ///  This field contains optional information about the original source code.
     ///  You may safely remove this entire field without harming runtime
     ///  functionality of the descriptors -- the information is needed only by
     ///  development tools.
-    pub source_code_info: crate::SingularPtrField<SourceCodeInfo>,
+    pub source_code_info: crate::MessageField<SourceCodeInfo>,
     ///  The syntax of the proto file.
     ///  The supported values are "proto2" and "proto3".
-    syntax: crate::SingularField<::std::string::String>,
+    syntax: ::std::option::Option<::std::string::String>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -208,7 +210,7 @@ impl FileDescriptorProto {
     }
 
     pub fn clear_name(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
     }
 
     pub fn has_name(&self) -> bool {
@@ -217,14 +219,14 @@ impl FileDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ::std::string::String) {
-        self.name = crate::SingularField::some(v);
+        self.name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
-            self.name.set_default();
+            self.name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.name.as_mut().unwrap()
     }
@@ -244,7 +246,7 @@ impl FileDescriptorProto {
     }
 
     pub fn clear_package(&mut self) {
-        self.package.clear();
+        self.package = ::std::option::Option::None;
     }
 
     pub fn has_package(&self) -> bool {
@@ -253,14 +255,14 @@ impl FileDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_package(&mut self, v: ::std::string::String) {
-        self.package = crate::SingularField::some(v);
+        self.package = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_package(&mut self) -> &mut ::std::string::String {
         if self.package.is_none() {
-            self.package.set_default();
+            self.package = ::std::option::Option::Some(::std::string::String::new());
         }
         self.package.as_mut().unwrap()
     }
@@ -280,7 +282,7 @@ impl FileDescriptorProto {
     }
 
     pub fn clear_syntax(&mut self) {
-        self.syntax.clear();
+        self.syntax = ::std::option::Option::None;
     }
 
     pub fn has_syntax(&self) -> bool {
@@ -289,14 +291,14 @@ impl FileDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_syntax(&mut self, v: ::std::string::String) {
-        self.syntax = crate::SingularField::some(v);
+        self.syntax = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_syntax(&mut self) -> &mut ::std::string::String {
         if self.syntax.is_none() {
-            self.syntax.set_default();
+            self.syntax = ::std::option::Option::Some(::std::string::String::new());
         }
         self.syntax.as_mut().unwrap()
     }
@@ -304,6 +306,78 @@ impl FileDescriptorProto {
     // Take field
     pub fn take_syntax(&mut self) -> ::std::string::String {
         self.syntax.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &FileDescriptorProto| { &m.name },
+            |m: &mut FileDescriptorProto| { &mut m.name },
+            FileDescriptorProto::get_name,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "package",
+            |m: &FileDescriptorProto| { &m.package },
+            |m: &mut FileDescriptorProto| { &mut m.package },
+            FileDescriptorProto::get_package,
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "dependency",
+            |m: &FileDescriptorProto| { &m.dependency },
+            |m: &mut FileDescriptorProto| { &mut m.dependency },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "public_dependency",
+            |m: &FileDescriptorProto| { &m.public_dependency },
+            |m: &mut FileDescriptorProto| { &mut m.public_dependency },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "weak_dependency",
+            |m: &FileDescriptorProto| { &m.weak_dependency },
+            |m: &mut FileDescriptorProto| { &mut m.weak_dependency },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "message_type",
+            |m: &FileDescriptorProto| { &m.message_type },
+            |m: &mut FileDescriptorProto| { &mut m.message_type },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "enum_type",
+            |m: &FileDescriptorProto| { &m.enum_type },
+            |m: &mut FileDescriptorProto| { &mut m.enum_type },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "service",
+            |m: &FileDescriptorProto| { &m.service },
+            |m: &mut FileDescriptorProto| { &mut m.service },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "extension",
+            |m: &FileDescriptorProto| { &m.extension },
+            |m: &mut FileDescriptorProto| { &mut m.extension },
+        ));
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, FileOptions>(
+            "options",
+            |m: &FileDescriptorProto| { &m.options },
+            |m: &mut FileDescriptorProto| { &mut m.options },
+        ));
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, SourceCodeInfo>(
+            "source_code_info",
+            |m: &FileDescriptorProto| { &m.source_code_info },
+            |m: &mut FileDescriptorProto| { &mut m.source_code_info },
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "syntax",
+            |m: &FileDescriptorProto| { &m.syntax },
+            |m: &mut FileDescriptorProto| { &mut m.syntax },
+            FileDescriptorProto::get_syntax,
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<FileDescriptorProto>(
+            "FileDescriptorProto",
+            1,
+            fields,
+        )
     }
 }
 
@@ -347,10 +421,16 @@ impl crate::Message for FileDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.package)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.package = ::std::option::Option::Some(is.read_string()?);
                 },
                 3 => {
                     crate::rt::read_repeated_string_into(wire_type, is, &mut self.dependency)?;
@@ -362,25 +442,28 @@ impl crate::Message for FileDescriptorProto {
                     crate::rt::read_repeated_int32_into(wire_type, is, &mut self.weak_dependency)?;
                 },
                 4 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.message_type)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.message_type)?;
                 },
                 5 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.enum_type)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.enum_type)?;
                 },
                 6 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.service)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.service)?;
                 },
                 7 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.extension)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.extension)?;
                 },
                 8 => {
-                    crate::rt::read_singular_message_into::<FileOptions, _>(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
                 9 => {
-                    crate::rt::read_singular_message_into::<SourceCodeInfo, _>(wire_type, is, &mut self.source_code_info)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.source_code_info)?;
                 },
                 12 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.syntax)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.syntax = ::std::option::Option::Some(is.read_string()?);
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -494,99 +577,39 @@ impl crate::Message for FileDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> FileDescriptorProto {
         FileDescriptorProto::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "name",
-                |m: &FileDescriptorProto| { &m.name },
-                |m: &mut FileDescriptorProto| { &mut m.name },
-                FileDescriptorProto::get_name,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "package",
-                |m: &FileDescriptorProto| { &m.package },
-                |m: &mut FileDescriptorProto| { &mut m.package },
-                FileDescriptorProto::get_package,
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                "dependency",
-                |m: &FileDescriptorProto| { &m.dependency },
-                |m: &mut FileDescriptorProto| { &mut m.dependency },
-            ));
-            fields.push(crate::reflect::rt::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
-                "public_dependency",
-                |m: &FileDescriptorProto| { &m.public_dependency },
-                |m: &mut FileDescriptorProto| { &mut m.public_dependency },
-            ));
-            fields.push(crate::reflect::rt::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
-                "weak_dependency",
-                |m: &FileDescriptorProto| { &m.weak_dependency },
-                |m: &mut FileDescriptorProto| { &mut m.weak_dependency },
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<DescriptorProto>>(
-                "message_type",
-                |m: &FileDescriptorProto| { &m.message_type },
-                |m: &mut FileDescriptorProto| { &mut m.message_type },
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumDescriptorProto>>(
-                "enum_type",
-                |m: &FileDescriptorProto| { &m.enum_type },
-                |m: &mut FileDescriptorProto| { &mut m.enum_type },
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<ServiceDescriptorProto>>(
-                "service",
-                |m: &FileDescriptorProto| { &m.service },
-                |m: &mut FileDescriptorProto| { &mut m.service },
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FieldDescriptorProto>>(
-                "extension",
-                |m: &FileDescriptorProto| { &m.extension },
-                |m: &mut FileDescriptorProto| { &mut m.extension },
-            ));
-            fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FileOptions>, _>(
-                "options",
-                |m: &FileDescriptorProto| { &m.options },
-                |m: &mut FileDescriptorProto| { &mut m.options },
-            ));
-            fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<SourceCodeInfo>, _>(
-                "source_code_info",
-                |m: &FileDescriptorProto| { &m.source_code_info },
-                |m: &mut FileDescriptorProto| { &mut m.source_code_info },
-            ));
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "syntax",
-                |m: &FileDescriptorProto| { &m.syntax },
-                |m: &mut FileDescriptorProto| { &mut m.syntax },
-                FileDescriptorProto::get_syntax,
-            ));
-            crate::reflect::MessageDescriptor::new::<FileDescriptorProto>(
-                "FileDescriptorProto",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 1)
     }
 
     fn default_instance() -> &'static FileDescriptorProto {
-        static instance: crate::rt::Lazy<FileDescriptorProto> = crate::rt::Lazy::INIT;
-        instance.get(FileDescriptorProto::new)
+        static instance: FileDescriptorProto = FileDescriptorProto {
+            name: ::std::option::Option::None,
+            package: ::std::option::Option::None,
+            dependency: ::std::vec::Vec::new(),
+            public_dependency: ::std::vec::Vec::new(),
+            weak_dependency: ::std::vec::Vec::new(),
+            message_type: ::std::vec::Vec::new(),
+            enum_type: ::std::vec::Vec::new(),
+            service: ::std::vec::Vec::new(),
+            extension: ::std::vec::Vec::new(),
+            options: crate::MessageField::none(),
+            source_code_info: crate::MessageField::none(),
+            syntax: ::std::option::Option::None,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
 impl crate::Clear for FileDescriptorProto {
     fn clear(&mut self) {
-        self.name.clear();
-        self.package.clear();
+        self.name = ::std::option::Option::None;
+        self.package = ::std::option::Option::None;
         self.dependency.clear();
         self.public_dependency.clear();
         self.weak_dependency.clear();
@@ -596,7 +619,7 @@ impl crate::Clear for FileDescriptorProto {
         self.extension.clear();
         self.options.clear();
         self.source_code_info.clear();
-        self.syntax.clear();
+        self.syntax = ::std::option::Option::None;
         self.unknown_fields.clear();
     }
 }
@@ -608,6 +631,7 @@ impl ::std::fmt::Debug for FileDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for FileDescriptorProto {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  Describes a message type.
@@ -615,18 +639,18 @@ impl crate::reflect::ProtobufValue for FileDescriptorProto {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct DescriptorProto {
     // message fields
-    name: crate::SingularField<::std::string::String>,
-    pub field: crate::RepeatedField<FieldDescriptorProto>,
-    pub extension: crate::RepeatedField<FieldDescriptorProto>,
-    pub nested_type: crate::RepeatedField<DescriptorProto>,
-    pub enum_type: crate::RepeatedField<EnumDescriptorProto>,
-    pub extension_range: crate::RepeatedField<descriptor_proto::ExtensionRange>,
-    pub oneof_decl: crate::RepeatedField<OneofDescriptorProto>,
-    pub options: crate::SingularPtrField<MessageOptions>,
-    pub reserved_range: crate::RepeatedField<descriptor_proto::ReservedRange>,
+    name: ::std::option::Option<::std::string::String>,
+    pub field: ::std::vec::Vec<FieldDescriptorProto>,
+    pub extension: ::std::vec::Vec<FieldDescriptorProto>,
+    pub nested_type: ::std::vec::Vec<DescriptorProto>,
+    pub enum_type: ::std::vec::Vec<EnumDescriptorProto>,
+    pub extension_range: ::std::vec::Vec<descriptor_proto::ExtensionRange>,
+    pub oneof_decl: ::std::vec::Vec<OneofDescriptorProto>,
+    pub options: crate::MessageField<MessageOptions>,
+    pub reserved_range: ::std::vec::Vec<descriptor_proto::ReservedRange>,
     ///  Reserved field names, which may not be used by fields in the same message.
     ///  A given name may only be reserved once.
-    pub reserved_name: crate::RepeatedField<::std::string::String>,
+    pub reserved_name: ::std::vec::Vec<::std::string::String>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -655,7 +679,7 @@ impl DescriptorProto {
     }
 
     pub fn clear_name(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
     }
 
     pub fn has_name(&self) -> bool {
@@ -664,14 +688,14 @@ impl DescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ::std::string::String) {
-        self.name = crate::SingularField::some(v);
+        self.name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
-            self.name.set_default();
+            self.name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.name.as_mut().unwrap()
     }
@@ -679,6 +703,66 @@ impl DescriptorProto {
     // Take field
     pub fn take_name(&mut self) -> ::std::string::String {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &DescriptorProto| { &m.name },
+            |m: &mut DescriptorProto| { &mut m.name },
+            DescriptorProto::get_name,
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "field",
+            |m: &DescriptorProto| { &m.field },
+            |m: &mut DescriptorProto| { &mut m.field },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "extension",
+            |m: &DescriptorProto| { &m.extension },
+            |m: &mut DescriptorProto| { &mut m.extension },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "nested_type",
+            |m: &DescriptorProto| { &m.nested_type },
+            |m: &mut DescriptorProto| { &mut m.nested_type },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "enum_type",
+            |m: &DescriptorProto| { &m.enum_type },
+            |m: &mut DescriptorProto| { &mut m.enum_type },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "extension_range",
+            |m: &DescriptorProto| { &m.extension_range },
+            |m: &mut DescriptorProto| { &mut m.extension_range },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "oneof_decl",
+            |m: &DescriptorProto| { &m.oneof_decl },
+            |m: &mut DescriptorProto| { &mut m.oneof_decl },
+        ));
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, MessageOptions>(
+            "options",
+            |m: &DescriptorProto| { &m.options },
+            |m: &mut DescriptorProto| { &mut m.options },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "reserved_range",
+            |m: &DescriptorProto| { &m.reserved_range },
+            |m: &mut DescriptorProto| { &mut m.reserved_range },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "reserved_name",
+            |m: &DescriptorProto| { &m.reserved_name },
+            |m: &mut DescriptorProto| { &mut m.reserved_name },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<DescriptorProto>(
+            "DescriptorProto",
+            2,
+            fields,
+        )
     }
 }
 
@@ -732,31 +816,34 @@ impl crate::Message for DescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.field)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.field)?;
                 },
                 6 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.extension)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.extension)?;
                 },
                 3 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.nested_type)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.nested_type)?;
                 },
                 4 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.enum_type)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.enum_type)?;
                 },
                 5 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.extension_range)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.extension_range)?;
                 },
                 8 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.oneof_decl)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.oneof_decl)?;
                 },
                 7 => {
-                    crate::rt::read_singular_message_into::<MessageOptions, _>(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
                 9 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.reserved_range)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.reserved_range)?;
                 },
                 10 => {
                     crate::rt::read_repeated_string_into(wire_type, is, &mut self.reserved_name)?;
@@ -863,86 +950,36 @@ impl crate::Message for DescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> DescriptorProto {
         DescriptorProto::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "name",
-                |m: &DescriptorProto| { &m.name },
-                |m: &mut DescriptorProto| { &mut m.name },
-                DescriptorProto::get_name,
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FieldDescriptorProto>>(
-                "field",
-                |m: &DescriptorProto| { &m.field },
-                |m: &mut DescriptorProto| { &mut m.field },
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FieldDescriptorProto>>(
-                "extension",
-                |m: &DescriptorProto| { &m.extension },
-                |m: &mut DescriptorProto| { &mut m.extension },
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<DescriptorProto>>(
-                "nested_type",
-                |m: &DescriptorProto| { &m.nested_type },
-                |m: &mut DescriptorProto| { &mut m.nested_type },
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumDescriptorProto>>(
-                "enum_type",
-                |m: &DescriptorProto| { &m.enum_type },
-                |m: &mut DescriptorProto| { &mut m.enum_type },
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<descriptor_proto::ExtensionRange>>(
-                "extension_range",
-                |m: &DescriptorProto| { &m.extension_range },
-                |m: &mut DescriptorProto| { &mut m.extension_range },
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<OneofDescriptorProto>>(
-                "oneof_decl",
-                |m: &DescriptorProto| { &m.oneof_decl },
-                |m: &mut DescriptorProto| { &mut m.oneof_decl },
-            ));
-            fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<MessageOptions>, _>(
-                "options",
-                |m: &DescriptorProto| { &m.options },
-                |m: &mut DescriptorProto| { &mut m.options },
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<descriptor_proto::ReservedRange>>(
-                "reserved_range",
-                |m: &DescriptorProto| { &m.reserved_range },
-                |m: &mut DescriptorProto| { &mut m.reserved_range },
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                "reserved_name",
-                |m: &DescriptorProto| { &m.reserved_name },
-                |m: &mut DescriptorProto| { &mut m.reserved_name },
-            ));
-            crate::reflect::MessageDescriptor::new::<DescriptorProto>(
-                "DescriptorProto",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
     }
 
     fn default_instance() -> &'static DescriptorProto {
-        static instance: crate::rt::Lazy<DescriptorProto> = crate::rt::Lazy::INIT;
-        instance.get(DescriptorProto::new)
+        static instance: DescriptorProto = DescriptorProto {
+            name: ::std::option::Option::None,
+            field: ::std::vec::Vec::new(),
+            extension: ::std::vec::Vec::new(),
+            nested_type: ::std::vec::Vec::new(),
+            enum_type: ::std::vec::Vec::new(),
+            extension_range: ::std::vec::Vec::new(),
+            oneof_decl: ::std::vec::Vec::new(),
+            options: crate::MessageField::none(),
+            reserved_range: ::std::vec::Vec::new(),
+            reserved_name: ::std::vec::Vec::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
 impl crate::Clear for DescriptorProto {
     fn clear(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
         self.field.clear();
         self.extension.clear();
         self.nested_type.clear();
@@ -963,6 +1000,7 @@ impl ::std::fmt::Debug for DescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for DescriptorProto {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `DescriptorProto`
@@ -973,6 +1011,7 @@ pub mod descriptor_proto {
         // message fields
         start: ::std::option::Option<i32>,
         end: ::std::option::Option<i32>,
+        pub options: crate::MessageField<super::ExtensionRangeOptions>,
         // special fields
         #[cfg_attr(serde, serde(skip))]
         pub unknown_fields: crate::UnknownFields,
@@ -1028,10 +1067,41 @@ pub mod descriptor_proto {
         pub fn set_end(&mut self, v: i32) {
             self.end = ::std::option::Option::Some(v);
         }
+
+        pub(in super) fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+                "start",
+                |m: &ExtensionRange| { &m.start },
+                |m: &mut ExtensionRange| { &mut m.start },
+                ExtensionRange::get_start,
+            ));
+            fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+                "end",
+                |m: &ExtensionRange| { &m.end },
+                |m: &mut ExtensionRange| { &mut m.end },
+                ExtensionRange::get_end,
+            ));
+            fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, super::ExtensionRangeOptions>(
+                "options",
+                |m: &ExtensionRange| { &m.options },
+                |m: &mut ExtensionRange| { &mut m.options },
+            ));
+            crate::reflect::GeneratedMessageDescriptorData::new_2::<ExtensionRange>(
+                "DescriptorProto.ExtensionRange",
+                21,
+                fields,
+            )
+        }
     }
 
     impl crate::Message for ExtensionRange {
         fn is_initialized(&self) -> bool {
+            for v in &self.options {
+                if !v.is_initialized() {
+                    return false;
+                }
+            };
             true
         }
 
@@ -1051,6 +1121,9 @@ pub mod descriptor_proto {
                         }
                         self.end = ::std::option::Option::Some(is.read_int32()?);
                     },
+                    3 => {
+                        crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
+                    },
                     _ => {
                         crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                     },
@@ -1069,6 +1142,10 @@ pub mod descriptor_proto {
             if let Some(v) = self.end {
                 my_size += crate::rt::value_size(2, v, crate::wire_format::WireTypeVarint);
             }
+            if let Some(v) = self.options.as_ref() {
+                let len = v.compute_size();
+                my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            }
             my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
             self.cached_size.set(my_size);
             my_size
@@ -1080,6 +1157,9 @@ pub mod descriptor_proto {
             }
             if let Some(v) = self.end {
                 os.write_int32(2, v)?;
+            }
+            if let Some(v) = self.options.as_ref() {
+                crate::rt::write_message_field_with_cached_size(3, v, os)?;
             }
             os.write_unknown_fields(self.get_unknown_fields())?;
             ::std::result::Result::Ok(())
@@ -1097,41 +1177,23 @@ pub mod descriptor_proto {
             &mut self.unknown_fields
         }
 
-        fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-            Self::descriptor_static()
-        }
-
         fn new() -> ExtensionRange {
             ExtensionRange::new()
         }
 
-        fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-            static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeInt32, _>(
-                    "start",
-                    |m: &ExtensionRange| { &m.start },
-                    |m: &mut ExtensionRange| { &mut m.start },
-                    ExtensionRange::get_start,
-                ));
-                fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeInt32, _>(
-                    "end",
-                    |m: &ExtensionRange| { &m.end },
-                    |m: &mut ExtensionRange| { &mut m.end },
-                    ExtensionRange::get_end,
-                ));
-                crate::reflect::MessageDescriptor::new::<ExtensionRange>(
-                    "DescriptorProto.ExtensionRange",
-                    fields,
-                    super::file_descriptor_proto()
-                )
-            })
+        fn descriptor_static() -> crate::reflect::MessageDescriptor {
+            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 3)
         }
 
         fn default_instance() -> &'static ExtensionRange {
-            static instance: crate::rt::Lazy<ExtensionRange> = crate::rt::Lazy::INIT;
-            instance.get(ExtensionRange::new)
+            static instance: ExtensionRange = ExtensionRange {
+                start: ::std::option::Option::None,
+                end: ::std::option::Option::None,
+                options: crate::MessageField::none(),
+                unknown_fields: crate::UnknownFields::new(),
+                cached_size: crate::rt::CachedSize::new(),
+            };
+            &instance
         }
     }
 
@@ -1139,6 +1201,7 @@ pub mod descriptor_proto {
         fn clear(&mut self) {
             self.start = ::std::option::Option::None;
             self.end = ::std::option::Option::None;
+            self.options.clear();
             self.unknown_fields.clear();
         }
     }
@@ -1150,6 +1213,7 @@ pub mod descriptor_proto {
     }
 
     impl crate::reflect::ProtobufValue for ExtensionRange {
+        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
     }
 
     ///  Range of reserved tag numbers. Reserved tag numbers may not be used by
@@ -1215,6 +1279,27 @@ pub mod descriptor_proto {
         // Param is passed by value, moved
         pub fn set_end(&mut self, v: i32) {
             self.end = ::std::option::Option::Some(v);
+        }
+
+        pub(in super) fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+                "start",
+                |m: &ReservedRange| { &m.start },
+                |m: &mut ReservedRange| { &mut m.start },
+                ReservedRange::get_start,
+            ));
+            fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+                "end",
+                |m: &ReservedRange| { &m.end },
+                |m: &mut ReservedRange| { &mut m.end },
+                ReservedRange::get_end,
+            ));
+            crate::reflect::GeneratedMessageDescriptorData::new_2::<ReservedRange>(
+                "DescriptorProto.ReservedRange",
+                22,
+                fields,
+            )
         }
     }
 
@@ -1285,41 +1370,22 @@ pub mod descriptor_proto {
             &mut self.unknown_fields
         }
 
-        fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-            Self::descriptor_static()
-        }
-
         fn new() -> ReservedRange {
             ReservedRange::new()
         }
 
-        fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-            static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeInt32, _>(
-                    "start",
-                    |m: &ReservedRange| { &m.start },
-                    |m: &mut ReservedRange| { &mut m.start },
-                    ReservedRange::get_start,
-                ));
-                fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeInt32, _>(
-                    "end",
-                    |m: &ReservedRange| { &m.end },
-                    |m: &mut ReservedRange| { &mut m.end },
-                    ReservedRange::get_end,
-                ));
-                crate::reflect::MessageDescriptor::new::<ReservedRange>(
-                    "DescriptorProto.ReservedRange",
-                    fields,
-                    super::file_descriptor_proto()
-                )
-            })
+        fn descriptor_static() -> crate::reflect::MessageDescriptor {
+            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 4)
         }
 
         fn default_instance() -> &'static ReservedRange {
-            static instance: crate::rt::Lazy<ReservedRange> = crate::rt::Lazy::INIT;
-            instance.get(ReservedRange::new)
+            static instance: ReservedRange = ReservedRange {
+                start: ::std::option::Option::None,
+                end: ::std::option::Option::None,
+                unknown_fields: crate::UnknownFields::new(),
+                cached_size: crate::rt::CachedSize::new(),
+            };
+            &instance
         }
     }
 
@@ -1338,7 +1404,140 @@ pub mod descriptor_proto {
     }
 
     impl crate::reflect::ProtobufValue for ReservedRange {
+        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
     }
+}
+
+#[derive(PartialEq,Clone,Default)]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
+pub struct ExtensionRangeOptions {
+    // message fields
+    ///  The parser stores options it doesn't recognize here. See above.
+    pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
+    // special fields
+    #[cfg_attr(serde, serde(skip))]
+    pub unknown_fields: crate::UnknownFields,
+    #[cfg_attr(serde, serde(skip))]
+    pub cached_size: crate::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a ExtensionRangeOptions {
+    fn default() -> &'a ExtensionRangeOptions {
+        <ExtensionRangeOptions as crate::Message>::default_instance()
+    }
+}
+
+impl ExtensionRangeOptions {
+    pub fn new() -> ExtensionRangeOptions {
+        ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "uninterpreted_option",
+            |m: &ExtensionRangeOptions| { &m.uninterpreted_option },
+            |m: &mut ExtensionRangeOptions| { &mut m.uninterpreted_option },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<ExtensionRangeOptions>(
+            "ExtensionRangeOptions",
+            3,
+            fields,
+        )
+    }
+}
+
+impl crate::Message for ExtensionRangeOptions {
+    fn is_initialized(&self) -> bool {
+        for v in &self.uninterpreted_option {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                999 => {
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
+                },
+                _ => {
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        for value in &self.uninterpreted_option {
+            let len = value.compute_size();
+            my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
+        };
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+        for v in &self.uninterpreted_option {
+            crate::rt::write_message_field_with_cached_size(999, v, os)?;
+        };
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> ExtensionRangeOptions {
+        ExtensionRangeOptions::new()
+    }
+
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 5)
+    }
+
+    fn default_instance() -> &'static ExtensionRangeOptions {
+        static instance: ExtensionRangeOptions = ExtensionRangeOptions {
+            uninterpreted_option: ::std::vec::Vec::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl crate::Clear for ExtensionRangeOptions {
+    fn clear(&mut self) {
+        self.uninterpreted_option.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for ExtensionRangeOptions {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        crate::text_format::fmt(self, f)
+    }
+}
+
+impl crate::reflect::ProtobufValue for ExtensionRangeOptions {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  Describes a field within a message.
@@ -1346,7 +1545,7 @@ pub mod descriptor_proto {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct FieldDescriptorProto {
     // message fields
-    name: crate::SingularField<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
     number: ::std::option::Option<i32>,
     label: ::std::option::Option<crate::ProtobufEnumOrUnknown<field_descriptor_proto::Label>>,
     ///  If type_name is set, this need not be set.  If both this and type_name
@@ -1358,16 +1557,16 @@ pub struct FieldDescriptorProto {
     ///  rules are used to find the type (i.e. first the nested types within this
     ///  message are searched, then within the parent, on up to the root
     ///  namespace).
-    type_name: crate::SingularField<::std::string::String>,
+    type_name: ::std::option::Option<::std::string::String>,
     ///  For extensions, this is the name of the type being extended.  It is
     ///  resolved in the same manner as type_name.
-    extendee: crate::SingularField<::std::string::String>,
+    extendee: ::std::option::Option<::std::string::String>,
     ///  For numeric types, contains the original text representation of the value.
     ///  For booleans, "true" or "false".
     ///  For strings, contains the default text contents (not escaped in any way).
     ///  For bytes, contains the C escaped value.  All bytes >= 128 are escaped.
     ///  TODO(kenton):  Base-64 encode?
-    default_value: crate::SingularField<::std::string::String>,
+    default_value: ::std::option::Option<::std::string::String>,
     ///  If set, gives the index of a oneof in the containing type's oneof_decl
     ///  list.  This field is a member of that oneof.
     oneof_index: ::std::option::Option<i32>,
@@ -1375,8 +1574,30 @@ pub struct FieldDescriptorProto {
     ///  user has set a "json_name" option on this field, that option's value
     ///  will be used. Otherwise, it's deduced from the field's name by converting
     ///  it to camelCase.
-    json_name: crate::SingularField<::std::string::String>,
-    pub options: crate::SingularPtrField<FieldOptions>,
+    json_name: ::std::option::Option<::std::string::String>,
+    pub options: crate::MessageField<FieldOptions>,
+    ///  If true, this is a proto3 "optional". When a proto3 field is optional, it
+    ///  tracks presence regardless of field type.
+    ///
+    ///  When proto3_optional is true, this field must be belong to a oneof to
+    ///  signal to old proto3 clients that presence is tracked for this field. This
+    ///  oneof is known as a "synthetic" oneof, and this field must be its sole
+    ///  member (each proto3 optional field gets its own synthetic oneof). Synthetic
+    ///  oneofs exist in the descriptor only, and do not generate any API. Synthetic
+    ///  oneofs must be ordered after all "real" oneofs.
+    ///
+    ///  For message fields, proto3_optional doesn't create any semantic change,
+    ///  since non-repeated message fields always track presence. However it still
+    ///  indicates the semantic detail of whether the user wrote "optional" or not.
+    ///  This can be useful for round-tripping the .proto file. For consistency we
+    ///  give message fields a synthetic oneof also, even though it is not required
+    ///  to track presence. This is especially important because the parser can't
+    ///  tell if a field is a message or an enum, so it must always create a
+    ///  synthetic oneof.
+    ///
+    ///  Proto2 optional fields do not set this flag, because they already indicate
+    ///  optional with `LABEL_OPTIONAL`.
+    proto3_optional: ::std::option::Option<bool>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -1405,7 +1626,7 @@ impl FieldDescriptorProto {
     }
 
     pub fn clear_name(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
     }
 
     pub fn has_name(&self) -> bool {
@@ -1414,14 +1635,14 @@ impl FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ::std::string::String) {
-        self.name = crate::SingularField::some(v);
+        self.name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
-            self.name.set_default();
+            self.name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.name.as_mut().unwrap()
     }
@@ -1504,7 +1725,7 @@ impl FieldDescriptorProto {
     }
 
     pub fn clear_type_name(&mut self) {
-        self.type_name.clear();
+        self.type_name = ::std::option::Option::None;
     }
 
     pub fn has_type_name(&self) -> bool {
@@ -1513,14 +1734,14 @@ impl FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_type_name(&mut self, v: ::std::string::String) {
-        self.type_name = crate::SingularField::some(v);
+        self.type_name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_type_name(&mut self) -> &mut ::std::string::String {
         if self.type_name.is_none() {
-            self.type_name.set_default();
+            self.type_name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.type_name.as_mut().unwrap()
     }
@@ -1540,7 +1761,7 @@ impl FieldDescriptorProto {
     }
 
     pub fn clear_extendee(&mut self) {
-        self.extendee.clear();
+        self.extendee = ::std::option::Option::None;
     }
 
     pub fn has_extendee(&self) -> bool {
@@ -1549,14 +1770,14 @@ impl FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_extendee(&mut self, v: ::std::string::String) {
-        self.extendee = crate::SingularField::some(v);
+        self.extendee = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_extendee(&mut self) -> &mut ::std::string::String {
         if self.extendee.is_none() {
-            self.extendee.set_default();
+            self.extendee = ::std::option::Option::Some(::std::string::String::new());
         }
         self.extendee.as_mut().unwrap()
     }
@@ -1576,7 +1797,7 @@ impl FieldDescriptorProto {
     }
 
     pub fn clear_default_value(&mut self) {
-        self.default_value.clear();
+        self.default_value = ::std::option::Option::None;
     }
 
     pub fn has_default_value(&self) -> bool {
@@ -1585,14 +1806,14 @@ impl FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_default_value(&mut self, v: ::std::string::String) {
-        self.default_value = crate::SingularField::some(v);
+        self.default_value = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_default_value(&mut self) -> &mut ::std::string::String {
         if self.default_value.is_none() {
-            self.default_value.set_default();
+            self.default_value = ::std::option::Option::Some(::std::string::String::new());
         }
         self.default_value.as_mut().unwrap()
     }
@@ -1631,7 +1852,7 @@ impl FieldDescriptorProto {
     }
 
     pub fn clear_json_name(&mut self) {
-        self.json_name.clear();
+        self.json_name = ::std::option::Option::None;
     }
 
     pub fn has_json_name(&self) -> bool {
@@ -1640,14 +1861,14 @@ impl FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_json_name(&mut self, v: ::std::string::String) {
-        self.json_name = crate::SingularField::some(v);
+        self.json_name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_json_name(&mut self) -> &mut ::std::string::String {
         if self.json_name.is_none() {
-            self.json_name.set_default();
+            self.json_name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.json_name.as_mut().unwrap()
     }
@@ -1655,6 +1876,99 @@ impl FieldDescriptorProto {
     // Take field
     pub fn take_json_name(&mut self) -> ::std::string::String {
         self.json_name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional bool proto3_optional = 17;
+
+    pub fn get_proto3_optional(&self) -> bool {
+        self.proto3_optional.unwrap_or(false)
+    }
+
+    pub fn clear_proto3_optional(&mut self) {
+        self.proto3_optional = ::std::option::Option::None;
+    }
+
+    pub fn has_proto3_optional(&self) -> bool {
+        self.proto3_optional.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_proto3_optional(&mut self, v: bool) {
+        self.proto3_optional = ::std::option::Option::Some(v);
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &FieldDescriptorProto| { &m.name },
+            |m: &mut FieldDescriptorProto| { &mut m.name },
+            FieldDescriptorProto::get_name,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "number",
+            |m: &FieldDescriptorProto| { &m.number },
+            |m: &mut FieldDescriptorProto| { &mut m.number },
+            FieldDescriptorProto::get_number,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_enum_accessor::<_, field_descriptor_proto::Label>(
+            "label",
+            |m: &FieldDescriptorProto| { &m.label },
+            |m: &mut FieldDescriptorProto| { &mut m.label },
+            field_descriptor_proto::Label::LABEL_OPTIONAL,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_enum_accessor::<_, field_descriptor_proto::Type>(
+            "type",
+            |m: &FieldDescriptorProto| { &m.field_type },
+            |m: &mut FieldDescriptorProto| { &mut m.field_type },
+            field_descriptor_proto::Type::TYPE_DOUBLE,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "type_name",
+            |m: &FieldDescriptorProto| { &m.type_name },
+            |m: &mut FieldDescriptorProto| { &mut m.type_name },
+            FieldDescriptorProto::get_type_name,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "extendee",
+            |m: &FieldDescriptorProto| { &m.extendee },
+            |m: &mut FieldDescriptorProto| { &mut m.extendee },
+            FieldDescriptorProto::get_extendee,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "default_value",
+            |m: &FieldDescriptorProto| { &m.default_value },
+            |m: &mut FieldDescriptorProto| { &mut m.default_value },
+            FieldDescriptorProto::get_default_value,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "oneof_index",
+            |m: &FieldDescriptorProto| { &m.oneof_index },
+            |m: &mut FieldDescriptorProto| { &mut m.oneof_index },
+            FieldDescriptorProto::get_oneof_index,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "json_name",
+            |m: &FieldDescriptorProto| { &m.json_name },
+            |m: &mut FieldDescriptorProto| { &mut m.json_name },
+            FieldDescriptorProto::get_json_name,
+        ));
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, FieldOptions>(
+            "options",
+            |m: &FieldDescriptorProto| { &m.options },
+            |m: &mut FieldDescriptorProto| { &mut m.options },
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "proto3_optional",
+            |m: &FieldDescriptorProto| { &m.proto3_optional },
+            |m: &mut FieldDescriptorProto| { &mut m.proto3_optional },
+            FieldDescriptorProto::get_proto3_optional,
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<FieldDescriptorProto>(
+            "FieldDescriptorProto",
+            4,
+            fields,
+        )
     }
 }
 
@@ -1673,7 +1987,10 @@ impl crate::Message for FieldDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 3 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -1694,13 +2011,22 @@ impl crate::Message for FieldDescriptorProto {
                     self.field_type = ::std::option::Option::Some(is.read_enum_or_unknown()?);
                 },
                 6 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.type_name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.type_name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.extendee)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.extendee = ::std::option::Option::Some(is.read_string()?);
                 },
                 7 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.default_value)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.default_value = ::std::option::Option::Some(is.read_string()?);
                 },
                 9 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -1709,10 +2035,19 @@ impl crate::Message for FieldDescriptorProto {
                     self.oneof_index = ::std::option::Option::Some(is.read_int32()?);
                 },
                 10 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.json_name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.json_name = ::std::option::Option::Some(is.read_string()?);
                 },
                 8 => {
-                    crate::rt::read_singular_message_into::<FieldOptions, _>(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
+                },
+                17 => {
+                    if wire_type != crate::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.proto3_optional = ::std::option::Option::Some(is.read_bool()?);
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -1757,6 +2092,9 @@ impl crate::Message for FieldDescriptorProto {
             let len = v.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         }
+        if let Some(v) = self.proto3_optional {
+            my_size += 3;
+        }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -1793,6 +2131,9 @@ impl crate::Message for FieldDescriptorProto {
         if let Some(v) = self.options.as_ref() {
             crate::rt::write_message_field_with_cached_size(8, v, os)?;
         }
+        if let Some(v) = self.proto3_optional {
+            os.write_bool(17, v)?;
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -1809,103 +2150,47 @@ impl crate::Message for FieldDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> FieldDescriptorProto {
         FieldDescriptorProto::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "name",
-                |m: &FieldDescriptorProto| { &m.name },
-                |m: &mut FieldDescriptorProto| { &mut m.name },
-                FieldDescriptorProto::get_name,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeInt32, _>(
-                "number",
-                |m: &FieldDescriptorProto| { &m.number },
-                |m: &mut FieldDescriptorProto| { &mut m.number },
-                FieldDescriptorProto::get_number,
-            ));
-            fields.push(crate::reflect::rt::make_option_enum_accessor::<_, field_descriptor_proto::Label>(
-                "label",
-                |m: &FieldDescriptorProto| { &m.label },
-                |m: &mut FieldDescriptorProto| { &mut m.label },
-                field_descriptor_proto::Label::LABEL_OPTIONAL,
-            ));
-            fields.push(crate::reflect::rt::make_option_enum_accessor::<_, field_descriptor_proto::Type>(
-                "type",
-                |m: &FieldDescriptorProto| { &m.field_type },
-                |m: &mut FieldDescriptorProto| { &mut m.field_type },
-                field_descriptor_proto::Type::TYPE_DOUBLE,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "type_name",
-                |m: &FieldDescriptorProto| { &m.type_name },
-                |m: &mut FieldDescriptorProto| { &mut m.type_name },
-                FieldDescriptorProto::get_type_name,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "extendee",
-                |m: &FieldDescriptorProto| { &m.extendee },
-                |m: &mut FieldDescriptorProto| { &mut m.extendee },
-                FieldDescriptorProto::get_extendee,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "default_value",
-                |m: &FieldDescriptorProto| { &m.default_value },
-                |m: &mut FieldDescriptorProto| { &mut m.default_value },
-                FieldDescriptorProto::get_default_value,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeInt32, _>(
-                "oneof_index",
-                |m: &FieldDescriptorProto| { &m.oneof_index },
-                |m: &mut FieldDescriptorProto| { &mut m.oneof_index },
-                FieldDescriptorProto::get_oneof_index,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "json_name",
-                |m: &FieldDescriptorProto| { &m.json_name },
-                |m: &mut FieldDescriptorProto| { &mut m.json_name },
-                FieldDescriptorProto::get_json_name,
-            ));
-            fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FieldOptions>, _>(
-                "options",
-                |m: &FieldDescriptorProto| { &m.options },
-                |m: &mut FieldDescriptorProto| { &mut m.options },
-            ));
-            crate::reflect::MessageDescriptor::new::<FieldDescriptorProto>(
-                "FieldDescriptorProto",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 6)
     }
 
     fn default_instance() -> &'static FieldDescriptorProto {
-        static instance: crate::rt::Lazy<FieldDescriptorProto> = crate::rt::Lazy::INIT;
-        instance.get(FieldDescriptorProto::new)
+        static instance: FieldDescriptorProto = FieldDescriptorProto {
+            name: ::std::option::Option::None,
+            number: ::std::option::Option::None,
+            label: ::std::option::Option::None,
+            field_type: ::std::option::Option::None,
+            type_name: ::std::option::Option::None,
+            extendee: ::std::option::Option::None,
+            default_value: ::std::option::Option::None,
+            oneof_index: ::std::option::Option::None,
+            json_name: ::std::option::Option::None,
+            options: crate::MessageField::none(),
+            proto3_optional: ::std::option::Option::None,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
 impl crate::Clear for FieldDescriptorProto {
     fn clear(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
         self.number = ::std::option::Option::None;
         self.label = ::std::option::Option::None;
         self.field_type = ::std::option::Option::None;
-        self.type_name.clear();
-        self.extendee.clear();
-        self.default_value.clear();
+        self.type_name = ::std::option::Option::None;
+        self.extendee = ::std::option::Option::None;
+        self.default_value = ::std::option::Option::None;
         self.oneof_index = ::std::option::Option::None;
-        self.json_name.clear();
+        self.json_name = ::std::option::Option::None;
         self.options.clear();
+        self.proto3_optional = ::std::option::Option::None;
         self.unknown_fields.clear();
     }
 }
@@ -1917,6 +2202,7 @@ impl ::std::fmt::Debug for FieldDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for FieldDescriptorProto {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `FieldDescriptorProto`
@@ -1997,11 +2283,8 @@ pub mod field_descriptor_proto {
             values
         }
 
-        fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
-            static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::INIT;
-            descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new::<Type>("FieldDescriptorProto.Type", super::file_descriptor_proto())
-            })
+        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 0)
         }
     }
 
@@ -2013,6 +2296,13 @@ pub mod field_descriptor_proto {
     }
 
     impl crate::reflect::ProtobufValue for Type {
+        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
+    }
+
+    impl Type {
+        pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
+            crate::reflect::GeneratedEnumDescriptorData::new_2::<Type>("FieldDescriptorProto.Type", 0)
+        }
     }
 
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
@@ -2046,11 +2336,8 @@ pub mod field_descriptor_proto {
             values
         }
 
-        fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
-            static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::INIT;
-            descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new::<Label>("FieldDescriptorProto.Label", super::file_descriptor_proto())
-            })
+        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 1)
         }
     }
 
@@ -2062,6 +2349,13 @@ pub mod field_descriptor_proto {
     }
 
     impl crate::reflect::ProtobufValue for Label {
+        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
+    }
+
+    impl Label {
+        pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
+            crate::reflect::GeneratedEnumDescriptorData::new_2::<Label>("FieldDescriptorProto.Label", 1)
+        }
     }
 }
 
@@ -2070,8 +2364,8 @@ pub mod field_descriptor_proto {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct OneofDescriptorProto {
     // message fields
-    name: crate::SingularField<::std::string::String>,
-    pub options: crate::SingularPtrField<OneofOptions>,
+    name: ::std::option::Option<::std::string::String>,
+    pub options: crate::MessageField<OneofOptions>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -2100,7 +2394,7 @@ impl OneofDescriptorProto {
     }
 
     pub fn clear_name(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
     }
 
     pub fn has_name(&self) -> bool {
@@ -2109,14 +2403,14 @@ impl OneofDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ::std::string::String) {
-        self.name = crate::SingularField::some(v);
+        self.name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
-            self.name.set_default();
+            self.name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.name.as_mut().unwrap()
     }
@@ -2124,6 +2418,26 @@ impl OneofDescriptorProto {
     // Take field
     pub fn take_name(&mut self) -> ::std::string::String {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &OneofDescriptorProto| { &m.name },
+            |m: &mut OneofDescriptorProto| { &mut m.name },
+            OneofDescriptorProto::get_name,
+        ));
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, OneofOptions>(
+            "options",
+            |m: &OneofDescriptorProto| { &m.options },
+            |m: &mut OneofDescriptorProto| { &mut m.options },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<OneofDescriptorProto>(
+            "OneofDescriptorProto",
+            5,
+            fields,
+        )
     }
 }
 
@@ -2142,10 +2456,13 @@ impl crate::Message for OneofDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
-                    crate::rt::read_singular_message_into::<OneofOptions, _>(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -2194,46 +2511,28 @@ impl crate::Message for OneofDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> OneofDescriptorProto {
         OneofDescriptorProto::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "name",
-                |m: &OneofDescriptorProto| { &m.name },
-                |m: &mut OneofDescriptorProto| { &mut m.name },
-                OneofDescriptorProto::get_name,
-            ));
-            fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<OneofOptions>, _>(
-                "options",
-                |m: &OneofDescriptorProto| { &m.options },
-                |m: &mut OneofDescriptorProto| { &mut m.options },
-            ));
-            crate::reflect::MessageDescriptor::new::<OneofDescriptorProto>(
-                "OneofDescriptorProto",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 7)
     }
 
     fn default_instance() -> &'static OneofDescriptorProto {
-        static instance: crate::rt::Lazy<OneofDescriptorProto> = crate::rt::Lazy::INIT;
-        instance.get(OneofDescriptorProto::new)
+        static instance: OneofDescriptorProto = OneofDescriptorProto {
+            name: ::std::option::Option::None,
+            options: crate::MessageField::none(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
 impl crate::Clear for OneofDescriptorProto {
     fn clear(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
         self.options.clear();
         self.unknown_fields.clear();
     }
@@ -2246,6 +2545,7 @@ impl ::std::fmt::Debug for OneofDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for OneofDescriptorProto {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  Describes an enum type.
@@ -2253,9 +2553,16 @@ impl crate::reflect::ProtobufValue for OneofDescriptorProto {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct EnumDescriptorProto {
     // message fields
-    name: crate::SingularField<::std::string::String>,
-    pub value: crate::RepeatedField<EnumValueDescriptorProto>,
-    pub options: crate::SingularPtrField<EnumOptions>,
+    name: ::std::option::Option<::std::string::String>,
+    pub value: ::std::vec::Vec<EnumValueDescriptorProto>,
+    pub options: crate::MessageField<EnumOptions>,
+    ///  Range of reserved numeric values. Reserved numeric values may not be used
+    ///  by enum values in the same enum declaration. Reserved ranges may not
+    ///  overlap.
+    pub reserved_range: ::std::vec::Vec<enum_descriptor_proto::EnumReservedRange>,
+    ///  Reserved enum value names, which may not be reused. A given name may only
+    ///  be reserved once.
+    pub reserved_name: ::std::vec::Vec<::std::string::String>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -2284,7 +2591,7 @@ impl EnumDescriptorProto {
     }
 
     pub fn clear_name(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
     }
 
     pub fn has_name(&self) -> bool {
@@ -2293,14 +2600,14 @@ impl EnumDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ::std::string::String) {
-        self.name = crate::SingularField::some(v);
+        self.name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
-            self.name.set_default();
+            self.name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.name.as_mut().unwrap()
     }
@@ -2308,6 +2615,41 @@ impl EnumDescriptorProto {
     // Take field
     pub fn take_name(&mut self) -> ::std::string::String {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &EnumDescriptorProto| { &m.name },
+            |m: &mut EnumDescriptorProto| { &mut m.name },
+            EnumDescriptorProto::get_name,
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "value",
+            |m: &EnumDescriptorProto| { &m.value },
+            |m: &mut EnumDescriptorProto| { &mut m.value },
+        ));
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, EnumOptions>(
+            "options",
+            |m: &EnumDescriptorProto| { &m.options },
+            |m: &mut EnumDescriptorProto| { &mut m.options },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "reserved_range",
+            |m: &EnumDescriptorProto| { &m.reserved_range },
+            |m: &mut EnumDescriptorProto| { &mut m.reserved_range },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "reserved_name",
+            |m: &EnumDescriptorProto| { &m.reserved_name },
+            |m: &mut EnumDescriptorProto| { &mut m.reserved_name },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<EnumDescriptorProto>(
+            "EnumDescriptorProto",
+            6,
+            fields,
+        )
     }
 }
 
@@ -2323,6 +2665,11 @@ impl crate::Message for EnumDescriptorProto {
                 return false;
             }
         };
+        for v in &self.reserved_range {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -2331,13 +2678,22 @@ impl crate::Message for EnumDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.value)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.value)?;
                 },
                 3 => {
-                    crate::rt::read_singular_message_into::<EnumOptions, _>(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
+                },
+                4 => {
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.reserved_range)?;
+                },
+                5 => {
+                    crate::rt::read_repeated_string_into(wire_type, is, &mut self.reserved_name)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -2362,6 +2718,13 @@ impl crate::Message for EnumDescriptorProto {
             let len = v.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         }
+        for value in &self.reserved_range {
+            let len = value.compute_size();
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+        };
+        for value in &self.reserved_name {
+            my_size += crate::rt::string_size(5, &value);
+        };
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -2377,6 +2740,12 @@ impl crate::Message for EnumDescriptorProto {
         if let Some(v) = self.options.as_ref() {
             crate::rt::write_message_field_with_cached_size(3, v, os)?;
         }
+        for v in &self.reserved_range {
+            crate::rt::write_message_field_with_cached_size(4, v, os)?;
+        };
+        for v in &self.reserved_name {
+            os.write_string(5, &v)?;
+        };
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -2393,53 +2762,35 @@ impl crate::Message for EnumDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> EnumDescriptorProto {
         EnumDescriptorProto::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "name",
-                |m: &EnumDescriptorProto| { &m.name },
-                |m: &mut EnumDescriptorProto| { &mut m.name },
-                EnumDescriptorProto::get_name,
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumValueDescriptorProto>>(
-                "value",
-                |m: &EnumDescriptorProto| { &m.value },
-                |m: &mut EnumDescriptorProto| { &mut m.value },
-            ));
-            fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumOptions>, _>(
-                "options",
-                |m: &EnumDescriptorProto| { &m.options },
-                |m: &mut EnumDescriptorProto| { &mut m.options },
-            ));
-            crate::reflect::MessageDescriptor::new::<EnumDescriptorProto>(
-                "EnumDescriptorProto",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 8)
     }
 
     fn default_instance() -> &'static EnumDescriptorProto {
-        static instance: crate::rt::Lazy<EnumDescriptorProto> = crate::rt::Lazy::INIT;
-        instance.get(EnumDescriptorProto::new)
+        static instance: EnumDescriptorProto = EnumDescriptorProto {
+            name: ::std::option::Option::None,
+            value: ::std::vec::Vec::new(),
+            options: crate::MessageField::none(),
+            reserved_range: ::std::vec::Vec::new(),
+            reserved_name: ::std::vec::Vec::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
 impl crate::Clear for EnumDescriptorProto {
     fn clear(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
         self.value.clear();
         self.options.clear();
+        self.reserved_range.clear();
+        self.reserved_name.clear();
         self.unknown_fields.clear();
     }
 }
@@ -2451,6 +2802,204 @@ impl ::std::fmt::Debug for EnumDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for EnumDescriptorProto {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+/// Nested message and enums of message `EnumDescriptorProto`
+pub mod enum_descriptor_proto {
+    ///  Range of reserved numeric values. Reserved values may not be used by
+    ///  entries in the same enum. Reserved ranges may not overlap.
+    ///
+    ///  Note that this is distinct from DescriptorProto.ReservedRange in that it
+    ///  is inclusive such that it can appropriately represent the entire int32
+    ///  domain.
+    #[derive(PartialEq,Clone,Default)]
+    #[cfg_attr(serde, derive(Serialize, Deserialize))]
+    pub struct EnumReservedRange {
+        // message fields
+        start: ::std::option::Option<i32>,
+        end: ::std::option::Option<i32>,
+        // special fields
+        #[cfg_attr(serde, serde(skip))]
+        pub unknown_fields: crate::UnknownFields,
+        #[cfg_attr(serde, serde(skip))]
+        pub cached_size: crate::rt::CachedSize,
+    }
+
+    impl<'a> ::std::default::Default for &'a EnumReservedRange {
+        fn default() -> &'a EnumReservedRange {
+            <EnumReservedRange as crate::Message>::default_instance()
+        }
+    }
+
+    impl EnumReservedRange {
+        pub fn new() -> EnumReservedRange {
+            ::std::default::Default::default()
+        }
+
+        // optional int32 start = 1;
+
+        pub fn get_start(&self) -> i32 {
+            self.start.unwrap_or(0)
+        }
+
+        pub fn clear_start(&mut self) {
+            self.start = ::std::option::Option::None;
+        }
+
+        pub fn has_start(&self) -> bool {
+            self.start.is_some()
+        }
+
+        // Param is passed by value, moved
+        pub fn set_start(&mut self, v: i32) {
+            self.start = ::std::option::Option::Some(v);
+        }
+
+        // optional int32 end = 2;
+
+        pub fn get_end(&self) -> i32 {
+            self.end.unwrap_or(0)
+        }
+
+        pub fn clear_end(&mut self) {
+            self.end = ::std::option::Option::None;
+        }
+
+        pub fn has_end(&self) -> bool {
+            self.end.is_some()
+        }
+
+        // Param is passed by value, moved
+        pub fn set_end(&mut self, v: i32) {
+            self.end = ::std::option::Option::Some(v);
+        }
+
+        pub(in super) fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+                "start",
+                |m: &EnumReservedRange| { &m.start },
+                |m: &mut EnumReservedRange| { &mut m.start },
+                EnumReservedRange::get_start,
+            ));
+            fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+                "end",
+                |m: &EnumReservedRange| { &m.end },
+                |m: &mut EnumReservedRange| { &mut m.end },
+                EnumReservedRange::get_end,
+            ));
+            crate::reflect::GeneratedMessageDescriptorData::new_2::<EnumReservedRange>(
+                "EnumDescriptorProto.EnumReservedRange",
+                23,
+                fields,
+            )
+        }
+    }
+
+    impl crate::Message for EnumReservedRange {
+        fn is_initialized(&self) -> bool {
+            true
+        }
+
+        fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
+            while !is.eof()? {
+                let (field_number, wire_type) = is.read_tag_unpack()?;
+                match field_number {
+                    1 => {
+                        if wire_type != crate::wire_format::WireTypeVarint {
+                            return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.start = ::std::option::Option::Some(is.read_int32()?);
+                    },
+                    2 => {
+                        if wire_type != crate::wire_format::WireTypeVarint {
+                            return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.end = ::std::option::Option::Some(is.read_int32()?);
+                    },
+                    _ => {
+                        crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    },
+                };
+            }
+            ::std::result::Result::Ok(())
+        }
+
+        // Compute sizes of nested messages
+        #[allow(unused_variables)]
+        fn compute_size(&self) -> u32 {
+            let mut my_size = 0;
+            if let Some(v) = self.start {
+                my_size += crate::rt::value_size(1, v, crate::wire_format::WireTypeVarint);
+            }
+            if let Some(v) = self.end {
+                my_size += crate::rt::value_size(2, v, crate::wire_format::WireTypeVarint);
+            }
+            my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+            self.cached_size.set(my_size);
+            my_size
+        }
+
+        fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+            if let Some(v) = self.start {
+                os.write_int32(1, v)?;
+            }
+            if let Some(v) = self.end {
+                os.write_int32(2, v)?;
+            }
+            os.write_unknown_fields(self.get_unknown_fields())?;
+            ::std::result::Result::Ok(())
+        }
+
+        fn get_cached_size(&self) -> u32 {
+            self.cached_size.get()
+        }
+
+        fn get_unknown_fields(&self) -> &crate::UnknownFields {
+            &self.unknown_fields
+        }
+
+        fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
+            &mut self.unknown_fields
+        }
+
+        fn new() -> EnumReservedRange {
+            EnumReservedRange::new()
+        }
+
+        fn descriptor_static() -> crate::reflect::MessageDescriptor {
+            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 9)
+        }
+
+        fn default_instance() -> &'static EnumReservedRange {
+            static instance: EnumReservedRange = EnumReservedRange {
+                start: ::std::option::Option::None,
+                end: ::std::option::Option::None,
+                unknown_fields: crate::UnknownFields::new(),
+                cached_size: crate::rt::CachedSize::new(),
+            };
+            &instance
+        }
+    }
+
+    impl crate::Clear for EnumReservedRange {
+        fn clear(&mut self) {
+            self.start = ::std::option::Option::None;
+            self.end = ::std::option::Option::None;
+            self.unknown_fields.clear();
+        }
+    }
+
+    impl ::std::fmt::Debug for EnumReservedRange {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            crate::text_format::fmt(self, f)
+        }
+    }
+
+    impl crate::reflect::ProtobufValue for EnumReservedRange {
+        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    }
 }
 
 ///  Describes a value within an enum.
@@ -2458,9 +3007,9 @@ impl crate::reflect::ProtobufValue for EnumDescriptorProto {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct EnumValueDescriptorProto {
     // message fields
-    name: crate::SingularField<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
     number: ::std::option::Option<i32>,
-    pub options: crate::SingularPtrField<EnumValueOptions>,
+    pub options: crate::MessageField<EnumValueOptions>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -2489,7 +3038,7 @@ impl EnumValueDescriptorProto {
     }
 
     pub fn clear_name(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
     }
 
     pub fn has_name(&self) -> bool {
@@ -2498,14 +3047,14 @@ impl EnumValueDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ::std::string::String) {
-        self.name = crate::SingularField::some(v);
+        self.name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
-            self.name.set_default();
+            self.name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.name.as_mut().unwrap()
     }
@@ -2533,6 +3082,32 @@ impl EnumValueDescriptorProto {
     pub fn set_number(&mut self, v: i32) {
         self.number = ::std::option::Option::Some(v);
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &EnumValueDescriptorProto| { &m.name },
+            |m: &mut EnumValueDescriptorProto| { &mut m.name },
+            EnumValueDescriptorProto::get_name,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "number",
+            |m: &EnumValueDescriptorProto| { &m.number },
+            |m: &mut EnumValueDescriptorProto| { &mut m.number },
+            EnumValueDescriptorProto::get_number,
+        ));
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, EnumValueOptions>(
+            "options",
+            |m: &EnumValueDescriptorProto| { &m.options },
+            |m: &mut EnumValueDescriptorProto| { &mut m.options },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<EnumValueDescriptorProto>(
+            "EnumValueDescriptorProto",
+            7,
+            fields,
+        )
+    }
 }
 
 impl crate::Message for EnumValueDescriptorProto {
@@ -2550,7 +3125,10 @@ impl crate::Message for EnumValueDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -2559,7 +3137,7 @@ impl crate::Message for EnumValueDescriptorProto {
                     self.number = ::std::option::Option::Some(is.read_int32()?);
                 },
                 3 => {
-                    crate::rt::read_singular_message_into::<EnumValueOptions, _>(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -2614,52 +3192,29 @@ impl crate::Message for EnumValueDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> EnumValueDescriptorProto {
         EnumValueDescriptorProto::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "name",
-                |m: &EnumValueDescriptorProto| { &m.name },
-                |m: &mut EnumValueDescriptorProto| { &mut m.name },
-                EnumValueDescriptorProto::get_name,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeInt32, _>(
-                "number",
-                |m: &EnumValueDescriptorProto| { &m.number },
-                |m: &mut EnumValueDescriptorProto| { &mut m.number },
-                EnumValueDescriptorProto::get_number,
-            ));
-            fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumValueOptions>, _>(
-                "options",
-                |m: &EnumValueDescriptorProto| { &m.options },
-                |m: &mut EnumValueDescriptorProto| { &mut m.options },
-            ));
-            crate::reflect::MessageDescriptor::new::<EnumValueDescriptorProto>(
-                "EnumValueDescriptorProto",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 10)
     }
 
     fn default_instance() -> &'static EnumValueDescriptorProto {
-        static instance: crate::rt::Lazy<EnumValueDescriptorProto> = crate::rt::Lazy::INIT;
-        instance.get(EnumValueDescriptorProto::new)
+        static instance: EnumValueDescriptorProto = EnumValueDescriptorProto {
+            name: ::std::option::Option::None,
+            number: ::std::option::Option::None,
+            options: crate::MessageField::none(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
 impl crate::Clear for EnumValueDescriptorProto {
     fn clear(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
         self.number = ::std::option::Option::None;
         self.options.clear();
         self.unknown_fields.clear();
@@ -2673,6 +3228,7 @@ impl ::std::fmt::Debug for EnumValueDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for EnumValueDescriptorProto {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  Describes a service.
@@ -2680,9 +3236,9 @@ impl crate::reflect::ProtobufValue for EnumValueDescriptorProto {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct ServiceDescriptorProto {
     // message fields
-    name: crate::SingularField<::std::string::String>,
-    pub method: crate::RepeatedField<MethodDescriptorProto>,
-    pub options: crate::SingularPtrField<ServiceOptions>,
+    name: ::std::option::Option<::std::string::String>,
+    pub method: ::std::vec::Vec<MethodDescriptorProto>,
+    pub options: crate::MessageField<ServiceOptions>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -2711,7 +3267,7 @@ impl ServiceDescriptorProto {
     }
 
     pub fn clear_name(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
     }
 
     pub fn has_name(&self) -> bool {
@@ -2720,14 +3276,14 @@ impl ServiceDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ::std::string::String) {
-        self.name = crate::SingularField::some(v);
+        self.name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
-            self.name.set_default();
+            self.name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.name.as_mut().unwrap()
     }
@@ -2735,6 +3291,31 @@ impl ServiceDescriptorProto {
     // Take field
     pub fn take_name(&mut self) -> ::std::string::String {
         self.name.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &ServiceDescriptorProto| { &m.name },
+            |m: &mut ServiceDescriptorProto| { &mut m.name },
+            ServiceDescriptorProto::get_name,
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "method",
+            |m: &ServiceDescriptorProto| { &m.method },
+            |m: &mut ServiceDescriptorProto| { &mut m.method },
+        ));
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, ServiceOptions>(
+            "options",
+            |m: &ServiceDescriptorProto| { &m.options },
+            |m: &mut ServiceDescriptorProto| { &mut m.options },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<ServiceDescriptorProto>(
+            "ServiceDescriptorProto",
+            8,
+            fields,
+        )
     }
 }
 
@@ -2758,13 +3339,16 @@ impl crate::Message for ServiceDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.method)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.method)?;
                 },
                 3 => {
-                    crate::rt::read_singular_message_into::<ServiceOptions, _>(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -2820,51 +3404,29 @@ impl crate::Message for ServiceDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> ServiceDescriptorProto {
         ServiceDescriptorProto::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "name",
-                |m: &ServiceDescriptorProto| { &m.name },
-                |m: &mut ServiceDescriptorProto| { &mut m.name },
-                ServiceDescriptorProto::get_name,
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<MethodDescriptorProto>>(
-                "method",
-                |m: &ServiceDescriptorProto| { &m.method },
-                |m: &mut ServiceDescriptorProto| { &mut m.method },
-            ));
-            fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<ServiceOptions>, _>(
-                "options",
-                |m: &ServiceDescriptorProto| { &m.options },
-                |m: &mut ServiceDescriptorProto| { &mut m.options },
-            ));
-            crate::reflect::MessageDescriptor::new::<ServiceDescriptorProto>(
-                "ServiceDescriptorProto",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 11)
     }
 
     fn default_instance() -> &'static ServiceDescriptorProto {
-        static instance: crate::rt::Lazy<ServiceDescriptorProto> = crate::rt::Lazy::INIT;
-        instance.get(ServiceDescriptorProto::new)
+        static instance: ServiceDescriptorProto = ServiceDescriptorProto {
+            name: ::std::option::Option::None,
+            method: ::std::vec::Vec::new(),
+            options: crate::MessageField::none(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
 impl crate::Clear for ServiceDescriptorProto {
     fn clear(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
         self.method.clear();
         self.options.clear();
         self.unknown_fields.clear();
@@ -2878,6 +3440,7 @@ impl ::std::fmt::Debug for ServiceDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for ServiceDescriptorProto {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  Describes a method of a service.
@@ -2885,12 +3448,12 @@ impl crate::reflect::ProtobufValue for ServiceDescriptorProto {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct MethodDescriptorProto {
     // message fields
-    name: crate::SingularField<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
     ///  Input and output type names.  These are resolved in the same way as
     ///  FieldDescriptorProto.type_name, but must refer to a message type.
-    input_type: crate::SingularField<::std::string::String>,
-    output_type: crate::SingularField<::std::string::String>,
-    pub options: crate::SingularPtrField<MethodOptions>,
+    input_type: ::std::option::Option<::std::string::String>,
+    output_type: ::std::option::Option<::std::string::String>,
+    pub options: crate::MessageField<MethodOptions>,
     ///  Identifies if client streams multiple client messages
     client_streaming: ::std::option::Option<bool>,
     ///  Identifies if server streams multiple server messages
@@ -2923,7 +3486,7 @@ impl MethodDescriptorProto {
     }
 
     pub fn clear_name(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
     }
 
     pub fn has_name(&self) -> bool {
@@ -2932,14 +3495,14 @@ impl MethodDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ::std::string::String) {
-        self.name = crate::SingularField::some(v);
+        self.name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
-            self.name.set_default();
+            self.name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.name.as_mut().unwrap()
     }
@@ -2959,7 +3522,7 @@ impl MethodDescriptorProto {
     }
 
     pub fn clear_input_type(&mut self) {
-        self.input_type.clear();
+        self.input_type = ::std::option::Option::None;
     }
 
     pub fn has_input_type(&self) -> bool {
@@ -2968,14 +3531,14 @@ impl MethodDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_input_type(&mut self, v: ::std::string::String) {
-        self.input_type = crate::SingularField::some(v);
+        self.input_type = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_input_type(&mut self) -> &mut ::std::string::String {
         if self.input_type.is_none() {
-            self.input_type.set_default();
+            self.input_type = ::std::option::Option::Some(::std::string::String::new());
         }
         self.input_type.as_mut().unwrap()
     }
@@ -2995,7 +3558,7 @@ impl MethodDescriptorProto {
     }
 
     pub fn clear_output_type(&mut self) {
-        self.output_type.clear();
+        self.output_type = ::std::option::Option::None;
     }
 
     pub fn has_output_type(&self) -> bool {
@@ -3004,14 +3567,14 @@ impl MethodDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_output_type(&mut self, v: ::std::string::String) {
-        self.output_type = crate::SingularField::some(v);
+        self.output_type = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_output_type(&mut self) -> &mut ::std::string::String {
         if self.output_type.is_none() {
-            self.output_type.set_default();
+            self.output_type = ::std::option::Option::Some(::std::string::String::new());
         }
         self.output_type.as_mut().unwrap()
     }
@@ -3058,6 +3621,50 @@ impl MethodDescriptorProto {
     pub fn set_server_streaming(&mut self, v: bool) {
         self.server_streaming = ::std::option::Option::Some(v);
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "name",
+            |m: &MethodDescriptorProto| { &m.name },
+            |m: &mut MethodDescriptorProto| { &mut m.name },
+            MethodDescriptorProto::get_name,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "input_type",
+            |m: &MethodDescriptorProto| { &m.input_type },
+            |m: &mut MethodDescriptorProto| { &mut m.input_type },
+            MethodDescriptorProto::get_input_type,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "output_type",
+            |m: &MethodDescriptorProto| { &m.output_type },
+            |m: &mut MethodDescriptorProto| { &mut m.output_type },
+            MethodDescriptorProto::get_output_type,
+        ));
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, MethodOptions>(
+            "options",
+            |m: &MethodDescriptorProto| { &m.options },
+            |m: &mut MethodDescriptorProto| { &mut m.options },
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "client_streaming",
+            |m: &MethodDescriptorProto| { &m.client_streaming },
+            |m: &mut MethodDescriptorProto| { &mut m.client_streaming },
+            MethodDescriptorProto::get_client_streaming,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "server_streaming",
+            |m: &MethodDescriptorProto| { &m.server_streaming },
+            |m: &mut MethodDescriptorProto| { &mut m.server_streaming },
+            MethodDescriptorProto::get_server_streaming,
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<MethodDescriptorProto>(
+            "MethodDescriptorProto",
+            9,
+            fields,
+        )
+    }
 }
 
 impl crate::Message for MethodDescriptorProto {
@@ -3075,16 +3682,25 @@ impl crate::Message for MethodDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.input_type)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.input_type = ::std::option::Option::Some(is.read_string()?);
                 },
                 3 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.output_type)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.output_type = ::std::option::Option::Some(is.read_string()?);
                 },
                 4 => {
-                    crate::rt::read_singular_message_into::<MethodOptions, _>(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
                 5 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -3169,72 +3785,34 @@ impl crate::Message for MethodDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> MethodDescriptorProto {
         MethodDescriptorProto::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "name",
-                |m: &MethodDescriptorProto| { &m.name },
-                |m: &mut MethodDescriptorProto| { &mut m.name },
-                MethodDescriptorProto::get_name,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "input_type",
-                |m: &MethodDescriptorProto| { &m.input_type },
-                |m: &mut MethodDescriptorProto| { &mut m.input_type },
-                MethodDescriptorProto::get_input_type,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "output_type",
-                |m: &MethodDescriptorProto| { &m.output_type },
-                |m: &mut MethodDescriptorProto| { &mut m.output_type },
-                MethodDescriptorProto::get_output_type,
-            ));
-            fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<MethodOptions>, _>(
-                "options",
-                |m: &MethodDescriptorProto| { &m.options },
-                |m: &mut MethodDescriptorProto| { &mut m.options },
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "client_streaming",
-                |m: &MethodDescriptorProto| { &m.client_streaming },
-                |m: &mut MethodDescriptorProto| { &mut m.client_streaming },
-                MethodDescriptorProto::get_client_streaming,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "server_streaming",
-                |m: &MethodDescriptorProto| { &m.server_streaming },
-                |m: &mut MethodDescriptorProto| { &mut m.server_streaming },
-                MethodDescriptorProto::get_server_streaming,
-            ));
-            crate::reflect::MessageDescriptor::new::<MethodDescriptorProto>(
-                "MethodDescriptorProto",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 12)
     }
 
     fn default_instance() -> &'static MethodDescriptorProto {
-        static instance: crate::rt::Lazy<MethodDescriptorProto> = crate::rt::Lazy::INIT;
-        instance.get(MethodDescriptorProto::new)
+        static instance: MethodDescriptorProto = MethodDescriptorProto {
+            name: ::std::option::Option::None,
+            input_type: ::std::option::Option::None,
+            output_type: ::std::option::Option::None,
+            options: crate::MessageField::none(),
+            client_streaming: ::std::option::Option::None,
+            server_streaming: ::std::option::Option::None,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
 impl crate::Clear for MethodDescriptorProto {
     fn clear(&mut self) {
-        self.name.clear();
-        self.input_type.clear();
-        self.output_type.clear();
+        self.name = ::std::option::Option::None;
+        self.input_type = ::std::option::Option::None;
+        self.output_type = ::std::option::Option::None;
         self.options.clear();
         self.client_streaming = ::std::option::Option::None;
         self.server_streaming = ::std::option::Option::None;
@@ -3249,6 +3827,7 @@ impl ::std::fmt::Debug for MethodDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for MethodDescriptorProto {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -3259,13 +3838,13 @@ pub struct FileOptions {
     ///  placed.  By default, the proto package is used, but this is often
     ///  inappropriate because proto packages do not normally start with backwards
     ///  domain names.
-    java_package: crate::SingularField<::std::string::String>,
+    java_package: ::std::option::Option<::std::string::String>,
     ///  If set, all the classes from the .proto file are wrapped in a single
     ///  outer class with the given name.  This applies to both Proto1
     ///  (equivalent to the old "--one_java_file" option) and Proto2 (where
     ///  a .proto always translates to a single class, but you may want to
     ///  explicitly choose the class name).
-    java_outer_classname: crate::SingularField<::std::string::String>,
+    java_outer_classname: ::std::option::Option<::std::string::String>,
     ///  If set true, then the Java code generator will generate a separate .java
     ///  file for each top-level message, enum, and service defined in the .proto
     ///  file.  Thus, these types will *not* be nested inside the outer class
@@ -3288,7 +3867,7 @@ pub struct FileOptions {
     ///    - The basename of the package import path, if provided.
     ///    - Otherwise, the package statement in the .proto file, if present.
     ///    - Otherwise, the basename of the .proto file, without extension.
-    go_package: crate::SingularField<::std::string::String>,
+    go_package: ::std::option::Option<::std::string::String>,
     ///  Should generic services be generated in each language?  "Generic" services
     ///  are not specific to any particular RPC system.  They are generated by the
     ///  main code generators in each language (without additional plugins).
@@ -3302,6 +3881,7 @@ pub struct FileOptions {
     cc_generic_services: ::std::option::Option<bool>,
     java_generic_services: ::std::option::Option<bool>,
     py_generic_services: ::std::option::Option<bool>,
+    php_generic_services: ::std::option::Option<bool>,
     ///  Is this file deprecated?
     ///  Depending on the target platform, this can emit Deprecated annotations
     ///  for everything in the file, or it will be completely ignored; in the very
@@ -3312,11 +3892,32 @@ pub struct FileOptions {
     cc_enable_arenas: ::std::option::Option<bool>,
     ///  Sets the objective c class prefix which is prepended to all objective c
     ///  generated classes from this .proto. There is no default.
-    objc_class_prefix: crate::SingularField<::std::string::String>,
+    objc_class_prefix: ::std::option::Option<::std::string::String>,
     ///  Namespace for generated classes; defaults to the package.
-    csharp_namespace: crate::SingularField<::std::string::String>,
-    ///  The parser stores options it doesn't recognize here. See above.
-    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    csharp_namespace: ::std::option::Option<::std::string::String>,
+    ///  By default Swift generators will take the proto package and CamelCase it
+    ///  replacing '.' with underscore and use that to prefix the types/symbols
+    ///  defined. When this options is provided, they will use this value instead
+    ///  to prefix the types/symbols defined.
+    swift_prefix: ::std::option::Option<::std::string::String>,
+    ///  Sets the php class prefix which is prepended to all php generated classes
+    ///  from this .proto. Default is empty.
+    php_class_prefix: ::std::option::Option<::std::string::String>,
+    ///  Use this option to change the namespace of php generated classes. Default
+    ///  is empty. When this option is empty, the package name will be used for
+    ///  determining the namespace.
+    php_namespace: ::std::option::Option<::std::string::String>,
+    ///  Use this option to change the namespace of php generated metadata classes.
+    ///  Default is empty. When this option is empty, the proto file name will be
+    ///  used for determining the namespace.
+    php_metadata_namespace: ::std::option::Option<::std::string::String>,
+    ///  Use this option to change the package of ruby generated classes. Default
+    ///  is empty. When this option is not set, the package name will be used for
+    ///  determining the ruby package.
+    ruby_package: ::std::option::Option<::std::string::String>,
+    ///  The parser stores options it doesn't recognize here.
+    ///  See the documentation for the "Options" section above.
+    pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -3345,7 +3946,7 @@ impl FileOptions {
     }
 
     pub fn clear_java_package(&mut self) {
-        self.java_package.clear();
+        self.java_package = ::std::option::Option::None;
     }
 
     pub fn has_java_package(&self) -> bool {
@@ -3354,14 +3955,14 @@ impl FileOptions {
 
     // Param is passed by value, moved
     pub fn set_java_package(&mut self, v: ::std::string::String) {
-        self.java_package = crate::SingularField::some(v);
+        self.java_package = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_java_package(&mut self) -> &mut ::std::string::String {
         if self.java_package.is_none() {
-            self.java_package.set_default();
+            self.java_package = ::std::option::Option::Some(::std::string::String::new());
         }
         self.java_package.as_mut().unwrap()
     }
@@ -3381,7 +3982,7 @@ impl FileOptions {
     }
 
     pub fn clear_java_outer_classname(&mut self) {
-        self.java_outer_classname.clear();
+        self.java_outer_classname = ::std::option::Option::None;
     }
 
     pub fn has_java_outer_classname(&self) -> bool {
@@ -3390,14 +3991,14 @@ impl FileOptions {
 
     // Param is passed by value, moved
     pub fn set_java_outer_classname(&mut self, v: ::std::string::String) {
-        self.java_outer_classname = crate::SingularField::some(v);
+        self.java_outer_classname = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_java_outer_classname(&mut self) -> &mut ::std::string::String {
         if self.java_outer_classname.is_none() {
-            self.java_outer_classname.set_default();
+            self.java_outer_classname = ::std::option::Option::Some(::std::string::String::new());
         }
         self.java_outer_classname.as_mut().unwrap()
     }
@@ -3496,7 +4097,7 @@ impl FileOptions {
     }
 
     pub fn clear_go_package(&mut self) {
-        self.go_package.clear();
+        self.go_package = ::std::option::Option::None;
     }
 
     pub fn has_go_package(&self) -> bool {
@@ -3505,14 +4106,14 @@ impl FileOptions {
 
     // Param is passed by value, moved
     pub fn set_go_package(&mut self, v: ::std::string::String) {
-        self.go_package = crate::SingularField::some(v);
+        self.go_package = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_go_package(&mut self) -> &mut ::std::string::String {
         if self.go_package.is_none() {
-            self.go_package.set_default();
+            self.go_package = ::std::option::Option::Some(::std::string::String::new());
         }
         self.go_package.as_mut().unwrap()
     }
@@ -3579,6 +4180,25 @@ impl FileOptions {
         self.py_generic_services = ::std::option::Option::Some(v);
     }
 
+    // optional bool php_generic_services = 42;
+
+    pub fn get_php_generic_services(&self) -> bool {
+        self.php_generic_services.unwrap_or(false)
+    }
+
+    pub fn clear_php_generic_services(&mut self) {
+        self.php_generic_services = ::std::option::Option::None;
+    }
+
+    pub fn has_php_generic_services(&self) -> bool {
+        self.php_generic_services.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_php_generic_services(&mut self, v: bool) {
+        self.php_generic_services = ::std::option::Option::Some(v);
+    }
+
     // optional bool deprecated = 23;
 
     pub fn get_deprecated(&self) -> bool {
@@ -3601,7 +4221,7 @@ impl FileOptions {
     // optional bool cc_enable_arenas = 31;
 
     pub fn get_cc_enable_arenas(&self) -> bool {
-        self.cc_enable_arenas.unwrap_or(false)
+        self.cc_enable_arenas.unwrap_or(true)
     }
 
     pub fn clear_cc_enable_arenas(&mut self) {
@@ -3627,7 +4247,7 @@ impl FileOptions {
     }
 
     pub fn clear_objc_class_prefix(&mut self) {
-        self.objc_class_prefix.clear();
+        self.objc_class_prefix = ::std::option::Option::None;
     }
 
     pub fn has_objc_class_prefix(&self) -> bool {
@@ -3636,14 +4256,14 @@ impl FileOptions {
 
     // Param is passed by value, moved
     pub fn set_objc_class_prefix(&mut self, v: ::std::string::String) {
-        self.objc_class_prefix = crate::SingularField::some(v);
+        self.objc_class_prefix = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_objc_class_prefix(&mut self) -> &mut ::std::string::String {
         if self.objc_class_prefix.is_none() {
-            self.objc_class_prefix.set_default();
+            self.objc_class_prefix = ::std::option::Option::Some(::std::string::String::new());
         }
         self.objc_class_prefix.as_mut().unwrap()
     }
@@ -3663,7 +4283,7 @@ impl FileOptions {
     }
 
     pub fn clear_csharp_namespace(&mut self) {
-        self.csharp_namespace.clear();
+        self.csharp_namespace = ::std::option::Option::None;
     }
 
     pub fn has_csharp_namespace(&self) -> bool {
@@ -3672,14 +4292,14 @@ impl FileOptions {
 
     // Param is passed by value, moved
     pub fn set_csharp_namespace(&mut self, v: ::std::string::String) {
-        self.csharp_namespace = crate::SingularField::some(v);
+        self.csharp_namespace = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_csharp_namespace(&mut self) -> &mut ::std::string::String {
         if self.csharp_namespace.is_none() {
-            self.csharp_namespace.set_default();
+            self.csharp_namespace = ::std::option::Option::Some(::std::string::String::new());
         }
         self.csharp_namespace.as_mut().unwrap()
     }
@@ -3687,6 +4307,320 @@ impl FileOptions {
     // Take field
     pub fn take_csharp_namespace(&mut self) -> ::std::string::String {
         self.csharp_namespace.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string swift_prefix = 39;
+
+    pub fn get_swift_prefix(&self) -> &str {
+        match self.swift_prefix.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_swift_prefix(&mut self) {
+        self.swift_prefix = ::std::option::Option::None;
+    }
+
+    pub fn has_swift_prefix(&self) -> bool {
+        self.swift_prefix.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_swift_prefix(&mut self, v: ::std::string::String) {
+        self.swift_prefix = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_swift_prefix(&mut self) -> &mut ::std::string::String {
+        if self.swift_prefix.is_none() {
+            self.swift_prefix = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.swift_prefix.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_swift_prefix(&mut self) -> ::std::string::String {
+        self.swift_prefix.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string php_class_prefix = 40;
+
+    pub fn get_php_class_prefix(&self) -> &str {
+        match self.php_class_prefix.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_php_class_prefix(&mut self) {
+        self.php_class_prefix = ::std::option::Option::None;
+    }
+
+    pub fn has_php_class_prefix(&self) -> bool {
+        self.php_class_prefix.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_php_class_prefix(&mut self, v: ::std::string::String) {
+        self.php_class_prefix = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_php_class_prefix(&mut self) -> &mut ::std::string::String {
+        if self.php_class_prefix.is_none() {
+            self.php_class_prefix = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.php_class_prefix.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_php_class_prefix(&mut self) -> ::std::string::String {
+        self.php_class_prefix.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string php_namespace = 41;
+
+    pub fn get_php_namespace(&self) -> &str {
+        match self.php_namespace.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_php_namespace(&mut self) {
+        self.php_namespace = ::std::option::Option::None;
+    }
+
+    pub fn has_php_namespace(&self) -> bool {
+        self.php_namespace.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_php_namespace(&mut self, v: ::std::string::String) {
+        self.php_namespace = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_php_namespace(&mut self) -> &mut ::std::string::String {
+        if self.php_namespace.is_none() {
+            self.php_namespace = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.php_namespace.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_php_namespace(&mut self) -> ::std::string::String {
+        self.php_namespace.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string php_metadata_namespace = 44;
+
+    pub fn get_php_metadata_namespace(&self) -> &str {
+        match self.php_metadata_namespace.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_php_metadata_namespace(&mut self) {
+        self.php_metadata_namespace = ::std::option::Option::None;
+    }
+
+    pub fn has_php_metadata_namespace(&self) -> bool {
+        self.php_metadata_namespace.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_php_metadata_namespace(&mut self, v: ::std::string::String) {
+        self.php_metadata_namespace = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_php_metadata_namespace(&mut self) -> &mut ::std::string::String {
+        if self.php_metadata_namespace.is_none() {
+            self.php_metadata_namespace = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.php_metadata_namespace.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_php_metadata_namespace(&mut self) -> ::std::string::String {
+        self.php_metadata_namespace.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    // optional string ruby_package = 45;
+
+    pub fn get_ruby_package(&self) -> &str {
+        match self.ruby_package.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_ruby_package(&mut self) {
+        self.ruby_package = ::std::option::Option::None;
+    }
+
+    pub fn has_ruby_package(&self) -> bool {
+        self.ruby_package.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_ruby_package(&mut self, v: ::std::string::String) {
+        self.ruby_package = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_ruby_package(&mut self) -> &mut ::std::string::String {
+        if self.ruby_package.is_none() {
+            self.ruby_package = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.ruby_package.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_ruby_package(&mut self) -> ::std::string::String {
+        self.ruby_package.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "java_package",
+            |m: &FileOptions| { &m.java_package },
+            |m: &mut FileOptions| { &mut m.java_package },
+            FileOptions::get_java_package,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "java_outer_classname",
+            |m: &FileOptions| { &m.java_outer_classname },
+            |m: &mut FileOptions| { &mut m.java_outer_classname },
+            FileOptions::get_java_outer_classname,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "java_multiple_files",
+            |m: &FileOptions| { &m.java_multiple_files },
+            |m: &mut FileOptions| { &mut m.java_multiple_files },
+            FileOptions::get_java_multiple_files,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "java_generate_equals_and_hash",
+            |m: &FileOptions| { &m.java_generate_equals_and_hash },
+            |m: &mut FileOptions| { &mut m.java_generate_equals_and_hash },
+            FileOptions::get_java_generate_equals_and_hash,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "java_string_check_utf8",
+            |m: &FileOptions| { &m.java_string_check_utf8 },
+            |m: &mut FileOptions| { &mut m.java_string_check_utf8 },
+            FileOptions::get_java_string_check_utf8,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_enum_accessor::<_, file_options::OptimizeMode>(
+            "optimize_for",
+            |m: &FileOptions| { &m.optimize_for },
+            |m: &mut FileOptions| { &mut m.optimize_for },
+            file_options::OptimizeMode::SPEED,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "go_package",
+            |m: &FileOptions| { &m.go_package },
+            |m: &mut FileOptions| { &mut m.go_package },
+            FileOptions::get_go_package,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "cc_generic_services",
+            |m: &FileOptions| { &m.cc_generic_services },
+            |m: &mut FileOptions| { &mut m.cc_generic_services },
+            FileOptions::get_cc_generic_services,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "java_generic_services",
+            |m: &FileOptions| { &m.java_generic_services },
+            |m: &mut FileOptions| { &mut m.java_generic_services },
+            FileOptions::get_java_generic_services,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "py_generic_services",
+            |m: &FileOptions| { &m.py_generic_services },
+            |m: &mut FileOptions| { &mut m.py_generic_services },
+            FileOptions::get_py_generic_services,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "php_generic_services",
+            |m: &FileOptions| { &m.php_generic_services },
+            |m: &mut FileOptions| { &mut m.php_generic_services },
+            FileOptions::get_php_generic_services,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "deprecated",
+            |m: &FileOptions| { &m.deprecated },
+            |m: &mut FileOptions| { &mut m.deprecated },
+            FileOptions::get_deprecated,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "cc_enable_arenas",
+            |m: &FileOptions| { &m.cc_enable_arenas },
+            |m: &mut FileOptions| { &mut m.cc_enable_arenas },
+            FileOptions::get_cc_enable_arenas,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "objc_class_prefix",
+            |m: &FileOptions| { &m.objc_class_prefix },
+            |m: &mut FileOptions| { &mut m.objc_class_prefix },
+            FileOptions::get_objc_class_prefix,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "csharp_namespace",
+            |m: &FileOptions| { &m.csharp_namespace },
+            |m: &mut FileOptions| { &mut m.csharp_namespace },
+            FileOptions::get_csharp_namespace,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "swift_prefix",
+            |m: &FileOptions| { &m.swift_prefix },
+            |m: &mut FileOptions| { &mut m.swift_prefix },
+            FileOptions::get_swift_prefix,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "php_class_prefix",
+            |m: &FileOptions| { &m.php_class_prefix },
+            |m: &mut FileOptions| { &mut m.php_class_prefix },
+            FileOptions::get_php_class_prefix,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "php_namespace",
+            |m: &FileOptions| { &m.php_namespace },
+            |m: &mut FileOptions| { &mut m.php_namespace },
+            FileOptions::get_php_namespace,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "php_metadata_namespace",
+            |m: &FileOptions| { &m.php_metadata_namespace },
+            |m: &mut FileOptions| { &mut m.php_metadata_namespace },
+            FileOptions::get_php_metadata_namespace,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "ruby_package",
+            |m: &FileOptions| { &m.ruby_package },
+            |m: &mut FileOptions| { &mut m.ruby_package },
+            FileOptions::get_ruby_package,
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "uninterpreted_option",
+            |m: &FileOptions| { &m.uninterpreted_option },
+            |m: &mut FileOptions| { &mut m.uninterpreted_option },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<FileOptions>(
+            "FileOptions",
+            10,
+            fields,
+        )
     }
 }
 
@@ -3705,10 +4639,16 @@ impl crate::Message for FileOptions {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.java_package)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.java_package = ::std::option::Option::Some(is.read_string()?);
                 },
                 8 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.java_outer_classname)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.java_outer_classname = ::std::option::Option::Some(is.read_string()?);
                 },
                 10 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -3735,7 +4675,10 @@ impl crate::Message for FileOptions {
                     self.optimize_for = ::std::option::Option::Some(is.read_enum_or_unknown()?);
                 },
                 11 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.go_package)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.go_package = ::std::option::Option::Some(is.read_string()?);
                 },
                 16 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -3755,6 +4698,12 @@ impl crate::Message for FileOptions {
                     }
                     self.py_generic_services = ::std::option::Option::Some(is.read_bool()?);
                 },
+                42 => {
+                    if wire_type != crate::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.php_generic_services = ::std::option::Option::Some(is.read_bool()?);
+                },
                 23 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
@@ -3768,13 +4717,49 @@ impl crate::Message for FileOptions {
                     self.cc_enable_arenas = ::std::option::Option::Some(is.read_bool()?);
                 },
                 36 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.objc_class_prefix)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.objc_class_prefix = ::std::option::Option::Some(is.read_string()?);
                 },
                 37 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.csharp_namespace)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.csharp_namespace = ::std::option::Option::Some(is.read_string()?);
+                },
+                39 => {
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.swift_prefix = ::std::option::Option::Some(is.read_string()?);
+                },
+                40 => {
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.php_class_prefix = ::std::option::Option::Some(is.read_string()?);
+                },
+                41 => {
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.php_namespace = ::std::option::Option::Some(is.read_string()?);
+                },
+                44 => {
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.php_metadata_namespace = ::std::option::Option::Some(is.read_string()?);
+                },
+                45 => {
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.ruby_package = ::std::option::Option::Some(is.read_string()?);
                 },
                 999 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -3818,6 +4803,9 @@ impl crate::Message for FileOptions {
         if let Some(v) = self.py_generic_services {
             my_size += 3;
         }
+        if let Some(v) = self.php_generic_services {
+            my_size += 3;
+        }
         if let Some(v) = self.deprecated {
             my_size += 3;
         }
@@ -3829,6 +4817,21 @@ impl crate::Message for FileOptions {
         }
         if let Some(v) = self.csharp_namespace.as_ref() {
             my_size += crate::rt::string_size(37, &v);
+        }
+        if let Some(v) = self.swift_prefix.as_ref() {
+            my_size += crate::rt::string_size(39, &v);
+        }
+        if let Some(v) = self.php_class_prefix.as_ref() {
+            my_size += crate::rt::string_size(40, &v);
+        }
+        if let Some(v) = self.php_namespace.as_ref() {
+            my_size += crate::rt::string_size(41, &v);
+        }
+        if let Some(v) = self.php_metadata_namespace.as_ref() {
+            my_size += crate::rt::string_size(44, &v);
+        }
+        if let Some(v) = self.ruby_package.as_ref() {
+            my_size += crate::rt::string_size(45, &v);
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
@@ -3870,6 +4873,9 @@ impl crate::Message for FileOptions {
         if let Some(v) = self.py_generic_services {
             os.write_bool(18, v)?;
         }
+        if let Some(v) = self.php_generic_services {
+            os.write_bool(42, v)?;
+        }
         if let Some(v) = self.deprecated {
             os.write_bool(23, v)?;
         }
@@ -3881,6 +4887,21 @@ impl crate::Message for FileOptions {
         }
         if let Some(v) = self.csharp_namespace.as_ref() {
             os.write_string(37, v)?;
+        }
+        if let Some(v) = self.swift_prefix.as_ref() {
+            os.write_string(39, v)?;
+        }
+        if let Some(v) = self.php_class_prefix.as_ref() {
+            os.write_string(40, v)?;
+        }
+        if let Some(v) = self.php_namespace.as_ref() {
+            os.write_string(41, v)?;
+        }
+        if let Some(v) = self.php_metadata_namespace.as_ref() {
+            os.write_string(44, v)?;
+        }
+        if let Some(v) = self.ruby_package.as_ref() {
+            os.write_string(45, v)?;
         }
         for v in &self.uninterpreted_option {
             crate::rt::write_message_field_with_cached_size(999, v, os)?;
@@ -3901,137 +4922,66 @@ impl crate::Message for FileOptions {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> FileOptions {
         FileOptions::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "java_package",
-                |m: &FileOptions| { &m.java_package },
-                |m: &mut FileOptions| { &mut m.java_package },
-                FileOptions::get_java_package,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "java_outer_classname",
-                |m: &FileOptions| { &m.java_outer_classname },
-                |m: &mut FileOptions| { &mut m.java_outer_classname },
-                FileOptions::get_java_outer_classname,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "java_multiple_files",
-                |m: &FileOptions| { &m.java_multiple_files },
-                |m: &mut FileOptions| { &mut m.java_multiple_files },
-                FileOptions::get_java_multiple_files,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "java_generate_equals_and_hash",
-                |m: &FileOptions| { &m.java_generate_equals_and_hash },
-                |m: &mut FileOptions| { &mut m.java_generate_equals_and_hash },
-                FileOptions::get_java_generate_equals_and_hash,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "java_string_check_utf8",
-                |m: &FileOptions| { &m.java_string_check_utf8 },
-                |m: &mut FileOptions| { &mut m.java_string_check_utf8 },
-                FileOptions::get_java_string_check_utf8,
-            ));
-            fields.push(crate::reflect::rt::make_option_enum_accessor::<_, file_options::OptimizeMode>(
-                "optimize_for",
-                |m: &FileOptions| { &m.optimize_for },
-                |m: &mut FileOptions| { &mut m.optimize_for },
-                file_options::OptimizeMode::SPEED,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "go_package",
-                |m: &FileOptions| { &m.go_package },
-                |m: &mut FileOptions| { &mut m.go_package },
-                FileOptions::get_go_package,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "cc_generic_services",
-                |m: &FileOptions| { &m.cc_generic_services },
-                |m: &mut FileOptions| { &mut m.cc_generic_services },
-                FileOptions::get_cc_generic_services,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "java_generic_services",
-                |m: &FileOptions| { &m.java_generic_services },
-                |m: &mut FileOptions| { &mut m.java_generic_services },
-                FileOptions::get_java_generic_services,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "py_generic_services",
-                |m: &FileOptions| { &m.py_generic_services },
-                |m: &mut FileOptions| { &mut m.py_generic_services },
-                FileOptions::get_py_generic_services,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "deprecated",
-                |m: &FileOptions| { &m.deprecated },
-                |m: &mut FileOptions| { &mut m.deprecated },
-                FileOptions::get_deprecated,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "cc_enable_arenas",
-                |m: &FileOptions| { &m.cc_enable_arenas },
-                |m: &mut FileOptions| { &mut m.cc_enable_arenas },
-                FileOptions::get_cc_enable_arenas,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "objc_class_prefix",
-                |m: &FileOptions| { &m.objc_class_prefix },
-                |m: &mut FileOptions| { &mut m.objc_class_prefix },
-                FileOptions::get_objc_class_prefix,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "csharp_namespace",
-                |m: &FileOptions| { &m.csharp_namespace },
-                |m: &mut FileOptions| { &mut m.csharp_namespace },
-                FileOptions::get_csharp_namespace,
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
-                "uninterpreted_option",
-                |m: &FileOptions| { &m.uninterpreted_option },
-                |m: &mut FileOptions| { &mut m.uninterpreted_option },
-            ));
-            crate::reflect::MessageDescriptor::new::<FileOptions>(
-                "FileOptions",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 13)
     }
 
     fn default_instance() -> &'static FileOptions {
-        static instance: crate::rt::Lazy<FileOptions> = crate::rt::Lazy::INIT;
-        instance.get(FileOptions::new)
+        static instance: FileOptions = FileOptions {
+            java_package: ::std::option::Option::None,
+            java_outer_classname: ::std::option::Option::None,
+            java_multiple_files: ::std::option::Option::None,
+            java_generate_equals_and_hash: ::std::option::Option::None,
+            java_string_check_utf8: ::std::option::Option::None,
+            optimize_for: ::std::option::Option::None,
+            go_package: ::std::option::Option::None,
+            cc_generic_services: ::std::option::Option::None,
+            java_generic_services: ::std::option::Option::None,
+            py_generic_services: ::std::option::Option::None,
+            php_generic_services: ::std::option::Option::None,
+            deprecated: ::std::option::Option::None,
+            cc_enable_arenas: ::std::option::Option::None,
+            objc_class_prefix: ::std::option::Option::None,
+            csharp_namespace: ::std::option::Option::None,
+            swift_prefix: ::std::option::Option::None,
+            php_class_prefix: ::std::option::Option::None,
+            php_namespace: ::std::option::Option::None,
+            php_metadata_namespace: ::std::option::Option::None,
+            ruby_package: ::std::option::Option::None,
+            uninterpreted_option: ::std::vec::Vec::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
 impl crate::Clear for FileOptions {
     fn clear(&mut self) {
-        self.java_package.clear();
-        self.java_outer_classname.clear();
+        self.java_package = ::std::option::Option::None;
+        self.java_outer_classname = ::std::option::Option::None;
         self.java_multiple_files = ::std::option::Option::None;
         self.java_generate_equals_and_hash = ::std::option::Option::None;
         self.java_string_check_utf8 = ::std::option::Option::None;
         self.optimize_for = ::std::option::Option::None;
-        self.go_package.clear();
+        self.go_package = ::std::option::Option::None;
         self.cc_generic_services = ::std::option::Option::None;
         self.java_generic_services = ::std::option::Option::None;
         self.py_generic_services = ::std::option::Option::None;
+        self.php_generic_services = ::std::option::Option::None;
         self.deprecated = ::std::option::Option::None;
         self.cc_enable_arenas = ::std::option::Option::None;
-        self.objc_class_prefix.clear();
-        self.csharp_namespace.clear();
+        self.objc_class_prefix = ::std::option::Option::None;
+        self.csharp_namespace = ::std::option::Option::None;
+        self.swift_prefix = ::std::option::Option::None;
+        self.php_class_prefix = ::std::option::Option::None;
+        self.php_namespace = ::std::option::Option::None;
+        self.php_metadata_namespace = ::std::option::Option::None;
+        self.ruby_package = ::std::option::Option::None;
         self.uninterpreted_option.clear();
         self.unknown_fields.clear();
     }
@@ -4044,6 +4994,7 @@ impl ::std::fmt::Debug for FileOptions {
 }
 
 impl crate::reflect::ProtobufValue for FileOptions {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `FileOptions`
@@ -4080,11 +5031,8 @@ pub mod file_options {
             values
         }
 
-        fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
-            static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::INIT;
-            descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new::<OptimizeMode>("FileOptions.OptimizeMode", super::file_descriptor_proto())
-            })
+        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 2)
         }
     }
 
@@ -4096,6 +5044,13 @@ pub mod file_options {
     }
 
     impl crate::reflect::ProtobufValue for OptimizeMode {
+        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
+    }
+
+    impl OptimizeMode {
+        pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
+            crate::reflect::GeneratedEnumDescriptorData::new_2::<OptimizeMode>("FileOptions.OptimizeMode", 2)
+        }
     }
 }
 
@@ -4115,7 +5070,7 @@ pub struct MessageOptions {
     deprecated: ::std::option::Option<bool>,
     map_entry: ::std::option::Option<bool>,
     ///  The parser stores options it doesn't recognize here. See above.
-    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -4209,6 +5164,44 @@ impl MessageOptions {
     pub fn set_map_entry(&mut self, v: bool) {
         self.map_entry = ::std::option::Option::Some(v);
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "message_set_wire_format",
+            |m: &MessageOptions| { &m.message_set_wire_format },
+            |m: &mut MessageOptions| { &mut m.message_set_wire_format },
+            MessageOptions::get_message_set_wire_format,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "no_standard_descriptor_accessor",
+            |m: &MessageOptions| { &m.no_standard_descriptor_accessor },
+            |m: &mut MessageOptions| { &mut m.no_standard_descriptor_accessor },
+            MessageOptions::get_no_standard_descriptor_accessor,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "deprecated",
+            |m: &MessageOptions| { &m.deprecated },
+            |m: &mut MessageOptions| { &mut m.deprecated },
+            MessageOptions::get_deprecated,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "map_entry",
+            |m: &MessageOptions| { &m.map_entry },
+            |m: &mut MessageOptions| { &mut m.map_entry },
+            MessageOptions::get_map_entry,
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "uninterpreted_option",
+            |m: &MessageOptions| { &m.uninterpreted_option },
+            |m: &mut MessageOptions| { &mut m.uninterpreted_option },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<MessageOptions>(
+            "MessageOptions",
+            11,
+            fields,
+        )
+    }
 }
 
 impl crate::Message for MessageOptions {
@@ -4250,7 +5243,7 @@ impl crate::Message for MessageOptions {
                     self.map_entry = ::std::option::Option::Some(is.read_bool()?);
                 },
                 999 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -4317,58 +5310,25 @@ impl crate::Message for MessageOptions {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> MessageOptions {
         MessageOptions::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "message_set_wire_format",
-                |m: &MessageOptions| { &m.message_set_wire_format },
-                |m: &mut MessageOptions| { &mut m.message_set_wire_format },
-                MessageOptions::get_message_set_wire_format,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "no_standard_descriptor_accessor",
-                |m: &MessageOptions| { &m.no_standard_descriptor_accessor },
-                |m: &mut MessageOptions| { &mut m.no_standard_descriptor_accessor },
-                MessageOptions::get_no_standard_descriptor_accessor,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "deprecated",
-                |m: &MessageOptions| { &m.deprecated },
-                |m: &mut MessageOptions| { &mut m.deprecated },
-                MessageOptions::get_deprecated,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "map_entry",
-                |m: &MessageOptions| { &m.map_entry },
-                |m: &mut MessageOptions| { &mut m.map_entry },
-                MessageOptions::get_map_entry,
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
-                "uninterpreted_option",
-                |m: &MessageOptions| { &m.uninterpreted_option },
-                |m: &mut MessageOptions| { &mut m.uninterpreted_option },
-            ));
-            crate::reflect::MessageDescriptor::new::<MessageOptions>(
-                "MessageOptions",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 14)
     }
 
     fn default_instance() -> &'static MessageOptions {
-        static instance: crate::rt::Lazy<MessageOptions> = crate::rt::Lazy::INIT;
-        instance.get(MessageOptions::new)
+        static instance: MessageOptions = MessageOptions {
+            message_set_wire_format: ::std::option::Option::None,
+            no_standard_descriptor_accessor: ::std::option::Option::None,
+            deprecated: ::std::option::Option::None,
+            map_entry: ::std::option::Option::None,
+            uninterpreted_option: ::std::vec::Vec::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -4390,6 +5350,7 @@ impl ::std::fmt::Debug for MessageOptions {
 }
 
 impl crate::reflect::ProtobufValue for MessageOptions {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -4409,13 +5370,15 @@ pub struct FieldOptions {
     packed: ::std::option::Option<bool>,
     ///  The jstype option determines the JavaScript type used for values of the
     ///  field.  The option is permitted only for 64 bit integral and fixed types
-    ///  (int64, uint64, sint64, fixed64, sfixed64).  By default these types are
-    ///  represented as JavaScript strings.  This avoids loss of precision that can
-    ///  happen when a large value is converted to a floating point JavaScript
-    ///  numbers.  Specifying JS_NUMBER for the jstype causes the generated
-    ///  JavaScript code to use the JavaScript "number" type instead of strings.
-    ///  This option is an enum to permit additional types to be added,
-    ///  e.g. goog.math.Integer.
+    ///  (int64, uint64, sint64, fixed64, sfixed64).  A field with jstype JS_STRING
+    ///  is represented as JavaScript string, which avoids loss of precision that
+    ///  can happen when a large value is converted to a floating point JavaScript.
+    ///  Specifying JS_NUMBER for the jstype causes the generated JavaScript code to
+    ///  use the JavaScript "number" type.  The behavior of the default option
+    ///  JS_NORMAL is implementation dependent.
+    ///
+    ///  This option is an enum to permit additional types to be added, e.g.
+    ///  goog.math.Integer.
     jstype: ::std::option::Option<crate::ProtobufEnumOrUnknown<field_options::JSType>>,
     ///  Should this field be parsed lazily?  Lazy applies only to message-type
     ///  fields.  It means that when the outer message is initially parsed, the
@@ -4454,7 +5417,7 @@ pub struct FieldOptions {
     ///  For Google-internal migration only. Do not use.
     weak: ::std::option::Option<bool>,
     ///  The parser stores options it doesn't recognize here. See above.
-    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -4592,6 +5555,56 @@ impl FieldOptions {
     pub fn set_weak(&mut self, v: bool) {
         self.weak = ::std::option::Option::Some(v);
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_option_enum_accessor::<_, field_options::CType>(
+            "ctype",
+            |m: &FieldOptions| { &m.ctype },
+            |m: &mut FieldOptions| { &mut m.ctype },
+            field_options::CType::STRING,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "packed",
+            |m: &FieldOptions| { &m.packed },
+            |m: &mut FieldOptions| { &mut m.packed },
+            FieldOptions::get_packed,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_enum_accessor::<_, field_options::JSType>(
+            "jstype",
+            |m: &FieldOptions| { &m.jstype },
+            |m: &mut FieldOptions| { &mut m.jstype },
+            field_options::JSType::JS_NORMAL,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "lazy",
+            |m: &FieldOptions| { &m.lazy },
+            |m: &mut FieldOptions| { &mut m.lazy },
+            FieldOptions::get_lazy,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "deprecated",
+            |m: &FieldOptions| { &m.deprecated },
+            |m: &mut FieldOptions| { &mut m.deprecated },
+            FieldOptions::get_deprecated,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "weak",
+            |m: &FieldOptions| { &m.weak },
+            |m: &mut FieldOptions| { &mut m.weak },
+            FieldOptions::get_weak,
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "uninterpreted_option",
+            |m: &FieldOptions| { &m.uninterpreted_option },
+            |m: &mut FieldOptions| { &mut m.uninterpreted_option },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<FieldOptions>(
+            "FieldOptions",
+            12,
+            fields,
+        )
+    }
 }
 
 impl crate::Message for FieldOptions {
@@ -4645,7 +5658,7 @@ impl crate::Message for FieldOptions {
                     self.weak = ::std::option::Option::Some(is.read_bool()?);
                 },
                 999 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -4724,70 +5737,27 @@ impl crate::Message for FieldOptions {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> FieldOptions {
         FieldOptions::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_option_enum_accessor::<_, field_options::CType>(
-                "ctype",
-                |m: &FieldOptions| { &m.ctype },
-                |m: &mut FieldOptions| { &mut m.ctype },
-                field_options::CType::STRING,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "packed",
-                |m: &FieldOptions| { &m.packed },
-                |m: &mut FieldOptions| { &mut m.packed },
-                FieldOptions::get_packed,
-            ));
-            fields.push(crate::reflect::rt::make_option_enum_accessor::<_, field_options::JSType>(
-                "jstype",
-                |m: &FieldOptions| { &m.jstype },
-                |m: &mut FieldOptions| { &mut m.jstype },
-                field_options::JSType::JS_NORMAL,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "lazy",
-                |m: &FieldOptions| { &m.lazy },
-                |m: &mut FieldOptions| { &mut m.lazy },
-                FieldOptions::get_lazy,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "deprecated",
-                |m: &FieldOptions| { &m.deprecated },
-                |m: &mut FieldOptions| { &mut m.deprecated },
-                FieldOptions::get_deprecated,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "weak",
-                |m: &FieldOptions| { &m.weak },
-                |m: &mut FieldOptions| { &mut m.weak },
-                FieldOptions::get_weak,
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
-                "uninterpreted_option",
-                |m: &FieldOptions| { &m.uninterpreted_option },
-                |m: &mut FieldOptions| { &mut m.uninterpreted_option },
-            ));
-            crate::reflect::MessageDescriptor::new::<FieldOptions>(
-                "FieldOptions",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 15)
     }
 
     fn default_instance() -> &'static FieldOptions {
-        static instance: crate::rt::Lazy<FieldOptions> = crate::rt::Lazy::INIT;
-        instance.get(FieldOptions::new)
+        static instance: FieldOptions = FieldOptions {
+            ctype: ::std::option::Option::None,
+            packed: ::std::option::Option::None,
+            jstype: ::std::option::Option::None,
+            lazy: ::std::option::Option::None,
+            deprecated: ::std::option::Option::None,
+            weak: ::std::option::Option::None,
+            uninterpreted_option: ::std::vec::Vec::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -4811,6 +5781,7 @@ impl ::std::fmt::Debug for FieldOptions {
 }
 
 impl crate::reflect::ProtobufValue for FieldOptions {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `FieldOptions`
@@ -4846,11 +5817,8 @@ pub mod field_options {
             values
         }
 
-        fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
-            static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::INIT;
-            descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new::<CType>("FieldOptions.CType", super::file_descriptor_proto())
-            })
+        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 3)
         }
     }
 
@@ -4861,6 +5829,13 @@ pub mod field_options {
     }
 
     impl crate::reflect::ProtobufValue for CType {
+        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
+    }
+
+    impl CType {
+        pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
+            crate::reflect::GeneratedEnumDescriptorData::new_2::<CType>("FieldOptions.CType", 3)
+        }
     }
 
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
@@ -4894,11 +5869,8 @@ pub mod field_options {
             values
         }
 
-        fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
-            static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::INIT;
-            descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new::<JSType>("FieldOptions.JSType", super::file_descriptor_proto())
-            })
+        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 4)
         }
     }
 
@@ -4909,6 +5881,13 @@ pub mod field_options {
     }
 
     impl crate::reflect::ProtobufValue for JSType {
+        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
+    }
+
+    impl JSType {
+        pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
+            crate::reflect::GeneratedEnumDescriptorData::new_2::<JSType>("FieldOptions.JSType", 4)
+        }
     }
 }
 
@@ -4917,7 +5896,7 @@ pub mod field_options {
 pub struct OneofOptions {
     // message fields
     ///  The parser stores options it doesn't recognize here. See above.
-    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -4934,6 +5913,20 @@ impl<'a> ::std::default::Default for &'a OneofOptions {
 impl OneofOptions {
     pub fn new() -> OneofOptions {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "uninterpreted_option",
+            |m: &OneofOptions| { &m.uninterpreted_option },
+            |m: &mut OneofOptions| { &mut m.uninterpreted_option },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<OneofOptions>(
+            "OneofOptions",
+            13,
+            fields,
+        )
     }
 }
 
@@ -4952,7 +5945,7 @@ impl crate::Message for OneofOptions {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 999 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -4995,34 +5988,21 @@ impl crate::Message for OneofOptions {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> OneofOptions {
         OneofOptions::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
-                "uninterpreted_option",
-                |m: &OneofOptions| { &m.uninterpreted_option },
-                |m: &mut OneofOptions| { &mut m.uninterpreted_option },
-            ));
-            crate::reflect::MessageDescriptor::new::<OneofOptions>(
-                "OneofOptions",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 16)
     }
 
     fn default_instance() -> &'static OneofOptions {
-        static instance: crate::rt::Lazy<OneofOptions> = crate::rt::Lazy::INIT;
-        instance.get(OneofOptions::new)
+        static instance: OneofOptions = OneofOptions {
+            uninterpreted_option: ::std::vec::Vec::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -5040,6 +6020,7 @@ impl ::std::fmt::Debug for OneofOptions {
 }
 
 impl crate::reflect::ProtobufValue for OneofOptions {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -5055,7 +6036,7 @@ pub struct EnumOptions {
     ///  is a formalization for deprecating enums.
     deprecated: ::std::option::Option<bool>,
     ///  The parser stores options it doesn't recognize here. See above.
-    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -5111,6 +6092,32 @@ impl EnumOptions {
     pub fn set_deprecated(&mut self, v: bool) {
         self.deprecated = ::std::option::Option::Some(v);
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "allow_alias",
+            |m: &EnumOptions| { &m.allow_alias },
+            |m: &mut EnumOptions| { &mut m.allow_alias },
+            EnumOptions::get_allow_alias,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "deprecated",
+            |m: &EnumOptions| { &m.deprecated },
+            |m: &mut EnumOptions| { &mut m.deprecated },
+            EnumOptions::get_deprecated,
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "uninterpreted_option",
+            |m: &EnumOptions| { &m.uninterpreted_option },
+            |m: &mut EnumOptions| { &mut m.uninterpreted_option },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<EnumOptions>(
+            "EnumOptions",
+            14,
+            fields,
+        )
+    }
 }
 
 impl crate::Message for EnumOptions {
@@ -5140,7 +6147,7 @@ impl crate::Message for EnumOptions {
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
                 999 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -5195,46 +6202,23 @@ impl crate::Message for EnumOptions {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> EnumOptions {
         EnumOptions::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "allow_alias",
-                |m: &EnumOptions| { &m.allow_alias },
-                |m: &mut EnumOptions| { &mut m.allow_alias },
-                EnumOptions::get_allow_alias,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "deprecated",
-                |m: &EnumOptions| { &m.deprecated },
-                |m: &mut EnumOptions| { &mut m.deprecated },
-                EnumOptions::get_deprecated,
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
-                "uninterpreted_option",
-                |m: &EnumOptions| { &m.uninterpreted_option },
-                |m: &mut EnumOptions| { &mut m.uninterpreted_option },
-            ));
-            crate::reflect::MessageDescriptor::new::<EnumOptions>(
-                "EnumOptions",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 17)
     }
 
     fn default_instance() -> &'static EnumOptions {
-        static instance: crate::rt::Lazy<EnumOptions> = crate::rt::Lazy::INIT;
-        instance.get(EnumOptions::new)
+        static instance: EnumOptions = EnumOptions {
+            allow_alias: ::std::option::Option::None,
+            deprecated: ::std::option::Option::None,
+            uninterpreted_option: ::std::vec::Vec::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -5254,6 +6238,7 @@ impl ::std::fmt::Debug for EnumOptions {
 }
 
 impl crate::reflect::ProtobufValue for EnumOptions {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -5266,7 +6251,7 @@ pub struct EnumValueOptions {
     ///  this is a formalization for deprecating enum values.
     deprecated: ::std::option::Option<bool>,
     ///  The parser stores options it doesn't recognize here. See above.
-    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -5303,6 +6288,26 @@ impl EnumValueOptions {
     pub fn set_deprecated(&mut self, v: bool) {
         self.deprecated = ::std::option::Option::Some(v);
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "deprecated",
+            |m: &EnumValueOptions| { &m.deprecated },
+            |m: &mut EnumValueOptions| { &mut m.deprecated },
+            EnumValueOptions::get_deprecated,
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "uninterpreted_option",
+            |m: &EnumValueOptions| { &m.uninterpreted_option },
+            |m: &mut EnumValueOptions| { &mut m.uninterpreted_option },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<EnumValueOptions>(
+            "EnumValueOptions",
+            15,
+            fields,
+        )
+    }
 }
 
 impl crate::Message for EnumValueOptions {
@@ -5326,7 +6331,7 @@ impl crate::Message for EnumValueOptions {
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
                 999 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -5375,40 +6380,22 @@ impl crate::Message for EnumValueOptions {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> EnumValueOptions {
         EnumValueOptions::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "deprecated",
-                |m: &EnumValueOptions| { &m.deprecated },
-                |m: &mut EnumValueOptions| { &mut m.deprecated },
-                EnumValueOptions::get_deprecated,
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
-                "uninterpreted_option",
-                |m: &EnumValueOptions| { &m.uninterpreted_option },
-                |m: &mut EnumValueOptions| { &mut m.uninterpreted_option },
-            ));
-            crate::reflect::MessageDescriptor::new::<EnumValueOptions>(
-                "EnumValueOptions",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 18)
     }
 
     fn default_instance() -> &'static EnumValueOptions {
-        static instance: crate::rt::Lazy<EnumValueOptions> = crate::rt::Lazy::INIT;
-        instance.get(EnumValueOptions::new)
+        static instance: EnumValueOptions = EnumValueOptions {
+            deprecated: ::std::option::Option::None,
+            uninterpreted_option: ::std::vec::Vec::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -5427,6 +6414,7 @@ impl ::std::fmt::Debug for EnumValueOptions {
 }
 
 impl crate::reflect::ProtobufValue for EnumValueOptions {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -5439,7 +6427,7 @@ pub struct ServiceOptions {
     ///  this is a formalization for deprecating services.
     deprecated: ::std::option::Option<bool>,
     ///  The parser stores options it doesn't recognize here. See above.
-    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -5476,6 +6464,26 @@ impl ServiceOptions {
     pub fn set_deprecated(&mut self, v: bool) {
         self.deprecated = ::std::option::Option::Some(v);
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "deprecated",
+            |m: &ServiceOptions| { &m.deprecated },
+            |m: &mut ServiceOptions| { &mut m.deprecated },
+            ServiceOptions::get_deprecated,
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "uninterpreted_option",
+            |m: &ServiceOptions| { &m.uninterpreted_option },
+            |m: &mut ServiceOptions| { &mut m.uninterpreted_option },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<ServiceOptions>(
+            "ServiceOptions",
+            16,
+            fields,
+        )
+    }
 }
 
 impl crate::Message for ServiceOptions {
@@ -5499,7 +6507,7 @@ impl crate::Message for ServiceOptions {
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
                 999 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -5548,40 +6556,22 @@ impl crate::Message for ServiceOptions {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> ServiceOptions {
         ServiceOptions::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "deprecated",
-                |m: &ServiceOptions| { &m.deprecated },
-                |m: &mut ServiceOptions| { &mut m.deprecated },
-                ServiceOptions::get_deprecated,
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
-                "uninterpreted_option",
-                |m: &ServiceOptions| { &m.uninterpreted_option },
-                |m: &mut ServiceOptions| { &mut m.uninterpreted_option },
-            ));
-            crate::reflect::MessageDescriptor::new::<ServiceOptions>(
-                "ServiceOptions",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 19)
     }
 
     fn default_instance() -> &'static ServiceOptions {
-        static instance: crate::rt::Lazy<ServiceOptions> = crate::rt::Lazy::INIT;
-        instance.get(ServiceOptions::new)
+        static instance: ServiceOptions = ServiceOptions {
+            deprecated: ::std::option::Option::None,
+            uninterpreted_option: ::std::vec::Vec::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -5600,6 +6590,7 @@ impl ::std::fmt::Debug for ServiceOptions {
 }
 
 impl crate::reflect::ProtobufValue for ServiceOptions {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default)]
@@ -5611,8 +6602,9 @@ pub struct MethodOptions {
     ///  for the method, or it will be completely ignored; in the very least,
     ///  this is a formalization for deprecating methods.
     deprecated: ::std::option::Option<bool>,
+    idempotency_level: ::std::option::Option<crate::ProtobufEnumOrUnknown<method_options::IdempotencyLevel>>,
     ///  The parser stores options it doesn't recognize here. See above.
-    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -5649,6 +6641,54 @@ impl MethodOptions {
     pub fn set_deprecated(&mut self, v: bool) {
         self.deprecated = ::std::option::Option::Some(v);
     }
+
+    // optional .google.protobuf.MethodOptions.IdempotencyLevel idempotency_level = 34;
+
+    pub fn get_idempotency_level(&self) -> method_options::IdempotencyLevel {
+        match self.idempotency_level {
+            Some(e) => e.enum_value_or(method_options::IdempotencyLevel::IDEMPOTENCY_UNKNOWN),
+            None => method_options::IdempotencyLevel::IDEMPOTENCY_UNKNOWN,
+        }
+    }
+
+    pub fn clear_idempotency_level(&mut self) {
+        self.idempotency_level = ::std::option::Option::None;
+    }
+
+    pub fn has_idempotency_level(&self) -> bool {
+        self.idempotency_level.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_idempotency_level(&mut self, v: method_options::IdempotencyLevel) {
+        self.idempotency_level = ::std::option::Option::Some(crate::ProtobufEnumOrUnknown::new(v));
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "deprecated",
+            |m: &MethodOptions| { &m.deprecated },
+            |m: &mut MethodOptions| { &mut m.deprecated },
+            MethodOptions::get_deprecated,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_enum_accessor::<_, method_options::IdempotencyLevel>(
+            "idempotency_level",
+            |m: &MethodOptions| { &m.idempotency_level },
+            |m: &mut MethodOptions| { &mut m.idempotency_level },
+            method_options::IdempotencyLevel::IDEMPOTENCY_UNKNOWN,
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "uninterpreted_option",
+            |m: &MethodOptions| { &m.uninterpreted_option },
+            |m: &mut MethodOptions| { &mut m.uninterpreted_option },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<MethodOptions>(
+            "MethodOptions",
+            17,
+            fields,
+        )
+    }
 }
 
 impl crate::Message for MethodOptions {
@@ -5671,8 +6711,14 @@ impl crate::Message for MethodOptions {
                     }
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
+                34 => {
+                    if wire_type != crate::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.idempotency_level = ::std::option::Option::Some(is.read_enum_or_unknown()?);
+                },
                 999 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -5689,6 +6735,9 @@ impl crate::Message for MethodOptions {
         if let Some(v) = self.deprecated {
             my_size += 3;
         }
+        if let Some(v) = self.idempotency_level {
+            my_size += crate::rt::enum_or_unknown_size(34, v);
+        }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
             my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
@@ -5701,6 +6750,9 @@ impl crate::Message for MethodOptions {
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(v) = self.deprecated {
             os.write_bool(33, v)?;
+        }
+        if let Some(v) = self.idempotency_level {
+            os.write_enum(34, crate::ProtobufEnumOrUnknown::value(&v))?;
         }
         for v in &self.uninterpreted_option {
             crate::rt::write_message_field_with_cached_size(999, v, os)?;
@@ -5721,46 +6773,30 @@ impl crate::Message for MethodOptions {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> MethodOptions {
         MethodOptions::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                "deprecated",
-                |m: &MethodOptions| { &m.deprecated },
-                |m: &mut MethodOptions| { &mut m.deprecated },
-                MethodOptions::get_deprecated,
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
-                "uninterpreted_option",
-                |m: &MethodOptions| { &m.uninterpreted_option },
-                |m: &mut MethodOptions| { &mut m.uninterpreted_option },
-            ));
-            crate::reflect::MessageDescriptor::new::<MethodOptions>(
-                "MethodOptions",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 20)
     }
 
     fn default_instance() -> &'static MethodOptions {
-        static instance: crate::rt::Lazy<MethodOptions> = crate::rt::Lazy::INIT;
-        instance.get(MethodOptions::new)
+        static instance: MethodOptions = MethodOptions {
+            deprecated: ::std::option::Option::None,
+            idempotency_level: ::std::option::Option::None,
+            uninterpreted_option: ::std::vec::Vec::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
 impl crate::Clear for MethodOptions {
     fn clear(&mut self) {
         self.deprecated = ::std::option::Option::None;
+        self.idempotency_level = ::std::option::Option::None;
         self.uninterpreted_option.clear();
         self.unknown_fields.clear();
     }
@@ -5773,6 +6809,65 @@ impl ::std::fmt::Debug for MethodOptions {
 }
 
 impl crate::reflect::ProtobufValue for MethodOptions {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
+/// Nested message and enums of message `MethodOptions`
+pub mod method_options {
+    ///  Is this method side-effect-free (or safe in HTTP parlance), or idempotent,
+    ///  or neither? HTTP based RPC implementation may choose GET verb for safe
+    ///  methods, and PUT verb for idempotent methods instead of the default POST.
+    #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    #[cfg_attr(serde, derive(Serialize, Deserialize))]
+    pub enum IdempotencyLevel {
+        IDEMPOTENCY_UNKNOWN = 0,
+        NO_SIDE_EFFECTS = 1,
+        IDEMPOTENT = 2,
+    }
+
+    impl crate::ProtobufEnum for IdempotencyLevel {
+        fn value(&self) -> i32 {
+            *self as i32
+        }
+
+        fn from_i32(value: i32) -> ::std::option::Option<IdempotencyLevel> {
+            match value {
+                0 => ::std::option::Option::Some(IdempotencyLevel::IDEMPOTENCY_UNKNOWN),
+                1 => ::std::option::Option::Some(IdempotencyLevel::NO_SIDE_EFFECTS),
+                2 => ::std::option::Option::Some(IdempotencyLevel::IDEMPOTENT),
+                _ => ::std::option::Option::None
+            }
+        }
+
+        fn values() -> &'static [Self] {
+            static values: &'static [IdempotencyLevel] = &[
+                IdempotencyLevel::IDEMPOTENCY_UNKNOWN,
+                IdempotencyLevel::NO_SIDE_EFFECTS,
+                IdempotencyLevel::IDEMPOTENT,
+            ];
+            values
+        }
+
+        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 5)
+        }
+    }
+
+    impl ::std::default::Default for IdempotencyLevel {
+        fn default() -> Self {
+            IdempotencyLevel::IDEMPOTENCY_UNKNOWN
+        }
+    }
+
+    impl crate::reflect::ProtobufValue for IdempotencyLevel {
+        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
+    }
+
+    impl IdempotencyLevel {
+        pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
+            crate::reflect::GeneratedEnumDescriptorData::new_2::<IdempotencyLevel>("MethodOptions.IdempotencyLevel", 5)
+        }
+    }
 }
 
 ///  A message representing a option the parser does not recognize. This only
@@ -5785,15 +6880,15 @@ impl crate::reflect::ProtobufValue for MethodOptions {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct UninterpretedOption {
     // message fields
-    pub name: crate::RepeatedField<uninterpreted_option::NamePart>,
+    pub name: ::std::vec::Vec<uninterpreted_option::NamePart>,
     ///  The value of the uninterpreted option, in whatever type the tokenizer
     ///  identified it as during parsing. Exactly one of these should be set.
-    identifier_value: crate::SingularField<::std::string::String>,
+    identifier_value: ::std::option::Option<::std::string::String>,
     positive_int_value: ::std::option::Option<u64>,
     negative_int_value: ::std::option::Option<i64>,
     double_value: ::std::option::Option<f64>,
-    string_value: crate::SingularField<::std::vec::Vec<u8>>,
-    aggregate_value: crate::SingularField<::std::string::String>,
+    string_value: ::std::option::Option<::std::vec::Vec<u8>>,
+    aggregate_value: ::std::option::Option<::std::string::String>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -5822,7 +6917,7 @@ impl UninterpretedOption {
     }
 
     pub fn clear_identifier_value(&mut self) {
-        self.identifier_value.clear();
+        self.identifier_value = ::std::option::Option::None;
     }
 
     pub fn has_identifier_value(&self) -> bool {
@@ -5831,14 +6926,14 @@ impl UninterpretedOption {
 
     // Param is passed by value, moved
     pub fn set_identifier_value(&mut self, v: ::std::string::String) {
-        self.identifier_value = crate::SingularField::some(v);
+        self.identifier_value = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_identifier_value(&mut self) -> &mut ::std::string::String {
         if self.identifier_value.is_none() {
-            self.identifier_value.set_default();
+            self.identifier_value = ::std::option::Option::Some(::std::string::String::new());
         }
         self.identifier_value.as_mut().unwrap()
     }
@@ -5915,7 +7010,7 @@ impl UninterpretedOption {
     }
 
     pub fn clear_string_value(&mut self) {
-        self.string_value.clear();
+        self.string_value = ::std::option::Option::None;
     }
 
     pub fn has_string_value(&self) -> bool {
@@ -5924,14 +7019,14 @@ impl UninterpretedOption {
 
     // Param is passed by value, moved
     pub fn set_string_value(&mut self, v: ::std::vec::Vec<u8>) {
-        self.string_value = crate::SingularField::some(v);
+        self.string_value = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_string_value(&mut self) -> &mut ::std::vec::Vec<u8> {
         if self.string_value.is_none() {
-            self.string_value.set_default();
+            self.string_value = ::std::option::Option::Some(::std::vec::Vec::new());
         }
         self.string_value.as_mut().unwrap()
     }
@@ -5951,7 +7046,7 @@ impl UninterpretedOption {
     }
 
     pub fn clear_aggregate_value(&mut self) {
-        self.aggregate_value.clear();
+        self.aggregate_value = ::std::option::Option::None;
     }
 
     pub fn has_aggregate_value(&self) -> bool {
@@ -5960,14 +7055,14 @@ impl UninterpretedOption {
 
     // Param is passed by value, moved
     pub fn set_aggregate_value(&mut self, v: ::std::string::String) {
-        self.aggregate_value = crate::SingularField::some(v);
+        self.aggregate_value = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_aggregate_value(&mut self) -> &mut ::std::string::String {
         if self.aggregate_value.is_none() {
-            self.aggregate_value.set_default();
+            self.aggregate_value = ::std::option::Option::Some(::std::string::String::new());
         }
         self.aggregate_value.as_mut().unwrap()
     }
@@ -5975,6 +7070,56 @@ impl UninterpretedOption {
     // Take field
     pub fn take_aggregate_value(&mut self) -> ::std::string::String {
         self.aggregate_value.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "name",
+            |m: &UninterpretedOption| { &m.name },
+            |m: &mut UninterpretedOption| { &mut m.name },
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "identifier_value",
+            |m: &UninterpretedOption| { &m.identifier_value },
+            |m: &mut UninterpretedOption| { &mut m.identifier_value },
+            UninterpretedOption::get_identifier_value,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "positive_int_value",
+            |m: &UninterpretedOption| { &m.positive_int_value },
+            |m: &mut UninterpretedOption| { &mut m.positive_int_value },
+            UninterpretedOption::get_positive_int_value,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "negative_int_value",
+            |m: &UninterpretedOption| { &m.negative_int_value },
+            |m: &mut UninterpretedOption| { &mut m.negative_int_value },
+            UninterpretedOption::get_negative_int_value,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "double_value",
+            |m: &UninterpretedOption| { &m.double_value },
+            |m: &mut UninterpretedOption| { &mut m.double_value },
+            UninterpretedOption::get_double_value,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "string_value",
+            |m: &UninterpretedOption| { &m.string_value },
+            |m: &mut UninterpretedOption| { &mut m.string_value },
+            UninterpretedOption::get_string_value,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "aggregate_value",
+            |m: &UninterpretedOption| { &m.aggregate_value },
+            |m: &mut UninterpretedOption| { &mut m.aggregate_value },
+            UninterpretedOption::get_aggregate_value,
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<UninterpretedOption>(
+            "UninterpretedOption",
+            18,
+            fields,
+        )
     }
 }
 
@@ -5993,10 +7138,13 @@ impl crate::Message for UninterpretedOption {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 2 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.name)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.name)?;
                 },
                 3 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.identifier_value)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.identifier_value = ::std::option::Option::Some(is.read_string()?);
                 },
                 4 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -6017,10 +7165,16 @@ impl crate::Message for UninterpretedOption {
                     self.double_value = ::std::option::Option::Some(is.read_double()?);
                 },
                 7 => {
-                    crate::rt::read_singular_bytes_into(wire_type, is, &mut self.string_value)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.string_value = ::std::option::Option::Some(is.read_bytes()?);
                 },
                 8 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.aggregate_value)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.aggregate_value = ::std::option::Option::Some(is.read_string()?);
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -6099,82 +7253,39 @@ impl crate::Message for UninterpretedOption {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> UninterpretedOption {
         UninterpretedOption::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<uninterpreted_option::NamePart>>(
-                "name",
-                |m: &UninterpretedOption| { &m.name },
-                |m: &mut UninterpretedOption| { &mut m.name },
-            ));
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "identifier_value",
-                |m: &UninterpretedOption| { &m.identifier_value },
-                |m: &mut UninterpretedOption| { &mut m.identifier_value },
-                UninterpretedOption::get_identifier_value,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeUint64, _>(
-                "positive_int_value",
-                |m: &UninterpretedOption| { &m.positive_int_value },
-                |m: &mut UninterpretedOption| { &mut m.positive_int_value },
-                UninterpretedOption::get_positive_int_value,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeInt64, _>(
-                "negative_int_value",
-                |m: &UninterpretedOption| { &m.negative_int_value },
-                |m: &mut UninterpretedOption| { &mut m.negative_int_value },
-                UninterpretedOption::get_negative_int_value,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeDouble, _>(
-                "double_value",
-                |m: &UninterpretedOption| { &m.double_value },
-                |m: &mut UninterpretedOption| { &mut m.double_value },
-                UninterpretedOption::get_double_value,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeBytes, _>(
-                "string_value",
-                |m: &UninterpretedOption| { &m.string_value },
-                |m: &mut UninterpretedOption| { &mut m.string_value },
-                UninterpretedOption::get_string_value,
-            ));
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                "aggregate_value",
-                |m: &UninterpretedOption| { &m.aggregate_value },
-                |m: &mut UninterpretedOption| { &mut m.aggregate_value },
-                UninterpretedOption::get_aggregate_value,
-            ));
-            crate::reflect::MessageDescriptor::new::<UninterpretedOption>(
-                "UninterpretedOption",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 21)
     }
 
     fn default_instance() -> &'static UninterpretedOption {
-        static instance: crate::rt::Lazy<UninterpretedOption> = crate::rt::Lazy::INIT;
-        instance.get(UninterpretedOption::new)
+        static instance: UninterpretedOption = UninterpretedOption {
+            name: ::std::vec::Vec::new(),
+            identifier_value: ::std::option::Option::None,
+            positive_int_value: ::std::option::Option::None,
+            negative_int_value: ::std::option::Option::None,
+            double_value: ::std::option::Option::None,
+            string_value: ::std::option::Option::None,
+            aggregate_value: ::std::option::Option::None,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
 impl crate::Clear for UninterpretedOption {
     fn clear(&mut self) {
         self.name.clear();
-        self.identifier_value.clear();
+        self.identifier_value = ::std::option::Option::None;
         self.positive_int_value = ::std::option::Option::None;
         self.negative_int_value = ::std::option::Option::None;
         self.double_value = ::std::option::Option::None;
-        self.string_value.clear();
-        self.aggregate_value.clear();
+        self.string_value = ::std::option::Option::None;
+        self.aggregate_value = ::std::option::Option::None;
         self.unknown_fields.clear();
     }
 }
@@ -6186,6 +7297,7 @@ impl ::std::fmt::Debug for UninterpretedOption {
 }
 
 impl crate::reflect::ProtobufValue for UninterpretedOption {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `UninterpretedOption`
@@ -6199,7 +7311,7 @@ pub mod uninterpreted_option {
     #[cfg_attr(serde, derive(Serialize, Deserialize))]
     pub struct NamePart {
         // message fields
-        name_part: crate::SingularField<::std::string::String>,
+        name_part: ::std::option::Option<::std::string::String>,
         is_extension: ::std::option::Option<bool>,
         // special fields
         #[cfg_attr(serde, serde(skip))]
@@ -6229,7 +7341,7 @@ pub mod uninterpreted_option {
         }
 
         pub fn clear_name_part(&mut self) {
-            self.name_part.clear();
+            self.name_part = ::std::option::Option::None;
         }
 
         pub fn has_name_part(&self) -> bool {
@@ -6238,14 +7350,14 @@ pub mod uninterpreted_option {
 
         // Param is passed by value, moved
         pub fn set_name_part(&mut self, v: ::std::string::String) {
-            self.name_part = crate::SingularField::some(v);
+            self.name_part = ::std::option::Option::Some(v);
         }
 
         // Mutable pointer to the field.
         // If field is not initialized, it is initialized with default value first.
         pub fn mut_name_part(&mut self) -> &mut ::std::string::String {
             if self.name_part.is_none() {
-                self.name_part.set_default();
+                self.name_part = ::std::option::Option::Some(::std::string::String::new());
             }
             self.name_part.as_mut().unwrap()
         }
@@ -6273,6 +7385,27 @@ pub mod uninterpreted_option {
         pub fn set_is_extension(&mut self, v: bool) {
             self.is_extension = ::std::option::Option::Some(v);
         }
+
+        pub(in super) fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+                "name_part",
+                |m: &NamePart| { &m.name_part },
+                |m: &mut NamePart| { &mut m.name_part },
+                NamePart::get_name_part,
+            ));
+            fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+                "is_extension",
+                |m: &NamePart| { &m.is_extension },
+                |m: &mut NamePart| { &mut m.is_extension },
+                NamePart::get_is_extension,
+            ));
+            crate::reflect::GeneratedMessageDescriptorData::new_2::<NamePart>(
+                "UninterpretedOption.NamePart",
+                24,
+                fields,
+            )
+        }
     }
 
     impl crate::Message for NamePart {
@@ -6291,7 +7424,10 @@ pub mod uninterpreted_option {
                 let (field_number, wire_type) = is.read_tag_unpack()?;
                 match field_number {
                     1 => {
-                        crate::rt::read_singular_string_into(wire_type, is, &mut self.name_part)?;
+                        if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                            return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.name_part = ::std::option::Option::Some(is.read_string()?);
                     },
                     2 => {
                         if wire_type != crate::wire_format::WireTypeVarint {
@@ -6345,47 +7481,28 @@ pub mod uninterpreted_option {
             &mut self.unknown_fields
         }
 
-        fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-            Self::descriptor_static()
-        }
-
         fn new() -> NamePart {
             NamePart::new()
         }
 
-        fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-            static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                    "name_part",
-                    |m: &NamePart| { &m.name_part },
-                    |m: &mut NamePart| { &mut m.name_part },
-                    NamePart::get_name_part,
-                ));
-                fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeBool, _>(
-                    "is_extension",
-                    |m: &NamePart| { &m.is_extension },
-                    |m: &mut NamePart| { &mut m.is_extension },
-                    NamePart::get_is_extension,
-                ));
-                crate::reflect::MessageDescriptor::new::<NamePart>(
-                    "UninterpretedOption.NamePart",
-                    fields,
-                    super::file_descriptor_proto()
-                )
-            })
+        fn descriptor_static() -> crate::reflect::MessageDescriptor {
+            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 22)
         }
 
         fn default_instance() -> &'static NamePart {
-            static instance: crate::rt::Lazy<NamePart> = crate::rt::Lazy::INIT;
-            instance.get(NamePart::new)
+            static instance: NamePart = NamePart {
+                name_part: ::std::option::Option::None,
+                is_extension: ::std::option::Option::None,
+                unknown_fields: crate::UnknownFields::new(),
+                cached_size: crate::rt::CachedSize::new(),
+            };
+            &instance
         }
     }
 
     impl crate::Clear for NamePart {
         fn clear(&mut self) {
-            self.name_part.clear();
+            self.name_part = ::std::option::Option::None;
             self.is_extension = ::std::option::Option::None;
             self.unknown_fields.clear();
         }
@@ -6398,6 +7515,7 @@ pub mod uninterpreted_option {
     }
 
     impl crate::reflect::ProtobufValue for NamePart {
+        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
     }
 }
 
@@ -6407,7 +7525,7 @@ pub mod uninterpreted_option {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct SourceCodeInfo {
     // message fields
-    pub location: crate::RepeatedField<source_code_info::Location>,
+    pub location: ::std::vec::Vec<source_code_info::Location>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -6424,6 +7542,20 @@ impl<'a> ::std::default::Default for &'a SourceCodeInfo {
 impl SourceCodeInfo {
     pub fn new() -> SourceCodeInfo {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "location",
+            |m: &SourceCodeInfo| { &m.location },
+            |m: &mut SourceCodeInfo| { &mut m.location },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<SourceCodeInfo>(
+            "SourceCodeInfo",
+            19,
+            fields,
+        )
     }
 }
 
@@ -6442,7 +7574,7 @@ impl crate::Message for SourceCodeInfo {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.location)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.location)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -6485,34 +7617,21 @@ impl crate::Message for SourceCodeInfo {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> SourceCodeInfo {
         SourceCodeInfo::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<source_code_info::Location>>(
-                "location",
-                |m: &SourceCodeInfo| { &m.location },
-                |m: &mut SourceCodeInfo| { &mut m.location },
-            ));
-            crate::reflect::MessageDescriptor::new::<SourceCodeInfo>(
-                "SourceCodeInfo",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 23)
     }
 
     fn default_instance() -> &'static SourceCodeInfo {
-        static instance: crate::rt::Lazy<SourceCodeInfo> = crate::rt::Lazy::INIT;
-        instance.get(SourceCodeInfo::new)
+        static instance: SourceCodeInfo = SourceCodeInfo {
+            location: ::std::vec::Vec::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -6530,6 +7649,7 @@ impl ::std::fmt::Debug for SourceCodeInfo {
 }
 
 impl crate::reflect::ProtobufValue for SourceCodeInfo {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `SourceCodeInfo`
@@ -6545,9 +7665,9 @@ pub mod source_code_info {
         ///  and column numbers are zero-based -- typically you will want to add
         ///  1 to each before displaying to a user.
         pub span: ::std::vec::Vec<i32>,
-        leading_comments: crate::SingularField<::std::string::String>,
-        trailing_comments: crate::SingularField<::std::string::String>,
-        pub leading_detached_comments: crate::RepeatedField<::std::string::String>,
+        leading_comments: ::std::option::Option<::std::string::String>,
+        trailing_comments: ::std::option::Option<::std::string::String>,
+        pub leading_detached_comments: ::std::vec::Vec<::std::string::String>,
         // special fields
         #[cfg_attr(serde, serde(skip))]
         pub unknown_fields: crate::UnknownFields,
@@ -6576,7 +7696,7 @@ pub mod source_code_info {
         }
 
         pub fn clear_leading_comments(&mut self) {
-            self.leading_comments.clear();
+            self.leading_comments = ::std::option::Option::None;
         }
 
         pub fn has_leading_comments(&self) -> bool {
@@ -6585,14 +7705,14 @@ pub mod source_code_info {
 
         // Param is passed by value, moved
         pub fn set_leading_comments(&mut self, v: ::std::string::String) {
-            self.leading_comments = crate::SingularField::some(v);
+            self.leading_comments = ::std::option::Option::Some(v);
         }
 
         // Mutable pointer to the field.
         // If field is not initialized, it is initialized with default value first.
         pub fn mut_leading_comments(&mut self) -> &mut ::std::string::String {
             if self.leading_comments.is_none() {
-                self.leading_comments.set_default();
+                self.leading_comments = ::std::option::Option::Some(::std::string::String::new());
             }
             self.leading_comments.as_mut().unwrap()
         }
@@ -6612,7 +7732,7 @@ pub mod source_code_info {
         }
 
         pub fn clear_trailing_comments(&mut self) {
-            self.trailing_comments.clear();
+            self.trailing_comments = ::std::option::Option::None;
         }
 
         pub fn has_trailing_comments(&self) -> bool {
@@ -6621,14 +7741,14 @@ pub mod source_code_info {
 
         // Param is passed by value, moved
         pub fn set_trailing_comments(&mut self, v: ::std::string::String) {
-            self.trailing_comments = crate::SingularField::some(v);
+            self.trailing_comments = ::std::option::Option::Some(v);
         }
 
         // Mutable pointer to the field.
         // If field is not initialized, it is initialized with default value first.
         pub fn mut_trailing_comments(&mut self) -> &mut ::std::string::String {
             if self.trailing_comments.is_none() {
-                self.trailing_comments.set_default();
+                self.trailing_comments = ::std::option::Option::Some(::std::string::String::new());
             }
             self.trailing_comments.as_mut().unwrap()
         }
@@ -6636,6 +7756,42 @@ pub mod source_code_info {
         // Take field
         pub fn take_trailing_comments(&mut self) -> ::std::string::String {
             self.trailing_comments.take().unwrap_or_else(|| ::std::string::String::new())
+        }
+
+        pub(in super) fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+                "path",
+                |m: &Location| { &m.path },
+                |m: &mut Location| { &mut m.path },
+            ));
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+                "span",
+                |m: &Location| { &m.span },
+                |m: &mut Location| { &mut m.span },
+            ));
+            fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+                "leading_comments",
+                |m: &Location| { &m.leading_comments },
+                |m: &mut Location| { &mut m.leading_comments },
+                Location::get_leading_comments,
+            ));
+            fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+                "trailing_comments",
+                |m: &Location| { &m.trailing_comments },
+                |m: &mut Location| { &mut m.trailing_comments },
+                Location::get_trailing_comments,
+            ));
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+                "leading_detached_comments",
+                |m: &Location| { &m.leading_detached_comments },
+                |m: &mut Location| { &mut m.leading_detached_comments },
+            ));
+            crate::reflect::GeneratedMessageDescriptorData::new_2::<Location>(
+                "SourceCodeInfo.Location",
+                25,
+                fields,
+            )
         }
     }
 
@@ -6655,10 +7811,16 @@ pub mod source_code_info {
                         crate::rt::read_repeated_int32_into(wire_type, is, &mut self.span)?;
                     },
                     3 => {
-                        crate::rt::read_singular_string_into(wire_type, is, &mut self.leading_comments)?;
+                        if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                            return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.leading_comments = ::std::option::Option::Some(is.read_string()?);
                     },
                     4 => {
-                        crate::rt::read_singular_string_into(wire_type, is, &mut self.trailing_comments)?;
+                        if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                            return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.trailing_comments = ::std::option::Option::Some(is.read_string()?);
                     },
                     6 => {
                         crate::rt::read_repeated_string_into(wire_type, is, &mut self.leading_detached_comments)?;
@@ -6737,56 +7899,25 @@ pub mod source_code_info {
             &mut self.unknown_fields
         }
 
-        fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-            Self::descriptor_static()
-        }
-
         fn new() -> Location {
             Location::new()
         }
 
-        fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-            static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
-                    "path",
-                    |m: &Location| { &m.path },
-                    |m: &mut Location| { &mut m.path },
-                ));
-                fields.push(crate::reflect::rt::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
-                    "span",
-                    |m: &Location| { &m.span },
-                    |m: &mut Location| { &mut m.span },
-                ));
-                fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                    "leading_comments",
-                    |m: &Location| { &m.leading_comments },
-                    |m: &mut Location| { &mut m.leading_comments },
-                    Location::get_leading_comments,
-                ));
-                fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                    "trailing_comments",
-                    |m: &Location| { &m.trailing_comments },
-                    |m: &mut Location| { &mut m.trailing_comments },
-                    Location::get_trailing_comments,
-                ));
-                fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                    "leading_detached_comments",
-                    |m: &Location| { &m.leading_detached_comments },
-                    |m: &mut Location| { &mut m.leading_detached_comments },
-                ));
-                crate::reflect::MessageDescriptor::new::<Location>(
-                    "SourceCodeInfo.Location",
-                    fields,
-                    super::file_descriptor_proto()
-                )
-            })
+        fn descriptor_static() -> crate::reflect::MessageDescriptor {
+            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 24)
         }
 
         fn default_instance() -> &'static Location {
-            static instance: crate::rt::Lazy<Location> = crate::rt::Lazy::INIT;
-            instance.get(Location::new)
+            static instance: Location = Location {
+                path: ::std::vec::Vec::new(),
+                span: ::std::vec::Vec::new(),
+                leading_comments: ::std::option::Option::None,
+                trailing_comments: ::std::option::Option::None,
+                leading_detached_comments: ::std::vec::Vec::new(),
+                unknown_fields: crate::UnknownFields::new(),
+                cached_size: crate::rt::CachedSize::new(),
+            };
+            &instance
         }
     }
 
@@ -6794,8 +7925,8 @@ pub mod source_code_info {
         fn clear(&mut self) {
             self.path.clear();
             self.span.clear();
-            self.leading_comments.clear();
-            self.trailing_comments.clear();
+            self.leading_comments = ::std::option::Option::None;
+            self.trailing_comments = ::std::option::Option::None;
             self.leading_detached_comments.clear();
             self.unknown_fields.clear();
         }
@@ -6808,6 +7939,7 @@ pub mod source_code_info {
     }
 
     impl crate::reflect::ProtobufValue for Location {
+        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
     }
 }
 
@@ -6820,7 +7952,7 @@ pub struct GeneratedCodeInfo {
     // message fields
     ///  An Annotation connects some span of text in generated code to an element
     ///  of its generating .proto file.
-    pub annotation: crate::RepeatedField<generated_code_info::Annotation>,
+    pub annotation: ::std::vec::Vec<generated_code_info::Annotation>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -6837,6 +7969,20 @@ impl<'a> ::std::default::Default for &'a GeneratedCodeInfo {
 impl GeneratedCodeInfo {
     pub fn new() -> GeneratedCodeInfo {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "annotation",
+            |m: &GeneratedCodeInfo| { &m.annotation },
+            |m: &mut GeneratedCodeInfo| { &mut m.annotation },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<GeneratedCodeInfo>(
+            "GeneratedCodeInfo",
+            20,
+            fields,
+        )
     }
 }
 
@@ -6855,7 +8001,7 @@ impl crate::Message for GeneratedCodeInfo {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.annotation)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.annotation)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -6898,34 +8044,21 @@ impl crate::Message for GeneratedCodeInfo {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> GeneratedCodeInfo {
         GeneratedCodeInfo::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<generated_code_info::Annotation>>(
-                "annotation",
-                |m: &GeneratedCodeInfo| { &m.annotation },
-                |m: &mut GeneratedCodeInfo| { &mut m.annotation },
-            ));
-            crate::reflect::MessageDescriptor::new::<GeneratedCodeInfo>(
-                "GeneratedCodeInfo",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 25)
     }
 
     fn default_instance() -> &'static GeneratedCodeInfo {
-        static instance: crate::rt::Lazy<GeneratedCodeInfo> = crate::rt::Lazy::INIT;
-        instance.get(GeneratedCodeInfo::new)
+        static instance: GeneratedCodeInfo = GeneratedCodeInfo {
+            annotation: ::std::vec::Vec::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -6943,6 +8076,7 @@ impl ::std::fmt::Debug for GeneratedCodeInfo {
 }
 
 impl crate::reflect::ProtobufValue for GeneratedCodeInfo {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `GeneratedCodeInfo`
@@ -6955,7 +8089,7 @@ pub mod generated_code_info {
         ///  is formatted the same as SourceCodeInfo.Location.path.
         pub path: ::std::vec::Vec<i32>,
         ///  Identifies the filesystem path to the original source .proto.
-        source_file: crate::SingularField<::std::string::String>,
+        source_file: ::std::option::Option<::std::string::String>,
         ///  Identifies the starting offset in bytes in the generated code
         ///  that relates to the identified object.
         begin: ::std::option::Option<i32>,
@@ -6991,7 +8125,7 @@ pub mod generated_code_info {
         }
 
         pub fn clear_source_file(&mut self) {
-            self.source_file.clear();
+            self.source_file = ::std::option::Option::None;
         }
 
         pub fn has_source_file(&self) -> bool {
@@ -7000,14 +8134,14 @@ pub mod generated_code_info {
 
         // Param is passed by value, moved
         pub fn set_source_file(&mut self, v: ::std::string::String) {
-            self.source_file = crate::SingularField::some(v);
+            self.source_file = ::std::option::Option::Some(v);
         }
 
         // Mutable pointer to the field.
         // If field is not initialized, it is initialized with default value first.
         pub fn mut_source_file(&mut self) -> &mut ::std::string::String {
             if self.source_file.is_none() {
-                self.source_file.set_default();
+                self.source_file = ::std::option::Option::Some(::std::string::String::new());
             }
             self.source_file.as_mut().unwrap()
         }
@@ -7054,6 +8188,38 @@ pub mod generated_code_info {
         pub fn set_end(&mut self, v: i32) {
             self.end = ::std::option::Option::Some(v);
         }
+
+        pub(in super) fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+                "path",
+                |m: &Annotation| { &m.path },
+                |m: &mut Annotation| { &mut m.path },
+            ));
+            fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+                "source_file",
+                |m: &Annotation| { &m.source_file },
+                |m: &mut Annotation| { &mut m.source_file },
+                Annotation::get_source_file,
+            ));
+            fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+                "begin",
+                |m: &Annotation| { &m.begin },
+                |m: &mut Annotation| { &mut m.begin },
+                Annotation::get_begin,
+            ));
+            fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+                "end",
+                |m: &Annotation| { &m.end },
+                |m: &mut Annotation| { &mut m.end },
+                Annotation::get_end,
+            ));
+            crate::reflect::GeneratedMessageDescriptorData::new_2::<Annotation>(
+                "GeneratedCodeInfo.Annotation",
+                26,
+                fields,
+            )
+        }
     }
 
     impl crate::Message for Annotation {
@@ -7069,7 +8235,10 @@ pub mod generated_code_info {
                         crate::rt::read_repeated_int32_into(wire_type, is, &mut self.path)?;
                     },
                     2 => {
-                        crate::rt::read_singular_string_into(wire_type, is, &mut self.source_file)?;
+                        if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                            return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.source_file = ::std::option::Option::Some(is.read_string()?);
                     },
                     3 => {
                         if wire_type != crate::wire_format::WireTypeVarint {
@@ -7146,59 +8315,31 @@ pub mod generated_code_info {
             &mut self.unknown_fields
         }
 
-        fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-            Self::descriptor_static()
-        }
-
         fn new() -> Annotation {
             Annotation::new()
         }
 
-        fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-            static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
-                    "path",
-                    |m: &Annotation| { &m.path },
-                    |m: &mut Annotation| { &mut m.path },
-                ));
-                fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
-                    "source_file",
-                    |m: &Annotation| { &m.source_file },
-                    |m: &mut Annotation| { &mut m.source_file },
-                    Annotation::get_source_file,
-                ));
-                fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeInt32, _>(
-                    "begin",
-                    |m: &Annotation| { &m.begin },
-                    |m: &mut Annotation| { &mut m.begin },
-                    Annotation::get_begin,
-                ));
-                fields.push(crate::reflect::rt::make_option_get_copy_accessor::<_, crate::reflect::types::ProtobufTypeInt32, _>(
-                    "end",
-                    |m: &Annotation| { &m.end },
-                    |m: &mut Annotation| { &mut m.end },
-                    Annotation::get_end,
-                ));
-                crate::reflect::MessageDescriptor::new::<Annotation>(
-                    "GeneratedCodeInfo.Annotation",
-                    fields,
-                    super::file_descriptor_proto()
-                )
-            })
+        fn descriptor_static() -> crate::reflect::MessageDescriptor {
+            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 26)
         }
 
         fn default_instance() -> &'static Annotation {
-            static instance: crate::rt::Lazy<Annotation> = crate::rt::Lazy::INIT;
-            instance.get(Annotation::new)
+            static instance: Annotation = Annotation {
+                path: ::std::vec::Vec::new(),
+                source_file: ::std::option::Option::None,
+                begin: ::std::option::Option::None,
+                end: ::std::option::Option::None,
+                unknown_fields: crate::UnknownFields::new(),
+                cached_size: crate::rt::CachedSize::new(),
+            };
+            &instance
         }
     }
 
     impl crate::Clear for Annotation {
         fn clear(&mut self) {
             self.path.clear();
-            self.source_file.clear();
+            self.source_file = ::std::option::Option::None;
             self.begin = ::std::option::Option::None;
             self.end = ::std::option::Option::None;
             self.unknown_fields.clear();
@@ -7212,6 +8353,7 @@ pub mod generated_code_info {
     }
 
     impl crate::reflect::ProtobufValue for Annotation {
+        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
     }
 }
 
@@ -7231,7 +8373,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     sion\x126\n\x07options\x18\x08\x20\x01(\x0b2\x1c.google.protobuf.FileOpt\
     ionsR\x07options\x12I\n\x10source_code_info\x18\t\x20\x01(\x0b2\x1f.goog\
     le.protobuf.SourceCodeInfoR\x0esourceCodeInfo\x12\x16\n\x06syntax\x18\
-    \x0c\x20\x01(\tR\x06syntax\"\xf7\x05\n\x0fDescriptorProto\x12\x12\n\x04n\
+    \x0c\x20\x01(\tR\x06syntax\"\xb9\x06\n\x0fDescriptorProto\x12\x12\n\x04n\
     ame\x18\x01\x20\x01(\tR\x04name\x12;\n\x05field\x18\x02\x20\x03(\x0b2%.g\
     oogle.protobuf.FieldDescriptorProtoR\x05field\x12C\n\textension\x18\x06\
     \x20\x03(\x0b2%.google.protobuf.FieldDescriptorProtoR\textension\x12A\n\
@@ -7243,37 +8385,46 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     criptorProtoR\toneofDecl\x129\n\x07options\x18\x07\x20\x01(\x0b2\x1f.goo\
     gle.protobuf.MessageOptionsR\x07options\x12U\n\x0ereserved_range\x18\t\
     \x20\x03(\x0b2..google.protobuf.DescriptorProto.ReservedRangeR\rreserved\
-    Range\x12#\n\rreserved_name\x18\n\x20\x03(\tR\x0creservedName\x1a8\n\x0e\
+    Range\x12#\n\rreserved_name\x18\n\x20\x03(\tR\x0creservedName\x1az\n\x0e\
     ExtensionRange\x12\x14\n\x05start\x18\x01\x20\x01(\x05R\x05start\x12\x10\
-    \n\x03end\x18\x02\x20\x01(\x05R\x03end\x1a7\n\rReservedRange\x12\x14\n\
-    \x05start\x18\x01\x20\x01(\x05R\x05start\x12\x10\n\x03end\x18\x02\x20\
-    \x01(\x05R\x03end\"\x98\x06\n\x14FieldDescriptorProto\x12\x12\n\x04name\
-    \x18\x01\x20\x01(\tR\x04name\x12\x16\n\x06number\x18\x03\x20\x01(\x05R\
-    \x06number\x12A\n\x05label\x18\x04\x20\x01(\x0e2+.google.protobuf.FieldD\
-    escriptorProto.LabelR\x05label\x12>\n\x04type\x18\x05\x20\x01(\x0e2*.goo\
-    gle.protobuf.FieldDescriptorProto.TypeR\x04type\x12\x1b\n\ttype_name\x18\
-    \x06\x20\x01(\tR\x08typeName\x12\x1a\n\x08extendee\x18\x02\x20\x01(\tR\
-    \x08extendee\x12#\n\rdefault_value\x18\x07\x20\x01(\tR\x0cdefaultValue\
-    \x12\x1f\n\x0boneof_index\x18\t\x20\x01(\x05R\noneofIndex\x12\x1b\n\tjso\
-    n_name\x18\n\x20\x01(\tR\x08jsonName\x127\n\x07options\x18\x08\x20\x01(\
-    \x0b2\x1d.google.protobuf.FieldOptionsR\x07options\"\xb6\x02\n\x04Type\
-    \x12\x0f\n\x0bTYPE_DOUBLE\x10\x01\x12\x0e\n\nTYPE_FLOAT\x10\x02\x12\x0e\
-    \n\nTYPE_INT64\x10\x03\x12\x0f\n\x0bTYPE_UINT64\x10\x04\x12\x0e\n\nTYPE_\
-    INT32\x10\x05\x12\x10\n\x0cTYPE_FIXED64\x10\x06\x12\x10\n\x0cTYPE_FIXED3\
-    2\x10\x07\x12\r\n\tTYPE_BOOL\x10\x08\x12\x0f\n\x0bTYPE_STRING\x10\t\x12\
-    \x0e\n\nTYPE_GROUP\x10\n\x12\x10\n\x0cTYPE_MESSAGE\x10\x0b\x12\x0e\n\nTY\
-    PE_BYTES\x10\x0c\x12\x0f\n\x0bTYPE_UINT32\x10\r\x12\r\n\tTYPE_ENUM\x10\
-    \x0e\x12\x11\n\rTYPE_SFIXED32\x10\x0f\x12\x11\n\rTYPE_SFIXED64\x10\x10\
-    \x12\x0f\n\x0bTYPE_SINT32\x10\x11\x12\x0f\n\x0bTYPE_SINT64\x10\x12\"C\n\
-    \x05Label\x12\x12\n\x0eLABEL_OPTIONAL\x10\x01\x12\x12\n\x0eLABEL_REQUIRE\
-    D\x10\x02\x12\x12\n\x0eLABEL_REPEATED\x10\x03\"c\n\x14OneofDescriptorPro\
-    to\x12\x12\n\x04name\x18\x01\x20\x01(\tR\x04name\x127\n\x07options\x18\
-    \x02\x20\x01(\x0b2\x1d.google.protobuf.OneofOptionsR\x07options\"\xa2\
-    \x01\n\x13EnumDescriptorProto\x12\x12\n\x04name\x18\x01\x20\x01(\tR\x04n\
-    ame\x12?\n\x05value\x18\x02\x20\x03(\x0b2).google.protobuf.EnumValueDesc\
-    riptorProtoR\x05value\x126\n\x07options\x18\x03\x20\x01(\x0b2\x1c.google\
-    .protobuf.EnumOptionsR\x07options\"\x83\x01\n\x18EnumValueDescriptorProt\
-    o\x12\x12\n\x04name\x18\x01\x20\x01(\tR\x04name\x12\x16\n\x06number\x18\
+    \n\x03end\x18\x02\x20\x01(\x05R\x03end\x12@\n\x07options\x18\x03\x20\x01\
+    (\x0b2&.google.protobuf.ExtensionRangeOptionsR\x07options\x1a7\n\rReserv\
+    edRange\x12\x14\n\x05start\x18\x01\x20\x01(\x05R\x05start\x12\x10\n\x03e\
+    nd\x18\x02\x20\x01(\x05R\x03end\"|\n\x15ExtensionRangeOptions\x12X\n\x14\
+    uninterpreted_option\x18\xe7\x07\x20\x03(\x0b2$.google.protobuf.Uninterp\
+    retedOptionR\x13uninterpretedOption*\t\x08\xe8\x07\x10\x80\x80\x80\x80\
+    \x02\"\xc1\x06\n\x14FieldDescriptorProto\x12\x12\n\x04name\x18\x01\x20\
+    \x01(\tR\x04name\x12\x16\n\x06number\x18\x03\x20\x01(\x05R\x06number\x12\
+    A\n\x05label\x18\x04\x20\x01(\x0e2+.google.protobuf.FieldDescriptorProto\
+    .LabelR\x05label\x12>\n\x04type\x18\x05\x20\x01(\x0e2*.google.protobuf.F\
+    ieldDescriptorProto.TypeR\x04type\x12\x1b\n\ttype_name\x18\x06\x20\x01(\
+    \tR\x08typeName\x12\x1a\n\x08extendee\x18\x02\x20\x01(\tR\x08extendee\
+    \x12#\n\rdefault_value\x18\x07\x20\x01(\tR\x0cdefaultValue\x12\x1f\n\x0b\
+    oneof_index\x18\t\x20\x01(\x05R\noneofIndex\x12\x1b\n\tjson_name\x18\n\
+    \x20\x01(\tR\x08jsonName\x127\n\x07options\x18\x08\x20\x01(\x0b2\x1d.goo\
+    gle.protobuf.FieldOptionsR\x07options\x12'\n\x0fproto3_optional\x18\x11\
+    \x20\x01(\x08R\x0eproto3Optional\"\xb6\x02\n\x04Type\x12\x0f\n\x0bTYPE_D\
+    OUBLE\x10\x01\x12\x0e\n\nTYPE_FLOAT\x10\x02\x12\x0e\n\nTYPE_INT64\x10\
+    \x03\x12\x0f\n\x0bTYPE_UINT64\x10\x04\x12\x0e\n\nTYPE_INT32\x10\x05\x12\
+    \x10\n\x0cTYPE_FIXED64\x10\x06\x12\x10\n\x0cTYPE_FIXED32\x10\x07\x12\r\n\
+    \tTYPE_BOOL\x10\x08\x12\x0f\n\x0bTYPE_STRING\x10\t\x12\x0e\n\nTYPE_GROUP\
+    \x10\n\x12\x10\n\x0cTYPE_MESSAGE\x10\x0b\x12\x0e\n\nTYPE_BYTES\x10\x0c\
+    \x12\x0f\n\x0bTYPE_UINT32\x10\r\x12\r\n\tTYPE_ENUM\x10\x0e\x12\x11\n\rTY\
+    PE_SFIXED32\x10\x0f\x12\x11\n\rTYPE_SFIXED64\x10\x10\x12\x0f\n\x0bTYPE_S\
+    INT32\x10\x11\x12\x0f\n\x0bTYPE_SINT64\x10\x12\"C\n\x05Label\x12\x12\n\
+    \x0eLABEL_OPTIONAL\x10\x01\x12\x12\n\x0eLABEL_REQUIRED\x10\x02\x12\x12\n\
+    \x0eLABEL_REPEATED\x10\x03\"c\n\x14OneofDescriptorProto\x12\x12\n\x04nam\
+    e\x18\x01\x20\x01(\tR\x04name\x127\n\x07options\x18\x02\x20\x01(\x0b2\
+    \x1d.google.protobuf.OneofOptionsR\x07options\"\xe3\x02\n\x13EnumDescrip\
+    torProto\x12\x12\n\x04name\x18\x01\x20\x01(\tR\x04name\x12?\n\x05value\
+    \x18\x02\x20\x03(\x0b2).google.protobuf.EnumValueDescriptorProtoR\x05val\
+    ue\x126\n\x07options\x18\x03\x20\x01(\x0b2\x1c.google.protobuf.EnumOptio\
+    nsR\x07options\x12]\n\x0ereserved_range\x18\x04\x20\x03(\x0b26.google.pr\
+    otobuf.EnumDescriptorProto.EnumReservedRangeR\rreservedRange\x12#\n\rres\
+    erved_name\x18\x05\x20\x03(\tR\x0creservedName\x1a;\n\x11EnumReservedRan\
+    ge\x12\x14\n\x05start\x18\x01\x20\x01(\x05R\x05start\x12\x10\n\x03end\
+    \x18\x02\x20\x01(\x05R\x03end\"\x83\x01\n\x18EnumValueDescriptorProto\
+    \x12\x12\n\x04name\x18\x01\x20\x01(\tR\x04name\x12\x16\n\x06number\x18\
     \x02\x20\x01(\x05R\x06number\x12;\n\x07options\x18\x03\x20\x01(\x0b2!.go\
     ogle.protobuf.EnumValueOptionsR\x07options\"\xa7\x01\n\x16ServiceDescrip\
     torProto\x12\x12\n\x04name\x18\x01\x20\x01(\tR\x04name\x12>\n\x06method\
@@ -7285,1070 +8436,1241 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x07options\x18\x04\x20\x01(\x0b2\x1e.google.protobuf.MethodOptionsR\
     \x07options\x120\n\x10client_streaming\x18\x05\x20\x01(\x08:\x05falseR\
     \x0fclientStreaming\x120\n\x10server_streaming\x18\x06\x20\x01(\x08:\x05\
-    falseR\x0fserverStreaming\"\x88\x07\n\x0bFileOptions\x12!\n\x0cjava_pack\
-    age\x18\x01\x20\x01(\tR\x0bjavaPackage\x120\n\x14java_outer_classname\
-    \x18\x08\x20\x01(\tR\x12javaOuterClassname\x125\n\x13java_multiple_files\
-    \x18\n\x20\x01(\x08:\x05falseR\x11javaMultipleFiles\x12D\n\x1djava_gener\
-    ate_equals_and_hash\x18\x14\x20\x01(\x08R\x19javaGenerateEqualsAndHashB\
-    \x02\x18\x01\x12:\n\x16java_string_check_utf8\x18\x1b\x20\x01(\x08:\x05f\
-    alseR\x13javaStringCheckUtf8\x12S\n\x0coptimize_for\x18\t\x20\x01(\x0e2)\
-    .google.protobuf.FileOptions.OptimizeMode:\x05SPEEDR\x0boptimizeFor\x12\
-    \x1d\n\ngo_package\x18\x0b\x20\x01(\tR\tgoPackage\x125\n\x13cc_generic_s\
-    ervices\x18\x10\x20\x01(\x08:\x05falseR\x11ccGenericServices\x129\n\x15j\
-    ava_generic_services\x18\x11\x20\x01(\x08:\x05falseR\x13javaGenericServi\
-    ces\x125\n\x13py_generic_services\x18\x12\x20\x01(\x08:\x05falseR\x11pyG\
-    enericServices\x12%\n\ndeprecated\x18\x17\x20\x01(\x08:\x05falseR\ndepre\
-    cated\x12/\n\x10cc_enable_arenas\x18\x1f\x20\x01(\x08:\x05falseR\x0eccEn\
-    ableArenas\x12*\n\x11objc_class_prefix\x18$\x20\x01(\tR\x0fobjcClassPref\
-    ix\x12)\n\x10csharp_namespace\x18%\x20\x01(\tR\x0fcsharpNamespace\x12X\n\
+    falseR\x0fserverStreaming\"\x91\t\n\x0bFileOptions\x12!\n\x0cjava_packag\
+    e\x18\x01\x20\x01(\tR\x0bjavaPackage\x120\n\x14java_outer_classname\x18\
+    \x08\x20\x01(\tR\x12javaOuterClassname\x125\n\x13java_multiple_files\x18\
+    \n\x20\x01(\x08:\x05falseR\x11javaMultipleFiles\x12D\n\x1djava_generate_\
+    equals_and_hash\x18\x14\x20\x01(\x08R\x19javaGenerateEqualsAndHashB\x02\
+    \x18\x01\x12:\n\x16java_string_check_utf8\x18\x1b\x20\x01(\x08:\x05false\
+    R\x13javaStringCheckUtf8\x12S\n\x0coptimize_for\x18\t\x20\x01(\x0e2).goo\
+    gle.protobuf.FileOptions.OptimizeMode:\x05SPEEDR\x0boptimizeFor\x12\x1d\
+    \n\ngo_package\x18\x0b\x20\x01(\tR\tgoPackage\x125\n\x13cc_generic_servi\
+    ces\x18\x10\x20\x01(\x08:\x05falseR\x11ccGenericServices\x129\n\x15java_\
+    generic_services\x18\x11\x20\x01(\x08:\x05falseR\x13javaGenericServices\
+    \x125\n\x13py_generic_services\x18\x12\x20\x01(\x08:\x05falseR\x11pyGene\
+    ricServices\x127\n\x14php_generic_services\x18*\x20\x01(\x08:\x05falseR\
+    \x12phpGenericServices\x12%\n\ndeprecated\x18\x17\x20\x01(\x08:\x05false\
+    R\ndeprecated\x12.\n\x10cc_enable_arenas\x18\x1f\x20\x01(\x08:\x04trueR\
+    \x0eccEnableArenas\x12*\n\x11objc_class_prefix\x18$\x20\x01(\tR\x0fobjcC\
+    lassPrefix\x12)\n\x10csharp_namespace\x18%\x20\x01(\tR\x0fcsharpNamespac\
+    e\x12!\n\x0cswift_prefix\x18'\x20\x01(\tR\x0bswiftPrefix\x12(\n\x10php_c\
+    lass_prefix\x18(\x20\x01(\tR\x0ephpClassPrefix\x12#\n\rphp_namespace\x18\
+    )\x20\x01(\tR\x0cphpNamespace\x124\n\x16php_metadata_namespace\x18,\x20\
+    \x01(\tR\x14phpMetadataNamespace\x12!\n\x0cruby_package\x18-\x20\x01(\tR\
+    \x0brubyPackage\x12X\n\x14uninterpreted_option\x18\xe7\x07\x20\x03(\x0b2\
+    $.google.protobuf.UninterpretedOptionR\x13uninterpretedOption\":\n\x0cOp\
+    timizeMode\x12\t\n\x05SPEED\x10\x01\x12\r\n\tCODE_SIZE\x10\x02\x12\x10\n\
+    \x0cLITE_RUNTIME\x10\x03*\t\x08\xe8\x07\x10\x80\x80\x80\x80\x02J\x04\x08\
+    &\x10'\"\xd1\x02\n\x0eMessageOptions\x12<\n\x17message_set_wire_format\
+    \x18\x01\x20\x01(\x08:\x05falseR\x14messageSetWireFormat\x12L\n\x1fno_st\
+    andard_descriptor_accessor\x18\x02\x20\x01(\x08:\x05falseR\x1cnoStandard\
+    DescriptorAccessor\x12%\n\ndeprecated\x18\x03\x20\x01(\x08:\x05falseR\nd\
+    eprecated\x12\x1b\n\tmap_entry\x18\x07\x20\x01(\x08R\x08mapEntry\x12X\n\
     \x14uninterpreted_option\x18\xe7\x07\x20\x03(\x0b2$.google.protobuf.Unin\
-    terpretedOptionR\x13uninterpretedOption\":\n\x0cOptimizeMode\x12\t\n\x05\
-    SPEED\x10\x01\x12\r\n\tCODE_SIZE\x10\x02\x12\x10\n\x0cLITE_RUNTIME\x10\
-    \x03*\t\x08\xe8\x07\x10\x80\x80\x80\x80\x02\"\xc5\x02\n\x0eMessageOption\
-    s\x12<\n\x17message_set_wire_format\x18\x01\x20\x01(\x08:\x05falseR\x14m\
-    essageSetWireFormat\x12L\n\x1fno_standard_descriptor_accessor\x18\x02\
-    \x20\x01(\x08:\x05falseR\x1cnoStandardDescriptorAccessor\x12%\n\ndepreca\
-    ted\x18\x03\x20\x01(\x08:\x05falseR\ndeprecated\x12\x1b\n\tmap_entry\x18\
-    \x07\x20\x01(\x08R\x08mapEntry\x12X\n\x14uninterpreted_option\x18\xe7\
-    \x07\x20\x03(\x0b2$.google.protobuf.UninterpretedOptionR\x13uninterprete\
-    dOption*\t\x08\xe8\x07\x10\x80\x80\x80\x80\x02\"\xdc\x03\n\x0cFieldOptio\
-    ns\x12A\n\x05ctype\x18\x01\x20\x01(\x0e2#.google.protobuf.FieldOptions.C\
-    Type:\x06STRINGR\x05ctype\x12\x16\n\x06packed\x18\x02\x20\x01(\x08R\x06p\
-    acked\x12G\n\x06jstype\x18\x06\x20\x01(\x0e2$.google.protobuf.FieldOptio\
-    ns.JSType:\tJS_NORMALR\x06jstype\x12\x19\n\x04lazy\x18\x05\x20\x01(\x08:\
+    terpretedOptionR\x13uninterpretedOption*\t\x08\xe8\x07\x10\x80\x80\x80\
+    \x80\x02J\x04\x08\x08\x10\tJ\x04\x08\t\x10\n\"\xe2\x03\n\x0cFieldOptions\
+    \x12A\n\x05ctype\x18\x01\x20\x01(\x0e2#.google.protobuf.FieldOptions.CTy\
+    pe:\x06STRINGR\x05ctype\x12\x16\n\x06packed\x18\x02\x20\x01(\x08R\x06pac\
+    ked\x12G\n\x06jstype\x18\x06\x20\x01(\x0e2$.google.protobuf.FieldOptions\
+    .JSType:\tJS_NORMALR\x06jstype\x12\x19\n\x04lazy\x18\x05\x20\x01(\x08:\
     \x05falseR\x04lazy\x12%\n\ndeprecated\x18\x03\x20\x01(\x08:\x05falseR\nd\
     eprecated\x12\x19\n\x04weak\x18\n\x20\x01(\x08:\x05falseR\x04weak\x12X\n\
     \x14uninterpreted_option\x18\xe7\x07\x20\x03(\x0b2$.google.protobuf.Unin\
     terpretedOptionR\x13uninterpretedOption\"/\n\x05CType\x12\n\n\x06STRING\
     \x10\0\x12\x08\n\x04CORD\x10\x01\x12\x10\n\x0cSTRING_PIECE\x10\x02\"5\n\
     \x06JSType\x12\r\n\tJS_NORMAL\x10\0\x12\r\n\tJS_STRING\x10\x01\x12\r\n\t\
-    JS_NUMBER\x10\x02*\t\x08\xe8\x07\x10\x80\x80\x80\x80\x02\"s\n\x0cOneofOp\
-    tions\x12X\n\x14uninterpreted_option\x18\xe7\x07\x20\x03(\x0b2$.google.p\
-    rotobuf.UninterpretedOptionR\x13uninterpretedOption*\t\x08\xe8\x07\x10\
-    \x80\x80\x80\x80\x02\"\xba\x01\n\x0bEnumOptions\x12\x1f\n\x0ballow_alias\
-    \x18\x02\x20\x01(\x08R\nallowAlias\x12%\n\ndeprecated\x18\x03\x20\x01(\
-    \x08:\x05falseR\ndeprecated\x12X\n\x14uninterpreted_option\x18\xe7\x07\
+    JS_NUMBER\x10\x02*\t\x08\xe8\x07\x10\x80\x80\x80\x80\x02J\x04\x08\x04\
+    \x10\x05\"s\n\x0cOneofOptions\x12X\n\x14uninterpreted_option\x18\xe7\x07\
     \x20\x03(\x0b2$.google.protobuf.UninterpretedOptionR\x13uninterpretedOpt\
-    ion*\t\x08\xe8\x07\x10\x80\x80\x80\x80\x02\"\x9e\x01\n\x10EnumValueOptio\
-    ns\x12%\n\ndeprecated\x18\x01\x20\x01(\x08:\x05falseR\ndeprecated\x12X\n\
-    \x14uninterpreted_option\x18\xe7\x07\x20\x03(\x0b2$.google.protobuf.Unin\
-    terpretedOptionR\x13uninterpretedOption*\t\x08\xe8\x07\x10\x80\x80\x80\
-    \x80\x02\"\x9c\x01\n\x0eServiceOptions\x12%\n\ndeprecated\x18!\x20\x01(\
-    \x08:\x05falseR\ndeprecated\x12X\n\x14uninterpreted_option\x18\xe7\x07\
+    ion*\t\x08\xe8\x07\x10\x80\x80\x80\x80\x02\"\xc0\x01\n\x0bEnumOptions\
+    \x12\x1f\n\x0ballow_alias\x18\x02\x20\x01(\x08R\nallowAlias\x12%\n\ndepr\
+    ecated\x18\x03\x20\x01(\x08:\x05falseR\ndeprecated\x12X\n\x14uninterpret\
+    ed_option\x18\xe7\x07\x20\x03(\x0b2$.google.protobuf.UninterpretedOption\
+    R\x13uninterpretedOption*\t\x08\xe8\x07\x10\x80\x80\x80\x80\x02J\x04\x08\
+    \x05\x10\x06\"\x9e\x01\n\x10EnumValueOptions\x12%\n\ndeprecated\x18\x01\
+    \x20\x01(\x08:\x05falseR\ndeprecated\x12X\n\x14uninterpreted_option\x18\
+    \xe7\x07\x20\x03(\x0b2$.google.protobuf.UninterpretedOptionR\x13uninterp\
+    retedOption*\t\x08\xe8\x07\x10\x80\x80\x80\x80\x02\"\x9c\x01\n\x0eServic\
+    eOptions\x12%\n\ndeprecated\x18!\x20\x01(\x08:\x05falseR\ndeprecated\x12\
+    X\n\x14uninterpreted_option\x18\xe7\x07\x20\x03(\x0b2$.google.protobuf.U\
+    ninterpretedOptionR\x13uninterpretedOption*\t\x08\xe8\x07\x10\x80\x80\
+    \x80\x80\x02\"\xe0\x02\n\rMethodOptions\x12%\n\ndeprecated\x18!\x20\x01(\
+    \x08:\x05falseR\ndeprecated\x12q\n\x11idempotency_level\x18\"\x20\x01(\
+    \x0e2/.google.protobuf.MethodOptions.IdempotencyLevel:\x13IDEMPOTENCY_UN\
+    KNOWNR\x10idempotencyLevel\x12X\n\x14uninterpreted_option\x18\xe7\x07\
     \x20\x03(\x0b2$.google.protobuf.UninterpretedOptionR\x13uninterpretedOpt\
-    ion*\t\x08\xe8\x07\x10\x80\x80\x80\x80\x02\"\x9b\x01\n\rMethodOptions\
-    \x12%\n\ndeprecated\x18!\x20\x01(\x08:\x05falseR\ndeprecated\x12X\n\x14u\
-    ninterpreted_option\x18\xe7\x07\x20\x03(\x0b2$.google.protobuf.Uninterpr\
-    etedOptionR\x13uninterpretedOption*\t\x08\xe8\x07\x10\x80\x80\x80\x80\
-    \x02\"\x9a\x03\n\x13UninterpretedOption\x12A\n\x04name\x18\x02\x20\x03(\
-    \x0b2-.google.protobuf.UninterpretedOption.NamePartR\x04name\x12)\n\x10i\
-    dentifier_value\x18\x03\x20\x01(\tR\x0fidentifierValue\x12,\n\x12positiv\
-    e_int_value\x18\x04\x20\x01(\x04R\x10positiveIntValue\x12,\n\x12negative\
-    _int_value\x18\x05\x20\x01(\x03R\x10negativeIntValue\x12!\n\x0cdouble_va\
-    lue\x18\x06\x20\x01(\x01R\x0bdoubleValue\x12!\n\x0cstring_value\x18\x07\
-    \x20\x01(\x0cR\x0bstringValue\x12'\n\x0faggregate_value\x18\x08\x20\x01(\
-    \tR\x0eaggregateValue\x1aJ\n\x08NamePart\x12\x1b\n\tname_part\x18\x01\
-    \x20\x02(\tR\x08namePart\x12!\n\x0cis_extension\x18\x02\x20\x02(\x08R\
-    \x0bisExtension\"\xa7\x02\n\x0eSourceCodeInfo\x12D\n\x08location\x18\x01\
-    \x20\x03(\x0b2(.google.protobuf.SourceCodeInfo.LocationR\x08location\x1a\
-    \xce\x01\n\x08Location\x12\x16\n\x04path\x18\x01\x20\x03(\x05R\x04pathB\
-    \x02\x10\x01\x12\x16\n\x04span\x18\x02\x20\x03(\x05R\x04spanB\x02\x10\
-    \x01\x12)\n\x10leading_comments\x18\x03\x20\x01(\tR\x0fleadingComments\
-    \x12+\n\x11trailing_comments\x18\x04\x20\x01(\tR\x10trailingComments\x12\
-    :\n\x19leading_detached_comments\x18\x06\x20\x03(\tR\x17leadingDetachedC\
-    omments\"\xd1\x01\n\x11GeneratedCodeInfo\x12M\n\nannotation\x18\x01\x20\
-    \x03(\x0b2-.google.protobuf.GeneratedCodeInfo.AnnotationR\nannotation\
-    \x1am\n\nAnnotation\x12\x16\n\x04path\x18\x01\x20\x03(\x05R\x04pathB\x02\
-    \x10\x01\x12\x1f\n\x0bsource_file\x18\x02\x20\x01(\tR\nsourceFile\x12\
-    \x14\n\x05begin\x18\x03\x20\x01(\x05R\x05begin\x12\x10\n\x03end\x18\x04\
-    \x20\x01(\x05R\x03endBX\n\x13com.google.protobufB\x10DescriptorProtosH\
-    \x01Z\ndescriptor\xa2\x02\x03GPB\xaa\x02\x1aGoogle.Protobuf.ReflectionJ\
-    \xb3\x9f\x02\n\x07\x12\x05'\0\xa3\x06\x01\n\xaa\x0f\n\x01\x0c\x12\x03'\0\
-    \x122\xc1\x0c\x20Protocol\x20Buffers\x20-\x20Google's\x20data\x20interch\
-    ange\x20format\n\x20Copyright\x202008\x20Google\x20Inc.\x20\x20All\x20ri\
-    ghts\x20reserved.\n\x20https://developers.google.com/protocol-buffers/\n\
-    \n\x20Redistribution\x20and\x20use\x20in\x20source\x20and\x20binary\x20f\
-    orms,\x20with\x20or\x20without\n\x20modification,\x20are\x20permitted\
-    \x20provided\x20that\x20the\x20following\x20conditions\x20are\n\x20met:\
-    \n\n\x20\x20\x20\x20\x20*\x20Redistributions\x20of\x20source\x20code\x20\
-    must\x20retain\x20the\x20above\x20copyright\n\x20notice,\x20this\x20list\
-    \x20of\x20conditions\x20and\x20the\x20following\x20disclaimer.\n\x20\x20\
-    \x20\x20\x20*\x20Redistributions\x20in\x20binary\x20form\x20must\x20repr\
-    oduce\x20the\x20above\n\x20copyright\x20notice,\x20this\x20list\x20of\
-    \x20conditions\x20and\x20the\x20following\x20disclaimer\n\x20in\x20the\
-    \x20documentation\x20and/or\x20other\x20materials\x20provided\x20with\
-    \x20the\n\x20distribution.\n\x20\x20\x20\x20\x20*\x20Neither\x20the\x20n\
-    ame\x20of\x20Google\x20Inc.\x20nor\x20the\x20names\x20of\x20its\n\x20con\
-    tributors\x20may\x20be\x20used\x20to\x20endorse\x20or\x20promote\x20prod\
-    ucts\x20derived\x20from\n\x20this\x20software\x20without\x20specific\x20\
-    prior\x20written\x20permission.\n\n\x20THIS\x20SOFTWARE\x20IS\x20PROVIDE\
-    D\x20BY\x20THE\x20COPYRIGHT\x20HOLDERS\x20AND\x20CONTRIBUTORS\n\x20\"AS\
-    \x20IS\"\x20AND\x20ANY\x20EXPRESS\x20OR\x20IMPLIED\x20WARRANTIES,\x20INC\
-    LUDING,\x20BUT\x20NOT\n\x20LIMITED\x20TO,\x20THE\x20IMPLIED\x20WARRANTIE\
-    S\x20OF\x20MERCHANTABILITY\x20AND\x20FITNESS\x20FOR\n\x20A\x20PARTICULAR\
-    \x20PURPOSE\x20ARE\x20DISCLAIMED.\x20IN\x20NO\x20EVENT\x20SHALL\x20THE\
-    \x20COPYRIGHT\n\x20OWNER\x20OR\x20CONTRIBUTORS\x20BE\x20LIABLE\x20FOR\
-    \x20ANY\x20DIRECT,\x20INDIRECT,\x20INCIDENTAL,\n\x20SPECIAL,\x20EXEMPLAR\
-    Y,\x20OR\x20CONSEQUENTIAL\x20DAMAGES\x20(INCLUDING,\x20BUT\x20NOT\n\x20L\
-    IMITED\x20TO,\x20PROCUREMENT\x20OF\x20SUBSTITUTE\x20GOODS\x20OR\x20SERVI\
-    CES;\x20LOSS\x20OF\x20USE,\n\x20DATA,\x20OR\x20PROFITS;\x20OR\x20BUSINES\
-    S\x20INTERRUPTION)\x20HOWEVER\x20CAUSED\x20AND\x20ON\x20ANY\n\x20THEORY\
-    \x20OF\x20LIABILITY,\x20WHETHER\x20IN\x20CONTRACT,\x20STRICT\x20LIABILIT\
-    Y,\x20OR\x20TORT\n\x20(INCLUDING\x20NEGLIGENCE\x20OR\x20OTHERWISE)\x20AR\
-    ISING\x20IN\x20ANY\x20WAY\x20OUT\x20OF\x20THE\x20USE\n\x20OF\x20THIS\x20\
-    SOFTWARE,\x20EVEN\x20IF\x20ADVISED\x20OF\x20THE\x20POSSIBILITY\x20OF\x20\
-    SUCH\x20DAMAGE.\n2\xdb\x02\x20Author:\x20kenton@google.com\x20(Kenton\
-    \x20Varda)\n\x20\x20Based\x20on\x20original\x20Protocol\x20Buffers\x20de\
-    sign\x20by\n\x20\x20Sanjay\x20Ghemawat,\x20Jeff\x20Dean,\x20and\x20other\
-    s.\n\n\x20The\x20messages\x20in\x20this\x20file\x20describe\x20the\x20de\
-    finitions\x20found\x20in\x20.proto\x20files.\n\x20A\x20valid\x20.proto\
-    \x20file\x20can\x20be\x20translated\x20directly\x20to\x20a\x20FileDescri\
-    ptorProto\n\x20without\x20any\x20other\x20information\x20(e.g.\x20withou\
-    t\x20reading\x20its\x20imports).\n\n\x08\n\x01\x02\x12\x03)\0\x18\n\x08\
-    \n\x01\x08\x12\x03*\0!\n\t\n\x02\x08\x0b\x12\x03*\0!\n\x08\n\x01\x08\x12\
-    \x03+\0,\n\t\n\x02\x08\x01\x12\x03+\0,\n\x08\n\x01\x08\x12\x03,\01\n\t\n\
-    \x02\x08\x08\x12\x03,\01\n\x08\n\x01\x08\x12\x03-\07\n\t\n\x02\x08%\x12\
-    \x03-\07\n\x08\n\x01\x08\x12\x03.\0!\n\t\n\x02\x08$\x12\x03.\0!\n\x08\n\
-    \x01\x08\x12\x032\0\x1c\n\x7f\n\x02\x08\t\x12\x032\0\x1c\x1at\x20descrip\
-    tor.proto\x20must\x20be\x20optimized\x20for\x20speed\x20because\x20refle\
-    ction-based\n\x20algorithms\x20don't\x20work\x20during\x20bootstrapping.\
-    \n\nj\n\x02\x04\0\x12\x046\08\x01\x1a^\x20The\x20protocol\x20compiler\
-    \x20can\x20output\x20a\x20FileDescriptorSet\x20containing\x20the\x20.pro\
-    to\n\x20files\x20it\x20parses.\n\n\n\n\x03\x04\0\x01\x12\x036\x08\x19\n\
-    \x0b\n\x04\x04\0\x02\0\x12\x037\x02(\n\x0c\n\x05\x04\0\x02\0\x04\x12\x03\
-    7\x02\n\n\x0c\n\x05\x04\0\x02\0\x06\x12\x037\x0b\x1e\n\x0c\n\x05\x04\0\
-    \x02\0\x01\x12\x037\x1f#\n\x0c\n\x05\x04\0\x02\0\x03\x12\x037&'\n/\n\x02\
-    \x04\x01\x12\x04;\0X\x01\x1a#\x20Describes\x20a\x20complete\x20.proto\
-    \x20file.\n\n\n\n\x03\x04\x01\x01\x12\x03;\x08\x1b\n9\n\x04\x04\x01\x02\
-    \0\x12\x03<\x02\x1b\",\x20file\x20name,\x20relative\x20to\x20root\x20of\
-    \x20source\x20tree\n\n\x0c\n\x05\x04\x01\x02\0\x04\x12\x03<\x02\n\n\x0c\
-    \n\x05\x04\x01\x02\0\x05\x12\x03<\x0b\x11\n\x0c\n\x05\x04\x01\x02\0\x01\
-    \x12\x03<\x12\x16\n\x0c\n\x05\x04\x01\x02\0\x03\x12\x03<\x19\x1a\n*\n\
-    \x04\x04\x01\x02\x01\x12\x03=\x02\x1e\"\x1d\x20e.g.\x20\"foo\",\x20\"foo\
-    .bar\",\x20etc.\n\n\x0c\n\x05\x04\x01\x02\x01\x04\x12\x03=\x02\n\n\x0c\n\
-    \x05\x04\x01\x02\x01\x05\x12\x03=\x0b\x11\n\x0c\n\x05\x04\x01\x02\x01\
-    \x01\x12\x03=\x12\x19\n\x0c\n\x05\x04\x01\x02\x01\x03\x12\x03=\x1c\x1d\n\
-    4\n\x04\x04\x01\x02\x02\x12\x03@\x02!\x1a'\x20Names\x20of\x20files\x20im\
-    ported\x20by\x20this\x20file.\n\n\x0c\n\x05\x04\x01\x02\x02\x04\x12\x03@\
-    \x02\n\n\x0c\n\x05\x04\x01\x02\x02\x05\x12\x03@\x0b\x11\n\x0c\n\x05\x04\
-    \x01\x02\x02\x01\x12\x03@\x12\x1c\n\x0c\n\x05\x04\x01\x02\x02\x03\x12\
-    \x03@\x1f\x20\nQ\n\x04\x04\x01\x02\x03\x12\x03B\x02(\x1aD\x20Indexes\x20\
-    of\x20the\x20public\x20imported\x20files\x20in\x20the\x20dependency\x20l\
-    ist\x20above.\n\n\x0c\n\x05\x04\x01\x02\x03\x04\x12\x03B\x02\n\n\x0c\n\
-    \x05\x04\x01\x02\x03\x05\x12\x03B\x0b\x10\n\x0c\n\x05\x04\x01\x02\x03\
-    \x01\x12\x03B\x11\"\n\x0c\n\x05\x04\x01\x02\x03\x03\x12\x03B%'\nz\n\x04\
-    \x04\x01\x02\x04\x12\x03E\x02&\x1am\x20Indexes\x20of\x20the\x20weak\x20i\
-    mported\x20files\x20in\x20the\x20dependency\x20list.\n\x20For\x20Google-\
-    internal\x20migration\x20only.\x20Do\x20not\x20use.\n\n\x0c\n\x05\x04\
-    \x01\x02\x04\x04\x12\x03E\x02\n\n\x0c\n\x05\x04\x01\x02\x04\x05\x12\x03E\
-    \x0b\x10\n\x0c\n\x05\x04\x01\x02\x04\x01\x12\x03E\x11\x20\n\x0c\n\x05\
-    \x04\x01\x02\x04\x03\x12\x03E#%\n6\n\x04\x04\x01\x02\x05\x12\x03H\x02,\
-    \x1a)\x20All\x20top-level\x20definitions\x20in\x20this\x20file.\n\n\x0c\
-    \n\x05\x04\x01\x02\x05\x04\x12\x03H\x02\n\n\x0c\n\x05\x04\x01\x02\x05\
-    \x06\x12\x03H\x0b\x1a\n\x0c\n\x05\x04\x01\x02\x05\x01\x12\x03H\x1b'\n\
-    \x0c\n\x05\x04\x01\x02\x05\x03\x12\x03H*+\n\x0b\n\x04\x04\x01\x02\x06\
-    \x12\x03I\x02-\n\x0c\n\x05\x04\x01\x02\x06\x04\x12\x03I\x02\n\n\x0c\n\
-    \x05\x04\x01\x02\x06\x06\x12\x03I\x0b\x1e\n\x0c\n\x05\x04\x01\x02\x06\
-    \x01\x12\x03I\x1f(\n\x0c\n\x05\x04\x01\x02\x06\x03\x12\x03I+,\n\x0b\n\
-    \x04\x04\x01\x02\x07\x12\x03J\x02.\n\x0c\n\x05\x04\x01\x02\x07\x04\x12\
-    \x03J\x02\n\n\x0c\n\x05\x04\x01\x02\x07\x06\x12\x03J\x0b!\n\x0c\n\x05\
-    \x04\x01\x02\x07\x01\x12\x03J\")\n\x0c\n\x05\x04\x01\x02\x07\x03\x12\x03\
-    J,-\n\x0b\n\x04\x04\x01\x02\x08\x12\x03K\x02.\n\x0c\n\x05\x04\x01\x02\
-    \x08\x04\x12\x03K\x02\n\n\x0c\n\x05\x04\x01\x02\x08\x06\x12\x03K\x0b\x1f\
-    \n\x0c\n\x05\x04\x01\x02\x08\x01\x12\x03K\x20)\n\x0c\n\x05\x04\x01\x02\
-    \x08\x03\x12\x03K,-\n\x0b\n\x04\x04\x01\x02\t\x12\x03M\x02#\n\x0c\n\x05\
-    \x04\x01\x02\t\x04\x12\x03M\x02\n\n\x0c\n\x05\x04\x01\x02\t\x06\x12\x03M\
-    \x0b\x16\n\x0c\n\x05\x04\x01\x02\t\x01\x12\x03M\x17\x1e\n\x0c\n\x05\x04\
-    \x01\x02\t\x03\x12\x03M!\"\n\xf4\x01\n\x04\x04\x01\x02\n\x12\x03S\x02/\
-    \x1a\xe6\x01\x20This\x20field\x20contains\x20optional\x20information\x20\
-    about\x20the\x20original\x20source\x20code.\n\x20You\x20may\x20safely\
-    \x20remove\x20this\x20entire\x20field\x20without\x20harming\x20runtime\n\
-    \x20functionality\x20of\x20the\x20descriptors\x20--\x20the\x20informatio\
-    n\x20is\x20needed\x20only\x20by\n\x20development\x20tools.\n\n\x0c\n\x05\
-    \x04\x01\x02\n\x04\x12\x03S\x02\n\n\x0c\n\x05\x04\x01\x02\n\x06\x12\x03S\
-    \x0b\x19\n\x0c\n\x05\x04\x01\x02\n\x01\x12\x03S\x1a*\n\x0c\n\x05\x04\x01\
-    \x02\n\x03\x12\x03S-.\n]\n\x04\x04\x01\x02\x0b\x12\x03W\x02\x1e\x1aP\x20\
-    The\x20syntax\x20of\x20the\x20proto\x20file.\n\x20The\x20supported\x20va\
-    lues\x20are\x20\"proto2\"\x20and\x20\"proto3\".\n\n\x0c\n\x05\x04\x01\
-    \x02\x0b\x04\x12\x03W\x02\n\n\x0c\n\x05\x04\x01\x02\x0b\x05\x12\x03W\x0b\
-    \x11\n\x0c\n\x05\x04\x01\x02\x0b\x01\x12\x03W\x12\x18\n\x0c\n\x05\x04\
-    \x01\x02\x0b\x03\x12\x03W\x1b\x1d\n'\n\x02\x04\x02\x12\x04[\0y\x01\x1a\
-    \x1b\x20Describes\x20a\x20message\x20type.\n\n\n\n\x03\x04\x02\x01\x12\
-    \x03[\x08\x17\n\x0b\n\x04\x04\x02\x02\0\x12\x03\\\x02\x1b\n\x0c\n\x05\
-    \x04\x02\x02\0\x04\x12\x03\\\x02\n\n\x0c\n\x05\x04\x02\x02\0\x05\x12\x03\
-    \\\x0b\x11\n\x0c\n\x05\x04\x02\x02\0\x01\x12\x03\\\x12\x16\n\x0c\n\x05\
-    \x04\x02\x02\0\x03\x12\x03\\\x19\x1a\n\x0b\n\x04\x04\x02\x02\x01\x12\x03\
-    ^\x02*\n\x0c\n\x05\x04\x02\x02\x01\x04\x12\x03^\x02\n\n\x0c\n\x05\x04\
-    \x02\x02\x01\x06\x12\x03^\x0b\x1f\n\x0c\n\x05\x04\x02\x02\x01\x01\x12\
-    \x03^\x20%\n\x0c\n\x05\x04\x02\x02\x01\x03\x12\x03^()\n\x0b\n\x04\x04\
-    \x02\x02\x02\x12\x03_\x02.\n\x0c\n\x05\x04\x02\x02\x02\x04\x12\x03_\x02\
-    \n\n\x0c\n\x05\x04\x02\x02\x02\x06\x12\x03_\x0b\x1f\n\x0c\n\x05\x04\x02\
-    \x02\x02\x01\x12\x03_\x20)\n\x0c\n\x05\x04\x02\x02\x02\x03\x12\x03_,-\n\
-    \x0b\n\x04\x04\x02\x02\x03\x12\x03a\x02+\n\x0c\n\x05\x04\x02\x02\x03\x04\
-    \x12\x03a\x02\n\n\x0c\n\x05\x04\x02\x02\x03\x06\x12\x03a\x0b\x1a\n\x0c\n\
-    \x05\x04\x02\x02\x03\x01\x12\x03a\x1b&\n\x0c\n\x05\x04\x02\x02\x03\x03\
-    \x12\x03a)*\n\x0b\n\x04\x04\x02\x02\x04\x12\x03b\x02-\n\x0c\n\x05\x04\
-    \x02\x02\x04\x04\x12\x03b\x02\n\n\x0c\n\x05\x04\x02\x02\x04\x06\x12\x03b\
-    \x0b\x1e\n\x0c\n\x05\x04\x02\x02\x04\x01\x12\x03b\x1f(\n\x0c\n\x05\x04\
-    \x02\x02\x04\x03\x12\x03b+,\n\x0c\n\x04\x04\x02\x03\0\x12\x04d\x02g\x03\
-    \n\x0c\n\x05\x04\x02\x03\0\x01\x12\x03d\n\x18\n\r\n\x06\x04\x02\x03\0\
-    \x02\0\x12\x03e\x04\x1d\n\x0e\n\x07\x04\x02\x03\0\x02\0\x04\x12\x03e\x04\
-    \x0c\n\x0e\n\x07\x04\x02\x03\0\x02\0\x05\x12\x03e\r\x12\n\x0e\n\x07\x04\
-    \x02\x03\0\x02\0\x01\x12\x03e\x13\x18\n\x0e\n\x07\x04\x02\x03\0\x02\0\
-    \x03\x12\x03e\x1b\x1c\n\r\n\x06\x04\x02\x03\0\x02\x01\x12\x03f\x04\x1b\n\
-    \x0e\n\x07\x04\x02\x03\0\x02\x01\x04\x12\x03f\x04\x0c\n\x0e\n\x07\x04\
-    \x02\x03\0\x02\x01\x05\x12\x03f\r\x12\n\x0e\n\x07\x04\x02\x03\0\x02\x01\
-    \x01\x12\x03f\x13\x16\n\x0e\n\x07\x04\x02\x03\0\x02\x01\x03\x12\x03f\x19\
-    \x1a\n\x0b\n\x04\x04\x02\x02\x05\x12\x03h\x02.\n\x0c\n\x05\x04\x02\x02\
-    \x05\x04\x12\x03h\x02\n\n\x0c\n\x05\x04\x02\x02\x05\x06\x12\x03h\x0b\x19\
-    \n\x0c\n\x05\x04\x02\x02\x05\x01\x12\x03h\x1a)\n\x0c\n\x05\x04\x02\x02\
-    \x05\x03\x12\x03h,-\n\x0b\n\x04\x04\x02\x02\x06\x12\x03j\x02/\n\x0c\n\
-    \x05\x04\x02\x02\x06\x04\x12\x03j\x02\n\n\x0c\n\x05\x04\x02\x02\x06\x06\
-    \x12\x03j\x0b\x1f\n\x0c\n\x05\x04\x02\x02\x06\x01\x12\x03j\x20*\n\x0c\n\
-    \x05\x04\x02\x02\x06\x03\x12\x03j-.\n\x0b\n\x04\x04\x02\x02\x07\x12\x03l\
-    \x02&\n\x0c\n\x05\x04\x02\x02\x07\x04\x12\x03l\x02\n\n\x0c\n\x05\x04\x02\
-    \x02\x07\x06\x12\x03l\x0b\x19\n\x0c\n\x05\x04\x02\x02\x07\x01\x12\x03l\
-    \x1a!\n\x0c\n\x05\x04\x02\x02\x07\x03\x12\x03l$%\n\xaa\x01\n\x04\x04\x02\
-    \x03\x01\x12\x04q\x02t\x03\x1a\x9b\x01\x20Range\x20of\x20reserved\x20tag\
-    \x20numbers.\x20Reserved\x20tag\x20numbers\x20may\x20not\x20be\x20used\
-    \x20by\n\x20fields\x20or\x20extension\x20ranges\x20in\x20the\x20same\x20\
-    message.\x20Reserved\x20ranges\x20may\n\x20not\x20overlap.\n\n\x0c\n\x05\
-    \x04\x02\x03\x01\x01\x12\x03q\n\x17\n\x1b\n\x06\x04\x02\x03\x01\x02\0\
-    \x12\x03r\x04\x1d\"\x0c\x20Inclusive.\n\n\x0e\n\x07\x04\x02\x03\x01\x02\
-    \0\x04\x12\x03r\x04\x0c\n\x0e\n\x07\x04\x02\x03\x01\x02\0\x05\x12\x03r\r\
-    \x12\n\x0e\n\x07\x04\x02\x03\x01\x02\0\x01\x12\x03r\x13\x18\n\x0e\n\x07\
-    \x04\x02\x03\x01\x02\0\x03\x12\x03r\x1b\x1c\n\x1b\n\x06\x04\x02\x03\x01\
-    \x02\x01\x12\x03s\x04\x1b\"\x0c\x20Exclusive.\n\n\x0e\n\x07\x04\x02\x03\
-    \x01\x02\x01\x04\x12\x03s\x04\x0c\n\x0e\n\x07\x04\x02\x03\x01\x02\x01\
-    \x05\x12\x03s\r\x12\n\x0e\n\x07\x04\x02\x03\x01\x02\x01\x01\x12\x03s\x13\
-    \x16\n\x0e\n\x07\x04\x02\x03\x01\x02\x01\x03\x12\x03s\x19\x1a\n\x0b\n\
-    \x04\x04\x02\x02\x08\x12\x03u\x02,\n\x0c\n\x05\x04\x02\x02\x08\x04\x12\
-    \x03u\x02\n\n\x0c\n\x05\x04\x02\x02\x08\x06\x12\x03u\x0b\x18\n\x0c\n\x05\
-    \x04\x02\x02\x08\x01\x12\x03u\x19'\n\x0c\n\x05\x04\x02\x02\x08\x03\x12\
-    \x03u*+\n\x82\x01\n\x04\x04\x02\x02\t\x12\x03x\x02%\x1au\x20Reserved\x20\
-    field\x20names,\x20which\x20may\x20not\x20be\x20used\x20by\x20fields\x20\
-    in\x20the\x20same\x20message.\n\x20A\x20given\x20name\x20may\x20only\x20\
-    be\x20reserved\x20once.\n\n\x0c\n\x05\x04\x02\x02\t\x04\x12\x03x\x02\n\n\
-    \x0c\n\x05\x04\x02\x02\t\x05\x12\x03x\x0b\x11\n\x0c\n\x05\x04\x02\x02\t\
-    \x01\x12\x03x\x12\x1f\n\x0c\n\x05\x04\x02\x02\t\x03\x12\x03x\"$\n2\n\x02\
-    \x04\x03\x12\x05|\0\xc7\x01\x01\x1a%\x20Describes\x20a\x20field\x20withi\
-    n\x20a\x20message.\n\n\n\n\x03\x04\x03\x01\x12\x03|\x08\x1c\n\r\n\x04\
-    \x04\x03\x04\0\x12\x05}\x02\x98\x01\x03\n\x0c\n\x05\x04\x03\x04\0\x01\
-    \x12\x03}\x07\x0b\nS\n\x06\x04\x03\x04\0\x02\0\x12\x04\x80\x01\x04\x1c\
-    \x1aC\x200\x20is\x20reserved\x20for\x20errors.\n\x20Order\x20is\x20weird\
-    \x20for\x20historical\x20reasons.\n\n\x0f\n\x07\x04\x03\x04\0\x02\0\x01\
-    \x12\x04\x80\x01\x04\x0f\n\x0f\n\x07\x04\x03\x04\0\x02\0\x02\x12\x04\x80\
-    \x01\x1a\x1b\n\x0e\n\x06\x04\x03\x04\0\x02\x01\x12\x04\x81\x01\x04\x1c\n\
-    \x0f\n\x07\x04\x03\x04\0\x02\x01\x01\x12\x04\x81\x01\x04\x0e\n\x0f\n\x07\
-    \x04\x03\x04\0\x02\x01\x02\x12\x04\x81\x01\x1a\x1b\nw\n\x06\x04\x03\x04\
-    \0\x02\x02\x12\x04\x84\x01\x04\x1c\x1ag\x20Not\x20ZigZag\x20encoded.\x20\
-    \x20Negative\x20numbers\x20take\x2010\x20bytes.\x20\x20Use\x20TYPE_SINT6\
-    4\x20if\n\x20negative\x20values\x20are\x20likely.\n\n\x0f\n\x07\x04\x03\
-    \x04\0\x02\x02\x01\x12\x04\x84\x01\x04\x0e\n\x0f\n\x07\x04\x03\x04\0\x02\
-    \x02\x02\x12\x04\x84\x01\x1a\x1b\n\x0e\n\x06\x04\x03\x04\0\x02\x03\x12\
-    \x04\x85\x01\x04\x1c\n\x0f\n\x07\x04\x03\x04\0\x02\x03\x01\x12\x04\x85\
-    \x01\x04\x0f\n\x0f\n\x07\x04\x03\x04\0\x02\x03\x02\x12\x04\x85\x01\x1a\
-    \x1b\nw\n\x06\x04\x03\x04\0\x02\x04\x12\x04\x88\x01\x04\x1c\x1ag\x20Not\
-    \x20ZigZag\x20encoded.\x20\x20Negative\x20numbers\x20take\x2010\x20bytes\
-    .\x20\x20Use\x20TYPE_SINT32\x20if\n\x20negative\x20values\x20are\x20like\
-    ly.\n\n\x0f\n\x07\x04\x03\x04\0\x02\x04\x01\x12\x04\x88\x01\x04\x0e\n\
-    \x0f\n\x07\x04\x03\x04\0\x02\x04\x02\x12\x04\x88\x01\x1a\x1b\n\x0e\n\x06\
-    \x04\x03\x04\0\x02\x05\x12\x04\x89\x01\x04\x1c\n\x0f\n\x07\x04\x03\x04\0\
-    \x02\x05\x01\x12\x04\x89\x01\x04\x10\n\x0f\n\x07\x04\x03\x04\0\x02\x05\
-    \x02\x12\x04\x89\x01\x1a\x1b\n\x0e\n\x06\x04\x03\x04\0\x02\x06\x12\x04\
-    \x8a\x01\x04\x1c\n\x0f\n\x07\x04\x03\x04\0\x02\x06\x01\x12\x04\x8a\x01\
-    \x04\x10\n\x0f\n\x07\x04\x03\x04\0\x02\x06\x02\x12\x04\x8a\x01\x1a\x1b\n\
-    \x0e\n\x06\x04\x03\x04\0\x02\x07\x12\x04\x8b\x01\x04\x1c\n\x0f\n\x07\x04\
-    \x03\x04\0\x02\x07\x01\x12\x04\x8b\x01\x04\r\n\x0f\n\x07\x04\x03\x04\0\
-    \x02\x07\x02\x12\x04\x8b\x01\x1a\x1b\n\x0e\n\x06\x04\x03\x04\0\x02\x08\
-    \x12\x04\x8c\x01\x04\x1c\n\x0f\n\x07\x04\x03\x04\0\x02\x08\x01\x12\x04\
-    \x8c\x01\x04\x0f\n\x0f\n\x07\x04\x03\x04\0\x02\x08\x02\x12\x04\x8c\x01\
-    \x1a\x1b\n*\n\x06\x04\x03\x04\0\x02\t\x12\x04\x8d\x01\x04\x1d\"\x1a\x20T\
-    ag-delimited\x20aggregate.\n\n\x0f\n\x07\x04\x03\x04\0\x02\t\x01\x12\x04\
-    \x8d\x01\x04\x0e\n\x0f\n\x07\x04\x03\x04\0\x02\t\x02\x12\x04\x8d\x01\x1a\
-    \x1c\n-\n\x06\x04\x03\x04\0\x02\n\x12\x04\x8e\x01\x04\x1d\"\x1d\x20Lengt\
-    h-delimited\x20aggregate.\n\n\x0f\n\x07\x04\x03\x04\0\x02\n\x01\x12\x04\
-    \x8e\x01\x04\x10\n\x0f\n\x07\x04\x03\x04\0\x02\n\x02\x12\x04\x8e\x01\x1a\
-    \x1c\n#\n\x06\x04\x03\x04\0\x02\x0b\x12\x04\x91\x01\x04\x1d\x1a\x13\x20N\
-    ew\x20in\x20version\x202.\n\n\x0f\n\x07\x04\x03\x04\0\x02\x0b\x01\x12\
-    \x04\x91\x01\x04\x0e\n\x0f\n\x07\x04\x03\x04\0\x02\x0b\x02\x12\x04\x91\
-    \x01\x1a\x1c\n\x0e\n\x06\x04\x03\x04\0\x02\x0c\x12\x04\x92\x01\x04\x1d\n\
-    \x0f\n\x07\x04\x03\x04\0\x02\x0c\x01\x12\x04\x92\x01\x04\x0f\n\x0f\n\x07\
-    \x04\x03\x04\0\x02\x0c\x02\x12\x04\x92\x01\x1a\x1c\n\x0e\n\x06\x04\x03\
-    \x04\0\x02\r\x12\x04\x93\x01\x04\x1d\n\x0f\n\x07\x04\x03\x04\0\x02\r\x01\
-    \x12\x04\x93\x01\x04\r\n\x0f\n\x07\x04\x03\x04\0\x02\r\x02\x12\x04\x93\
-    \x01\x1a\x1c\n\x0e\n\x06\x04\x03\x04\0\x02\x0e\x12\x04\x94\x01\x04\x1d\n\
-    \x0f\n\x07\x04\x03\x04\0\x02\x0e\x01\x12\x04\x94\x01\x04\x11\n\x0f\n\x07\
-    \x04\x03\x04\0\x02\x0e\x02\x12\x04\x94\x01\x1a\x1c\n\x0e\n\x06\x04\x03\
-    \x04\0\x02\x0f\x12\x04\x95\x01\x04\x1d\n\x0f\n\x07\x04\x03\x04\0\x02\x0f\
-    \x01\x12\x04\x95\x01\x04\x11\n\x0f\n\x07\x04\x03\x04\0\x02\x0f\x02\x12\
-    \x04\x95\x01\x1a\x1c\n'\n\x06\x04\x03\x04\0\x02\x10\x12\x04\x96\x01\x04\
-    \x1d\"\x17\x20Uses\x20ZigZag\x20encoding.\n\n\x0f\n\x07\x04\x03\x04\0\
-    \x02\x10\x01\x12\x04\x96\x01\x04\x0f\n\x0f\n\x07\x04\x03\x04\0\x02\x10\
-    \x02\x12\x04\x96\x01\x1a\x1c\n'\n\x06\x04\x03\x04\0\x02\x11\x12\x04\x97\
-    \x01\x04\x1d\"\x17\x20Uses\x20ZigZag\x20encoding.\n\n\x0f\n\x07\x04\x03\
-    \x04\0\x02\x11\x01\x12\x04\x97\x01\x04\x0f\n\x0f\n\x07\x04\x03\x04\0\x02\
-    \x11\x02\x12\x04\x97\x01\x1a\x1c\n\x0e\n\x04\x04\x03\x04\x01\x12\x06\x9a\
-    \x01\x02\xa0\x01\x03\n\r\n\x05\x04\x03\x04\x01\x01\x12\x04\x9a\x01\x07\
-    \x0c\n*\n\x06\x04\x03\x04\x01\x02\0\x12\x04\x9c\x01\x04\x1c\x1a\x1a\x200\
-    \x20is\x20reserved\x20for\x20errors\n\n\x0f\n\x07\x04\x03\x04\x01\x02\0\
-    \x01\x12\x04\x9c\x01\x04\x12\n\x0f\n\x07\x04\x03\x04\x01\x02\0\x02\x12\
-    \x04\x9c\x01\x1a\x1b\n\x0e\n\x06\x04\x03\x04\x01\x02\x01\x12\x04\x9d\x01\
-    \x04\x1c\n\x0f\n\x07\x04\x03\x04\x01\x02\x01\x01\x12\x04\x9d\x01\x04\x12\
-    \n\x0f\n\x07\x04\x03\x04\x01\x02\x01\x02\x12\x04\x9d\x01\x1a\x1b\n8\n\
-    \x06\x04\x03\x04\x01\x02\x02\x12\x04\x9e\x01\x04\x1c\"(\x20TODO(sanjay):\
-    \x20Should\x20we\x20add\x20LABEL_MAP?\n\n\x0f\n\x07\x04\x03\x04\x01\x02\
-    \x02\x01\x12\x04\x9e\x01\x04\x12\n\x0f\n\x07\x04\x03\x04\x01\x02\x02\x02\
-    \x12\x04\x9e\x01\x1a\x1b\n\x0c\n\x04\x04\x03\x02\0\x12\x04\xa2\x01\x02\
-    \x1b\n\r\n\x05\x04\x03\x02\0\x04\x12\x04\xa2\x01\x02\n\n\r\n\x05\x04\x03\
-    \x02\0\x05\x12\x04\xa2\x01\x0b\x11\n\r\n\x05\x04\x03\x02\0\x01\x12\x04\
-    \xa2\x01\x12\x16\n\r\n\x05\x04\x03\x02\0\x03\x12\x04\xa2\x01\x19\x1a\n\
-    \x0c\n\x04\x04\x03\x02\x01\x12\x04\xa3\x01\x02\x1c\n\r\n\x05\x04\x03\x02\
-    \x01\x04\x12\x04\xa3\x01\x02\n\n\r\n\x05\x04\x03\x02\x01\x05\x12\x04\xa3\
-    \x01\x0b\x10\n\r\n\x05\x04\x03\x02\x01\x01\x12\x04\xa3\x01\x11\x17\n\r\n\
-    \x05\x04\x03\x02\x01\x03\x12\x04\xa3\x01\x1a\x1b\n\x0c\n\x04\x04\x03\x02\
-    \x02\x12\x04\xa4\x01\x02\x1b\n\r\n\x05\x04\x03\x02\x02\x04\x12\x04\xa4\
-    \x01\x02\n\n\r\n\x05\x04\x03\x02\x02\x06\x12\x04\xa4\x01\x0b\x10\n\r\n\
-    \x05\x04\x03\x02\x02\x01\x12\x04\xa4\x01\x11\x16\n\r\n\x05\x04\x03\x02\
-    \x02\x03\x12\x04\xa4\x01\x19\x1a\n\x9c\x01\n\x04\x04\x03\x02\x03\x12\x04\
-    \xa8\x01\x02\x19\x1a\x8d\x01\x20If\x20type_name\x20is\x20set,\x20this\
-    \x20need\x20not\x20be\x20set.\x20\x20If\x20both\x20this\x20and\x20type_n\
-    ame\n\x20are\x20set,\x20this\x20must\x20be\x20one\x20of\x20TYPE_ENUM,\
-    \x20TYPE_MESSAGE\x20or\x20TYPE_GROUP.\n\n\r\n\x05\x04\x03\x02\x03\x04\
-    \x12\x04\xa8\x01\x02\n\n\r\n\x05\x04\x03\x02\x03\x06\x12\x04\xa8\x01\x0b\
-    \x0f\n\r\n\x05\x04\x03\x02\x03\x01\x12\x04\xa8\x01\x10\x14\n\r\n\x05\x04\
-    \x03\x02\x03\x03\x12\x04\xa8\x01\x17\x18\n\xb7\x02\n\x04\x04\x03\x02\x04\
-    \x12\x04\xaf\x01\x02\x20\x1a\xa8\x02\x20For\x20message\x20and\x20enum\
-    \x20types,\x20this\x20is\x20the\x20name\x20of\x20the\x20type.\x20\x20If\
-    \x20the\x20name\n\x20starts\x20with\x20a\x20'.',\x20it\x20is\x20fully-qu\
-    alified.\x20\x20Otherwise,\x20C++-like\x20scoping\n\x20rules\x20are\x20u\
-    sed\x20to\x20find\x20the\x20type\x20(i.e.\x20first\x20the\x20nested\x20t\
-    ypes\x20within\x20this\n\x20message\x20are\x20searched,\x20then\x20withi\
-    n\x20the\x20parent,\x20on\x20up\x20to\x20the\x20root\n\x20namespace).\n\
-    \n\r\n\x05\x04\x03\x02\x04\x04\x12\x04\xaf\x01\x02\n\n\r\n\x05\x04\x03\
-    \x02\x04\x05\x12\x04\xaf\x01\x0b\x11\n\r\n\x05\x04\x03\x02\x04\x01\x12\
-    \x04\xaf\x01\x12\x1b\n\r\n\x05\x04\x03\x02\x04\x03\x12\x04\xaf\x01\x1e\
-    \x1f\n~\n\x04\x04\x03\x02\x05\x12\x04\xb3\x01\x02\x1f\x1ap\x20For\x20ext\
-    ensions,\x20this\x20is\x20the\x20name\x20of\x20the\x20type\x20being\x20e\
-    xtended.\x20\x20It\x20is\n\x20resolved\x20in\x20the\x20same\x20manner\
-    \x20as\x20type_name.\n\n\r\n\x05\x04\x03\x02\x05\x04\x12\x04\xb3\x01\x02\
-    \n\n\r\n\x05\x04\x03\x02\x05\x05\x12\x04\xb3\x01\x0b\x11\n\r\n\x05\x04\
-    \x03\x02\x05\x01\x12\x04\xb3\x01\x12\x1a\n\r\n\x05\x04\x03\x02\x05\x03\
-    \x12\x04\xb3\x01\x1d\x1e\n\xb1\x02\n\x04\x04\x03\x02\x06\x12\x04\xba\x01\
-    \x02$\x1a\xa2\x02\x20For\x20numeric\x20types,\x20contains\x20the\x20orig\
-    inal\x20text\x20representation\x20of\x20the\x20value.\n\x20For\x20boolea\
-    ns,\x20\"true\"\x20or\x20\"false\".\n\x20For\x20strings,\x20contains\x20\
-    the\x20default\x20text\x20contents\x20(not\x20escaped\x20in\x20any\x20wa\
-    y).\n\x20For\x20bytes,\x20contains\x20the\x20C\x20escaped\x20value.\x20\
-    \x20All\x20bytes\x20>=\x20128\x20are\x20escaped.\n\x20TODO(kenton):\x20\
-    \x20Base-64\x20encode?\n\n\r\n\x05\x04\x03\x02\x06\x04\x12\x04\xba\x01\
-    \x02\n\n\r\n\x05\x04\x03\x02\x06\x05\x12\x04\xba\x01\x0b\x11\n\r\n\x05\
-    \x04\x03\x02\x06\x01\x12\x04\xba\x01\x12\x1f\n\r\n\x05\x04\x03\x02\x06\
-    \x03\x12\x04\xba\x01\"#\n\x84\x01\n\x04\x04\x03\x02\x07\x12\x04\xbe\x01\
-    \x02!\x1av\x20If\x20set,\x20gives\x20the\x20index\x20of\x20a\x20oneof\
-    \x20in\x20the\x20containing\x20type's\x20oneof_decl\n\x20list.\x20\x20Th\
-    is\x20field\x20is\x20a\x20member\x20of\x20that\x20oneof.\n\n\r\n\x05\x04\
-    \x03\x02\x07\x04\x12\x04\xbe\x01\x02\n\n\r\n\x05\x04\x03\x02\x07\x05\x12\
-    \x04\xbe\x01\x0b\x10\n\r\n\x05\x04\x03\x02\x07\x01\x12\x04\xbe\x01\x11\
-    \x1c\n\r\n\x05\x04\x03\x02\x07\x03\x12\x04\xbe\x01\x1f\x20\n\xfa\x01\n\
-    \x04\x04\x03\x02\x08\x12\x04\xc4\x01\x02!\x1a\xeb\x01\x20JSON\x20name\
-    \x20of\x20this\x20field.\x20The\x20value\x20is\x20set\x20by\x20protocol\
-    \x20compiler.\x20If\x20the\n\x20user\x20has\x20set\x20a\x20\"json_name\"\
-    \x20option\x20on\x20this\x20field,\x20that\x20option's\x20value\n\x20wil\
-    l\x20be\x20used.\x20Otherwise,\x20it's\x20deduced\x20from\x20the\x20fiel\
-    d's\x20name\x20by\x20converting\n\x20it\x20to\x20camelCase.\n\n\r\n\x05\
-    \x04\x03\x02\x08\x04\x12\x04\xc4\x01\x02\n\n\r\n\x05\x04\x03\x02\x08\x05\
-    \x12\x04\xc4\x01\x0b\x11\n\r\n\x05\x04\x03\x02\x08\x01\x12\x04\xc4\x01\
-    \x12\x1b\n\r\n\x05\x04\x03\x02\x08\x03\x12\x04\xc4\x01\x1e\x20\n\x0c\n\
-    \x04\x04\x03\x02\t\x12\x04\xc6\x01\x02$\n\r\n\x05\x04\x03\x02\t\x04\x12\
-    \x04\xc6\x01\x02\n\n\r\n\x05\x04\x03\x02\t\x06\x12\x04\xc6\x01\x0b\x17\n\
-    \r\n\x05\x04\x03\x02\t\x01\x12\x04\xc6\x01\x18\x1f\n\r\n\x05\x04\x03\x02\
-    \t\x03\x12\x04\xc6\x01\"#\n\"\n\x02\x04\x04\x12\x06\xca\x01\0\xcd\x01\
-    \x01\x1a\x14\x20Describes\x20a\x20oneof.\n\n\x0b\n\x03\x04\x04\x01\x12\
-    \x04\xca\x01\x08\x1c\n\x0c\n\x04\x04\x04\x02\0\x12\x04\xcb\x01\x02\x1b\n\
-    \r\n\x05\x04\x04\x02\0\x04\x12\x04\xcb\x01\x02\n\n\r\n\x05\x04\x04\x02\0\
-    \x05\x12\x04\xcb\x01\x0b\x11\n\r\n\x05\x04\x04\x02\0\x01\x12\x04\xcb\x01\
-    \x12\x16\n\r\n\x05\x04\x04\x02\0\x03\x12\x04\xcb\x01\x19\x1a\n\x0c\n\x04\
-    \x04\x04\x02\x01\x12\x04\xcc\x01\x02$\n\r\n\x05\x04\x04\x02\x01\x04\x12\
-    \x04\xcc\x01\x02\n\n\r\n\x05\x04\x04\x02\x01\x06\x12\x04\xcc\x01\x0b\x17\
-    \n\r\n\x05\x04\x04\x02\x01\x01\x12\x04\xcc\x01\x18\x1f\n\r\n\x05\x04\x04\
-    \x02\x01\x03\x12\x04\xcc\x01\"#\n'\n\x02\x04\x05\x12\x06\xd0\x01\0\xd6\
-    \x01\x01\x1a\x19\x20Describes\x20an\x20enum\x20type.\n\n\x0b\n\x03\x04\
-    \x05\x01\x12\x04\xd0\x01\x08\x1b\n\x0c\n\x04\x04\x05\x02\0\x12\x04\xd1\
-    \x01\x02\x1b\n\r\n\x05\x04\x05\x02\0\x04\x12\x04\xd1\x01\x02\n\n\r\n\x05\
-    \x04\x05\x02\0\x05\x12\x04\xd1\x01\x0b\x11\n\r\n\x05\x04\x05\x02\0\x01\
-    \x12\x04\xd1\x01\x12\x16\n\r\n\x05\x04\x05\x02\0\x03\x12\x04\xd1\x01\x19\
-    \x1a\n\x0c\n\x04\x04\x05\x02\x01\x12\x04\xd3\x01\x02.\n\r\n\x05\x04\x05\
-    \x02\x01\x04\x12\x04\xd3\x01\x02\n\n\r\n\x05\x04\x05\x02\x01\x06\x12\x04\
-    \xd3\x01\x0b#\n\r\n\x05\x04\x05\x02\x01\x01\x12\x04\xd3\x01$)\n\r\n\x05\
-    \x04\x05\x02\x01\x03\x12\x04\xd3\x01,-\n\x0c\n\x04\x04\x05\x02\x02\x12\
-    \x04\xd5\x01\x02#\n\r\n\x05\x04\x05\x02\x02\x04\x12\x04\xd5\x01\x02\n\n\
-    \r\n\x05\x04\x05\x02\x02\x06\x12\x04\xd5\x01\x0b\x16\n\r\n\x05\x04\x05\
-    \x02\x02\x01\x12\x04\xd5\x01\x17\x1e\n\r\n\x05\x04\x05\x02\x02\x03\x12\
-    \x04\xd5\x01!\"\n1\n\x02\x04\x06\x12\x06\xd9\x01\0\xde\x01\x01\x1a#\x20D\
-    escribes\x20a\x20value\x20within\x20an\x20enum.\n\n\x0b\n\x03\x04\x06\
-    \x01\x12\x04\xd9\x01\x08\x20\n\x0c\n\x04\x04\x06\x02\0\x12\x04\xda\x01\
-    \x02\x1b\n\r\n\x05\x04\x06\x02\0\x04\x12\x04\xda\x01\x02\n\n\r\n\x05\x04\
-    \x06\x02\0\x05\x12\x04\xda\x01\x0b\x11\n\r\n\x05\x04\x06\x02\0\x01\x12\
-    \x04\xda\x01\x12\x16\n\r\n\x05\x04\x06\x02\0\x03\x12\x04\xda\x01\x19\x1a\
-    \n\x0c\n\x04\x04\x06\x02\x01\x12\x04\xdb\x01\x02\x1c\n\r\n\x05\x04\x06\
-    \x02\x01\x04\x12\x04\xdb\x01\x02\n\n\r\n\x05\x04\x06\x02\x01\x05\x12\x04\
-    \xdb\x01\x0b\x10\n\r\n\x05\x04\x06\x02\x01\x01\x12\x04\xdb\x01\x11\x17\n\
-    \r\n\x05\x04\x06\x02\x01\x03\x12\x04\xdb\x01\x1a\x1b\n\x0c\n\x04\x04\x06\
-    \x02\x02\x12\x04\xdd\x01\x02(\n\r\n\x05\x04\x06\x02\x02\x04\x12\x04\xdd\
-    \x01\x02\n\n\r\n\x05\x04\x06\x02\x02\x06\x12\x04\xdd\x01\x0b\x1b\n\r\n\
-    \x05\x04\x06\x02\x02\x01\x12\x04\xdd\x01\x1c#\n\r\n\x05\x04\x06\x02\x02\
-    \x03\x12\x04\xdd\x01&'\n$\n\x02\x04\x07\x12\x06\xe1\x01\0\xe6\x01\x01\
-    \x1a\x16\x20Describes\x20a\x20service.\n\n\x0b\n\x03\x04\x07\x01\x12\x04\
-    \xe1\x01\x08\x1e\n\x0c\n\x04\x04\x07\x02\0\x12\x04\xe2\x01\x02\x1b\n\r\n\
-    \x05\x04\x07\x02\0\x04\x12\x04\xe2\x01\x02\n\n\r\n\x05\x04\x07\x02\0\x05\
-    \x12\x04\xe2\x01\x0b\x11\n\r\n\x05\x04\x07\x02\0\x01\x12\x04\xe2\x01\x12\
-    \x16\n\r\n\x05\x04\x07\x02\0\x03\x12\x04\xe2\x01\x19\x1a\n\x0c\n\x04\x04\
-    \x07\x02\x01\x12\x04\xe3\x01\x02,\n\r\n\x05\x04\x07\x02\x01\x04\x12\x04\
-    \xe3\x01\x02\n\n\r\n\x05\x04\x07\x02\x01\x06\x12\x04\xe3\x01\x0b\x20\n\r\
-    \n\x05\x04\x07\x02\x01\x01\x12\x04\xe3\x01!'\n\r\n\x05\x04\x07\x02\x01\
-    \x03\x12\x04\xe3\x01*+\n\x0c\n\x04\x04\x07\x02\x02\x12\x04\xe5\x01\x02&\
-    \n\r\n\x05\x04\x07\x02\x02\x04\x12\x04\xe5\x01\x02\n\n\r\n\x05\x04\x07\
-    \x02\x02\x06\x12\x04\xe5\x01\x0b\x19\n\r\n\x05\x04\x07\x02\x02\x01\x12\
-    \x04\xe5\x01\x1a!\n\r\n\x05\x04\x07\x02\x02\x03\x12\x04\xe5\x01$%\n0\n\
-    \x02\x04\x08\x12\x06\xe9\x01\0\xf7\x01\x01\x1a\"\x20Describes\x20a\x20me\
-    thod\x20of\x20a\x20service.\n\n\x0b\n\x03\x04\x08\x01\x12\x04\xe9\x01\
-    \x08\x1d\n\x0c\n\x04\x04\x08\x02\0\x12\x04\xea\x01\x02\x1b\n\r\n\x05\x04\
-    \x08\x02\0\x04\x12\x04\xea\x01\x02\n\n\r\n\x05\x04\x08\x02\0\x05\x12\x04\
-    \xea\x01\x0b\x11\n\r\n\x05\x04\x08\x02\0\x01\x12\x04\xea\x01\x12\x16\n\r\
-    \n\x05\x04\x08\x02\0\x03\x12\x04\xea\x01\x19\x1a\n\x97\x01\n\x04\x04\x08\
-    \x02\x01\x12\x04\xee\x01\x02!\x1a\x88\x01\x20Input\x20and\x20output\x20t\
+    ion\"P\n\x10IdempotencyLevel\x12\x17\n\x13IDEMPOTENCY_UNKNOWN\x10\0\x12\
+    \x13\n\x0fNO_SIDE_EFFECTS\x10\x01\x12\x0e\n\nIDEMPOTENT\x10\x02*\t\x08\
+    \xe8\x07\x10\x80\x80\x80\x80\x02\"\x9a\x03\n\x13UninterpretedOption\x12A\
+    \n\x04name\x18\x02\x20\x03(\x0b2-.google.protobuf.UninterpretedOption.Na\
+    mePartR\x04name\x12)\n\x10identifier_value\x18\x03\x20\x01(\tR\x0fidenti\
+    fierValue\x12,\n\x12positive_int_value\x18\x04\x20\x01(\x04R\x10positive\
+    IntValue\x12,\n\x12negative_int_value\x18\x05\x20\x01(\x03R\x10negativeI\
+    ntValue\x12!\n\x0cdouble_value\x18\x06\x20\x01(\x01R\x0bdoubleValue\x12!\
+    \n\x0cstring_value\x18\x07\x20\x01(\x0cR\x0bstringValue\x12'\n\x0faggreg\
+    ate_value\x18\x08\x20\x01(\tR\x0eaggregateValue\x1aJ\n\x08NamePart\x12\
+    \x1b\n\tname_part\x18\x01\x20\x02(\tR\x08namePart\x12!\n\x0cis_extension\
+    \x18\x02\x20\x02(\x08R\x0bisExtension\"\xa7\x02\n\x0eSourceCodeInfo\x12D\
+    \n\x08location\x18\x01\x20\x03(\x0b2(.google.protobuf.SourceCodeInfo.Loc\
+    ationR\x08location\x1a\xce\x01\n\x08Location\x12\x16\n\x04path\x18\x01\
+    \x20\x03(\x05R\x04pathB\x02\x10\x01\x12\x16\n\x04span\x18\x02\x20\x03(\
+    \x05R\x04spanB\x02\x10\x01\x12)\n\x10leading_comments\x18\x03\x20\x01(\t\
+    R\x0fleadingComments\x12+\n\x11trailing_comments\x18\x04\x20\x01(\tR\x10\
+    trailingComments\x12:\n\x19leading_detached_comments\x18\x06\x20\x03(\tR\
+    \x17leadingDetachedComments\"\xd1\x01\n\x11GeneratedCodeInfo\x12M\n\nann\
+    otation\x18\x01\x20\x03(\x0b2-.google.protobuf.GeneratedCodeInfo.Annotat\
+    ionR\nannotation\x1am\n\nAnnotation\x12\x16\n\x04path\x18\x01\x20\x03(\
+    \x05R\x04pathB\x02\x10\x01\x12\x1f\n\x0bsource_file\x18\x02\x20\x01(\tR\
+    \nsourceFile\x12\x14\n\x05begin\x18\x03\x20\x01(\x05R\x05begin\x12\x10\n\
+    \x03end\x18\x04\x20\x01(\x05R\x03endB\x8f\x01\n\x13com.google.protobufB\
+    \x10DescriptorProtosH\x01Z>github.com/golang/protobuf/protoc-gen-go/desc\
+    riptor;descriptor\xf8\x01\x01\xa2\x02\x03GPB\xaa\x02\x1aGoogle.Protobuf.\
+    ReflectionJ\xbc\xc8\x02\n\x07\x12\x05'\0\x8c\x07\x01\n\xaa\x0f\n\x01\x0c\
+    \x12\x03'\0\x122\xc1\x0c\x20Protocol\x20Buffers\x20-\x20Google's\x20data\
+    \x20interchange\x20format\n\x20Copyright\x202008\x20Google\x20Inc.\x20\
+    \x20All\x20rights\x20reserved.\n\x20https://developers.google.com/protoc\
+    ol-buffers/\n\n\x20Redistribution\x20and\x20use\x20in\x20source\x20and\
+    \x20binary\x20forms,\x20with\x20or\x20without\n\x20modification,\x20are\
+    \x20permitted\x20provided\x20that\x20the\x20following\x20conditions\x20a\
+    re\n\x20met:\n\n\x20\x20\x20\x20\x20*\x20Redistributions\x20of\x20source\
+    \x20code\x20must\x20retain\x20the\x20above\x20copyright\n\x20notice,\x20\
+    this\x20list\x20of\x20conditions\x20and\x20the\x20following\x20disclaime\
+    r.\n\x20\x20\x20\x20\x20*\x20Redistributions\x20in\x20binary\x20form\x20\
+    must\x20reproduce\x20the\x20above\n\x20copyright\x20notice,\x20this\x20l\
+    ist\x20of\x20conditions\x20and\x20the\x20following\x20disclaimer\n\x20in\
+    \x20the\x20documentation\x20and/or\x20other\x20materials\x20provided\x20\
+    with\x20the\n\x20distribution.\n\x20\x20\x20\x20\x20*\x20Neither\x20the\
+    \x20name\x20of\x20Google\x20Inc.\x20nor\x20the\x20names\x20of\x20its\n\
+    \x20contributors\x20may\x20be\x20used\x20to\x20endorse\x20or\x20promote\
+    \x20products\x20derived\x20from\n\x20this\x20software\x20without\x20spec\
+    ific\x20prior\x20written\x20permission.\n\n\x20THIS\x20SOFTWARE\x20IS\
+    \x20PROVIDED\x20BY\x20THE\x20COPYRIGHT\x20HOLDERS\x20AND\x20CONTRIBUTORS\
+    \n\x20\"AS\x20IS\"\x20AND\x20ANY\x20EXPRESS\x20OR\x20IMPLIED\x20WARRANTI\
+    ES,\x20INCLUDING,\x20BUT\x20NOT\n\x20LIMITED\x20TO,\x20THE\x20IMPLIED\
+    \x20WARRANTIES\x20OF\x20MERCHANTABILITY\x20AND\x20FITNESS\x20FOR\n\x20A\
+    \x20PARTICULAR\x20PURPOSE\x20ARE\x20DISCLAIMED.\x20IN\x20NO\x20EVENT\x20\
+    SHALL\x20THE\x20COPYRIGHT\n\x20OWNER\x20OR\x20CONTRIBUTORS\x20BE\x20LIAB\
+    LE\x20FOR\x20ANY\x20DIRECT,\x20INDIRECT,\x20INCIDENTAL,\n\x20SPECIAL,\
+    \x20EXEMPLARY,\x20OR\x20CONSEQUENTIAL\x20DAMAGES\x20(INCLUDING,\x20BUT\
+    \x20NOT\n\x20LIMITED\x20TO,\x20PROCUREMENT\x20OF\x20SUBSTITUTE\x20GOODS\
+    \x20OR\x20SERVICES;\x20LOSS\x20OF\x20USE,\n\x20DATA,\x20OR\x20PROFITS;\
+    \x20OR\x20BUSINESS\x20INTERRUPTION)\x20HOWEVER\x20CAUSED\x20AND\x20ON\
+    \x20ANY\n\x20THEORY\x20OF\x20LIABILITY,\x20WHETHER\x20IN\x20CONTRACT,\
+    \x20STRICT\x20LIABILITY,\x20OR\x20TORT\n\x20(INCLUDING\x20NEGLIGENCE\x20\
+    OR\x20OTHERWISE)\x20ARISING\x20IN\x20ANY\x20WAY\x20OUT\x20OF\x20THE\x20U\
+    SE\n\x20OF\x20THIS\x20SOFTWARE,\x20EVEN\x20IF\x20ADVISED\x20OF\x20THE\
+    \x20POSSIBILITY\x20OF\x20SUCH\x20DAMAGE.\n2\xdb\x02\x20Author:\x20kenton\
+    @google.com\x20(Kenton\x20Varda)\n\x20\x20Based\x20on\x20original\x20Pro\
+    tocol\x20Buffers\x20design\x20by\n\x20\x20Sanjay\x20Ghemawat,\x20Jeff\
+    \x20Dean,\x20and\x20others.\n\n\x20The\x20messages\x20in\x20this\x20file\
+    \x20describe\x20the\x20definitions\x20found\x20in\x20.proto\x20files.\n\
+    \x20A\x20valid\x20.proto\x20file\x20can\x20be\x20translated\x20directly\
+    \x20to\x20a\x20FileDescriptorProto\n\x20without\x20any\x20other\x20infor\
+    mation\x20(e.g.\x20without\x20reading\x20its\x20imports).\n\n\x08\n\x01\
+    \x02\x12\x03)\0\x18\n\x08\n\x01\x08\x12\x03+\0U\n\t\n\x02\x08\x0b\x12\
+    \x03+\0U\n\x08\n\x01\x08\x12\x03,\0,\n\t\n\x02\x08\x01\x12\x03,\0,\n\x08\
+    \n\x01\x08\x12\x03-\01\n\t\n\x02\x08\x08\x12\x03-\01\n\x08\n\x01\x08\x12\
+    \x03.\07\n\t\n\x02\x08%\x12\x03.\07\n\x08\n\x01\x08\x12\x03/\0!\n\t\n\
+    \x02\x08$\x12\x03/\0!\n\x08\n\x01\x08\x12\x030\0\x1f\n\t\n\x02\x08\x1f\
+    \x12\x030\0\x1f\n\x08\n\x01\x08\x12\x034\0\x1c\n\x7f\n\x02\x08\t\x12\x03\
+    4\0\x1c\x1at\x20descriptor.proto\x20must\x20be\x20optimized\x20for\x20sp\
+    eed\x20because\x20reflection-based\n\x20algorithms\x20don't\x20work\x20d\
+    uring\x20bootstrapping.\n\nj\n\x02\x04\0\x12\x048\0:\x01\x1a^\x20The\x20\
+    protocol\x20compiler\x20can\x20output\x20a\x20FileDescriptorSet\x20conta\
+    ining\x20the\x20.proto\n\x20files\x20it\x20parses.\n\n\n\n\x03\x04\0\x01\
+    \x12\x038\x08\x19\n\x0b\n\x04\x04\0\x02\0\x12\x039\x02(\n\x0c\n\x05\x04\
+    \0\x02\0\x04\x12\x039\x02\n\n\x0c\n\x05\x04\0\x02\0\x06\x12\x039\x0b\x1e\
+    \n\x0c\n\x05\x04\0\x02\0\x01\x12\x039\x1f#\n\x0c\n\x05\x04\0\x02\0\x03\
+    \x12\x039&'\n/\n\x02\x04\x01\x12\x04=\0Z\x01\x1a#\x20Describes\x20a\x20c\
+    omplete\x20.proto\x20file.\n\n\n\n\x03\x04\x01\x01\x12\x03=\x08\x1b\n9\n\
+    \x04\x04\x01\x02\0\x12\x03>\x02\x1b\",\x20file\x20name,\x20relative\x20t\
+    o\x20root\x20of\x20source\x20tree\n\n\x0c\n\x05\x04\x01\x02\0\x04\x12\
+    \x03>\x02\n\n\x0c\n\x05\x04\x01\x02\0\x05\x12\x03>\x0b\x11\n\x0c\n\x05\
+    \x04\x01\x02\0\x01\x12\x03>\x12\x16\n\x0c\n\x05\x04\x01\x02\0\x03\x12\
+    \x03>\x19\x1a\n*\n\x04\x04\x01\x02\x01\x12\x03?\x02\x1e\"\x1d\x20e.g.\
+    \x20\"foo\",\x20\"foo.bar\",\x20etc.\n\n\x0c\n\x05\x04\x01\x02\x01\x04\
+    \x12\x03?\x02\n\n\x0c\n\x05\x04\x01\x02\x01\x05\x12\x03?\x0b\x11\n\x0c\n\
+    \x05\x04\x01\x02\x01\x01\x12\x03?\x12\x19\n\x0c\n\x05\x04\x01\x02\x01\
+    \x03\x12\x03?\x1c\x1d\n4\n\x04\x04\x01\x02\x02\x12\x03B\x02!\x1a'\x20Nam\
+    es\x20of\x20files\x20imported\x20by\x20this\x20file.\n\n\x0c\n\x05\x04\
+    \x01\x02\x02\x04\x12\x03B\x02\n\n\x0c\n\x05\x04\x01\x02\x02\x05\x12\x03B\
+    \x0b\x11\n\x0c\n\x05\x04\x01\x02\x02\x01\x12\x03B\x12\x1c\n\x0c\n\x05\
+    \x04\x01\x02\x02\x03\x12\x03B\x1f\x20\nQ\n\x04\x04\x01\x02\x03\x12\x03D\
+    \x02(\x1aD\x20Indexes\x20of\x20the\x20public\x20imported\x20files\x20in\
+    \x20the\x20dependency\x20list\x20above.\n\n\x0c\n\x05\x04\x01\x02\x03\
+    \x04\x12\x03D\x02\n\n\x0c\n\x05\x04\x01\x02\x03\x05\x12\x03D\x0b\x10\n\
+    \x0c\n\x05\x04\x01\x02\x03\x01\x12\x03D\x11\"\n\x0c\n\x05\x04\x01\x02\
+    \x03\x03\x12\x03D%'\nz\n\x04\x04\x01\x02\x04\x12\x03G\x02&\x1am\x20Index\
+    es\x20of\x20the\x20weak\x20imported\x20files\x20in\x20the\x20dependency\
+    \x20list.\n\x20For\x20Google-internal\x20migration\x20only.\x20Do\x20not\
+    \x20use.\n\n\x0c\n\x05\x04\x01\x02\x04\x04\x12\x03G\x02\n\n\x0c\n\x05\
+    \x04\x01\x02\x04\x05\x12\x03G\x0b\x10\n\x0c\n\x05\x04\x01\x02\x04\x01\
+    \x12\x03G\x11\x20\n\x0c\n\x05\x04\x01\x02\x04\x03\x12\x03G#%\n6\n\x04\
+    \x04\x01\x02\x05\x12\x03J\x02,\x1a)\x20All\x20top-level\x20definitions\
+    \x20in\x20this\x20file.\n\n\x0c\n\x05\x04\x01\x02\x05\x04\x12\x03J\x02\n\
+    \n\x0c\n\x05\x04\x01\x02\x05\x06\x12\x03J\x0b\x1a\n\x0c\n\x05\x04\x01\
+    \x02\x05\x01\x12\x03J\x1b'\n\x0c\n\x05\x04\x01\x02\x05\x03\x12\x03J*+\n\
+    \x0b\n\x04\x04\x01\x02\x06\x12\x03K\x02-\n\x0c\n\x05\x04\x01\x02\x06\x04\
+    \x12\x03K\x02\n\n\x0c\n\x05\x04\x01\x02\x06\x06\x12\x03K\x0b\x1e\n\x0c\n\
+    \x05\x04\x01\x02\x06\x01\x12\x03K\x1f(\n\x0c\n\x05\x04\x01\x02\x06\x03\
+    \x12\x03K+,\n\x0b\n\x04\x04\x01\x02\x07\x12\x03L\x02.\n\x0c\n\x05\x04\
+    \x01\x02\x07\x04\x12\x03L\x02\n\n\x0c\n\x05\x04\x01\x02\x07\x06\x12\x03L\
+    \x0b!\n\x0c\n\x05\x04\x01\x02\x07\x01\x12\x03L\")\n\x0c\n\x05\x04\x01\
+    \x02\x07\x03\x12\x03L,-\n\x0b\n\x04\x04\x01\x02\x08\x12\x03M\x02.\n\x0c\
+    \n\x05\x04\x01\x02\x08\x04\x12\x03M\x02\n\n\x0c\n\x05\x04\x01\x02\x08\
+    \x06\x12\x03M\x0b\x1f\n\x0c\n\x05\x04\x01\x02\x08\x01\x12\x03M\x20)\n\
+    \x0c\n\x05\x04\x01\x02\x08\x03\x12\x03M,-\n\x0b\n\x04\x04\x01\x02\t\x12\
+    \x03O\x02#\n\x0c\n\x05\x04\x01\x02\t\x04\x12\x03O\x02\n\n\x0c\n\x05\x04\
+    \x01\x02\t\x06\x12\x03O\x0b\x16\n\x0c\n\x05\x04\x01\x02\t\x01\x12\x03O\
+    \x17\x1e\n\x0c\n\x05\x04\x01\x02\t\x03\x12\x03O!\"\n\xf4\x01\n\x04\x04\
+    \x01\x02\n\x12\x03U\x02/\x1a\xe6\x01\x20This\x20field\x20contains\x20opt\
+    ional\x20information\x20about\x20the\x20original\x20source\x20code.\n\
+    \x20You\x20may\x20safely\x20remove\x20this\x20entire\x20field\x20without\
+    \x20harming\x20runtime\n\x20functionality\x20of\x20the\x20descriptors\
+    \x20--\x20the\x20information\x20is\x20needed\x20only\x20by\n\x20developm\
+    ent\x20tools.\n\n\x0c\n\x05\x04\x01\x02\n\x04\x12\x03U\x02\n\n\x0c\n\x05\
+    \x04\x01\x02\n\x06\x12\x03U\x0b\x19\n\x0c\n\x05\x04\x01\x02\n\x01\x12\
+    \x03U\x1a*\n\x0c\n\x05\x04\x01\x02\n\x03\x12\x03U-.\n]\n\x04\x04\x01\x02\
+    \x0b\x12\x03Y\x02\x1e\x1aP\x20The\x20syntax\x20of\x20the\x20proto\x20fil\
+    e.\n\x20The\x20supported\x20values\x20are\x20\"proto2\"\x20and\x20\"prot\
+    o3\".\n\n\x0c\n\x05\x04\x01\x02\x0b\x04\x12\x03Y\x02\n\n\x0c\n\x05\x04\
+    \x01\x02\x0b\x05\x12\x03Y\x0b\x11\n\x0c\n\x05\x04\x01\x02\x0b\x01\x12\
+    \x03Y\x12\x18\n\x0c\n\x05\x04\x01\x02\x0b\x03\x12\x03Y\x1b\x1d\n'\n\x02\
+    \x04\x02\x12\x04]\0}\x01\x1a\x1b\x20Describes\x20a\x20message\x20type.\n\
+    \n\n\n\x03\x04\x02\x01\x12\x03]\x08\x17\n\x0b\n\x04\x04\x02\x02\0\x12\
+    \x03^\x02\x1b\n\x0c\n\x05\x04\x02\x02\0\x04\x12\x03^\x02\n\n\x0c\n\x05\
+    \x04\x02\x02\0\x05\x12\x03^\x0b\x11\n\x0c\n\x05\x04\x02\x02\0\x01\x12\
+    \x03^\x12\x16\n\x0c\n\x05\x04\x02\x02\0\x03\x12\x03^\x19\x1a\n\x0b\n\x04\
+    \x04\x02\x02\x01\x12\x03`\x02*\n\x0c\n\x05\x04\x02\x02\x01\x04\x12\x03`\
+    \x02\n\n\x0c\n\x05\x04\x02\x02\x01\x06\x12\x03`\x0b\x1f\n\x0c\n\x05\x04\
+    \x02\x02\x01\x01\x12\x03`\x20%\n\x0c\n\x05\x04\x02\x02\x01\x03\x12\x03`(\
+    )\n\x0b\n\x04\x04\x02\x02\x02\x12\x03a\x02.\n\x0c\n\x05\x04\x02\x02\x02\
+    \x04\x12\x03a\x02\n\n\x0c\n\x05\x04\x02\x02\x02\x06\x12\x03a\x0b\x1f\n\
+    \x0c\n\x05\x04\x02\x02\x02\x01\x12\x03a\x20)\n\x0c\n\x05\x04\x02\x02\x02\
+    \x03\x12\x03a,-\n\x0b\n\x04\x04\x02\x02\x03\x12\x03c\x02+\n\x0c\n\x05\
+    \x04\x02\x02\x03\x04\x12\x03c\x02\n\n\x0c\n\x05\x04\x02\x02\x03\x06\x12\
+    \x03c\x0b\x1a\n\x0c\n\x05\x04\x02\x02\x03\x01\x12\x03c\x1b&\n\x0c\n\x05\
+    \x04\x02\x02\x03\x03\x12\x03c)*\n\x0b\n\x04\x04\x02\x02\x04\x12\x03d\x02\
+    -\n\x0c\n\x05\x04\x02\x02\x04\x04\x12\x03d\x02\n\n\x0c\n\x05\x04\x02\x02\
+    \x04\x06\x12\x03d\x0b\x1e\n\x0c\n\x05\x04\x02\x02\x04\x01\x12\x03d\x1f(\
+    \n\x0c\n\x05\x04\x02\x02\x04\x03\x12\x03d+,\n\x0c\n\x04\x04\x02\x03\0\
+    \x12\x04f\x02k\x03\n\x0c\n\x05\x04\x02\x03\0\x01\x12\x03f\n\x18\n\x1b\n\
+    \x06\x04\x02\x03\0\x02\0\x12\x03g\x04\x1d\"\x0c\x20Inclusive.\n\n\x0e\n\
+    \x07\x04\x02\x03\0\x02\0\x04\x12\x03g\x04\x0c\n\x0e\n\x07\x04\x02\x03\0\
+    \x02\0\x05\x12\x03g\r\x12\n\x0e\n\x07\x04\x02\x03\0\x02\0\x01\x12\x03g\
+    \x13\x18\n\x0e\n\x07\x04\x02\x03\0\x02\0\x03\x12\x03g\x1b\x1c\n\x1b\n\
+    \x06\x04\x02\x03\0\x02\x01\x12\x03h\x04\x1b\"\x0c\x20Exclusive.\n\n\x0e\
+    \n\x07\x04\x02\x03\0\x02\x01\x04\x12\x03h\x04\x0c\n\x0e\n\x07\x04\x02\
+    \x03\0\x02\x01\x05\x12\x03h\r\x12\n\x0e\n\x07\x04\x02\x03\0\x02\x01\x01\
+    \x12\x03h\x13\x16\n\x0e\n\x07\x04\x02\x03\0\x02\x01\x03\x12\x03h\x19\x1a\
+    \n\r\n\x06\x04\x02\x03\0\x02\x02\x12\x03j\x04/\n\x0e\n\x07\x04\x02\x03\0\
+    \x02\x02\x04\x12\x03j\x04\x0c\n\x0e\n\x07\x04\x02\x03\0\x02\x02\x06\x12\
+    \x03j\r\"\n\x0e\n\x07\x04\x02\x03\0\x02\x02\x01\x12\x03j#*\n\x0e\n\x07\
+    \x04\x02\x03\0\x02\x02\x03\x12\x03j-.\n\x0b\n\x04\x04\x02\x02\x05\x12\
+    \x03l\x02.\n\x0c\n\x05\x04\x02\x02\x05\x04\x12\x03l\x02\n\n\x0c\n\x05\
+    \x04\x02\x02\x05\x06\x12\x03l\x0b\x19\n\x0c\n\x05\x04\x02\x02\x05\x01\
+    \x12\x03l\x1a)\n\x0c\n\x05\x04\x02\x02\x05\x03\x12\x03l,-\n\x0b\n\x04\
+    \x04\x02\x02\x06\x12\x03n\x02/\n\x0c\n\x05\x04\x02\x02\x06\x04\x12\x03n\
+    \x02\n\n\x0c\n\x05\x04\x02\x02\x06\x06\x12\x03n\x0b\x1f\n\x0c\n\x05\x04\
+    \x02\x02\x06\x01\x12\x03n\x20*\n\x0c\n\x05\x04\x02\x02\x06\x03\x12\x03n-\
+    .\n\x0b\n\x04\x04\x02\x02\x07\x12\x03p\x02&\n\x0c\n\x05\x04\x02\x02\x07\
+    \x04\x12\x03p\x02\n\n\x0c\n\x05\x04\x02\x02\x07\x06\x12\x03p\x0b\x19\n\
+    \x0c\n\x05\x04\x02\x02\x07\x01\x12\x03p\x1a!\n\x0c\n\x05\x04\x02\x02\x07\
+    \x03\x12\x03p$%\n\xaa\x01\n\x04\x04\x02\x03\x01\x12\x04u\x02x\x03\x1a\
+    \x9b\x01\x20Range\x20of\x20reserved\x20tag\x20numbers.\x20Reserved\x20ta\
+    g\x20numbers\x20may\x20not\x20be\x20used\x20by\n\x20fields\x20or\x20exte\
+    nsion\x20ranges\x20in\x20the\x20same\x20message.\x20Reserved\x20ranges\
+    \x20may\n\x20not\x20overlap.\n\n\x0c\n\x05\x04\x02\x03\x01\x01\x12\x03u\
+    \n\x17\n\x1b\n\x06\x04\x02\x03\x01\x02\0\x12\x03v\x04\x1d\"\x0c\x20Inclu\
+    sive.\n\n\x0e\n\x07\x04\x02\x03\x01\x02\0\x04\x12\x03v\x04\x0c\n\x0e\n\
+    \x07\x04\x02\x03\x01\x02\0\x05\x12\x03v\r\x12\n\x0e\n\x07\x04\x02\x03\
+    \x01\x02\0\x01\x12\x03v\x13\x18\n\x0e\n\x07\x04\x02\x03\x01\x02\0\x03\
+    \x12\x03v\x1b\x1c\n\x1b\n\x06\x04\x02\x03\x01\x02\x01\x12\x03w\x04\x1b\"\
+    \x0c\x20Exclusive.\n\n\x0e\n\x07\x04\x02\x03\x01\x02\x01\x04\x12\x03w\
+    \x04\x0c\n\x0e\n\x07\x04\x02\x03\x01\x02\x01\x05\x12\x03w\r\x12\n\x0e\n\
+    \x07\x04\x02\x03\x01\x02\x01\x01\x12\x03w\x13\x16\n\x0e\n\x07\x04\x02\
+    \x03\x01\x02\x01\x03\x12\x03w\x19\x1a\n\x0b\n\x04\x04\x02\x02\x08\x12\
+    \x03y\x02,\n\x0c\n\x05\x04\x02\x02\x08\x04\x12\x03y\x02\n\n\x0c\n\x05\
+    \x04\x02\x02\x08\x06\x12\x03y\x0b\x18\n\x0c\n\x05\x04\x02\x02\x08\x01\
+    \x12\x03y\x19'\n\x0c\n\x05\x04\x02\x02\x08\x03\x12\x03y*+\n\x82\x01\n\
+    \x04\x04\x02\x02\t\x12\x03|\x02%\x1au\x20Reserved\x20field\x20names,\x20\
+    which\x20may\x20not\x20be\x20used\x20by\x20fields\x20in\x20the\x20same\
+    \x20message.\n\x20A\x20given\x20name\x20may\x20only\x20be\x20reserved\
+    \x20once.\n\n\x0c\n\x05\x04\x02\x02\t\x04\x12\x03|\x02\n\n\x0c\n\x05\x04\
+    \x02\x02\t\x05\x12\x03|\x0b\x11\n\x0c\n\x05\x04\x02\x02\t\x01\x12\x03|\
+    \x12\x1f\n\x0c\n\x05\x04\x02\x02\t\x03\x12\x03|\"$\n\x0b\n\x02\x04\x03\
+    \x12\x05\x7f\0\x86\x01\x01\n\n\n\x03\x04\x03\x01\x12\x03\x7f\x08\x1d\nO\
+    \n\x04\x04\x03\x02\0\x12\x04\x81\x01\x02:\x1aA\x20The\x20parser\x20store\
+    s\x20options\x20it\x20doesn't\x20recognize\x20here.\x20See\x20above.\n\n\
+    \r\n\x05\x04\x03\x02\0\x04\x12\x04\x81\x01\x02\n\n\r\n\x05\x04\x03\x02\0\
+    \x06\x12\x04\x81\x01\x0b\x1e\n\r\n\x05\x04\x03\x02\0\x01\x12\x04\x81\x01\
+    \x1f3\n\r\n\x05\x04\x03\x02\0\x03\x12\x04\x81\x0169\nZ\n\x03\x04\x03\x05\
+    \x12\x04\x85\x01\x02\x19\x1aM\x20Clients\x20can\x20define\x20custom\x20o\
+    ptions\x20in\x20extensions\x20of\x20this\x20message.\x20See\x20above.\n\
+    \n\x0c\n\x04\x04\x03\x05\0\x12\x04\x85\x01\r\x18\n\r\n\x05\x04\x03\x05\0\
+    \x01\x12\x04\x85\x01\r\x11\n\r\n\x05\x04\x03\x05\0\x02\x12\x04\x85\x01\
+    \x15\x18\n3\n\x02\x04\x04\x12\x06\x89\x01\0\xee\x01\x01\x1a%\x20Describe\
+    s\x20a\x20field\x20within\x20a\x20message.\n\n\x0b\n\x03\x04\x04\x01\x12\
+    \x04\x89\x01\x08\x1c\n\x0e\n\x04\x04\x04\x04\0\x12\x06\x8a\x01\x02\xa9\
+    \x01\x03\n\r\n\x05\x04\x04\x04\0\x01\x12\x04\x8a\x01\x07\x0b\nS\n\x06\
+    \x04\x04\x04\0\x02\0\x12\x04\x8d\x01\x04\x14\x1aC\x200\x20is\x20reserved\
+    \x20for\x20errors.\n\x20Order\x20is\x20weird\x20for\x20historical\x20rea\
+    sons.\n\n\x0f\n\x07\x04\x04\x04\0\x02\0\x01\x12\x04\x8d\x01\x04\x0f\n\
+    \x0f\n\x07\x04\x04\x04\0\x02\0\x02\x12\x04\x8d\x01\x12\x13\n\x0e\n\x06\
+    \x04\x04\x04\0\x02\x01\x12\x04\x8e\x01\x04\x13\n\x0f\n\x07\x04\x04\x04\0\
+    \x02\x01\x01\x12\x04\x8e\x01\x04\x0e\n\x0f\n\x07\x04\x04\x04\0\x02\x01\
+    \x02\x12\x04\x8e\x01\x11\x12\nw\n\x06\x04\x04\x04\0\x02\x02\x12\x04\x91\
+    \x01\x04\x13\x1ag\x20Not\x20ZigZag\x20encoded.\x20\x20Negative\x20number\
+    s\x20take\x2010\x20bytes.\x20\x20Use\x20TYPE_SINT64\x20if\n\x20negative\
+    \x20values\x20are\x20likely.\n\n\x0f\n\x07\x04\x04\x04\0\x02\x02\x01\x12\
+    \x04\x91\x01\x04\x0e\n\x0f\n\x07\x04\x04\x04\0\x02\x02\x02\x12\x04\x91\
+    \x01\x11\x12\n\x0e\n\x06\x04\x04\x04\0\x02\x03\x12\x04\x92\x01\x04\x14\n\
+    \x0f\n\x07\x04\x04\x04\0\x02\x03\x01\x12\x04\x92\x01\x04\x0f\n\x0f\n\x07\
+    \x04\x04\x04\0\x02\x03\x02\x12\x04\x92\x01\x12\x13\nw\n\x06\x04\x04\x04\
+    \0\x02\x04\x12\x04\x95\x01\x04\x13\x1ag\x20Not\x20ZigZag\x20encoded.\x20\
+    \x20Negative\x20numbers\x20take\x2010\x20bytes.\x20\x20Use\x20TYPE_SINT3\
+    2\x20if\n\x20negative\x20values\x20are\x20likely.\n\n\x0f\n\x07\x04\x04\
+    \x04\0\x02\x04\x01\x12\x04\x95\x01\x04\x0e\n\x0f\n\x07\x04\x04\x04\0\x02\
+    \x04\x02\x12\x04\x95\x01\x11\x12\n\x0e\n\x06\x04\x04\x04\0\x02\x05\x12\
+    \x04\x96\x01\x04\x15\n\x0f\n\x07\x04\x04\x04\0\x02\x05\x01\x12\x04\x96\
+    \x01\x04\x10\n\x0f\n\x07\x04\x04\x04\0\x02\x05\x02\x12\x04\x96\x01\x13\
+    \x14\n\x0e\n\x06\x04\x04\x04\0\x02\x06\x12\x04\x97\x01\x04\x15\n\x0f\n\
+    \x07\x04\x04\x04\0\x02\x06\x01\x12\x04\x97\x01\x04\x10\n\x0f\n\x07\x04\
+    \x04\x04\0\x02\x06\x02\x12\x04\x97\x01\x13\x14\n\x0e\n\x06\x04\x04\x04\0\
+    \x02\x07\x12\x04\x98\x01\x04\x12\n\x0f\n\x07\x04\x04\x04\0\x02\x07\x01\
+    \x12\x04\x98\x01\x04\r\n\x0f\n\x07\x04\x04\x04\0\x02\x07\x02\x12\x04\x98\
+    \x01\x10\x11\n\x0e\n\x06\x04\x04\x04\0\x02\x08\x12\x04\x99\x01\x04\x14\n\
+    \x0f\n\x07\x04\x04\x04\0\x02\x08\x01\x12\x04\x99\x01\x04\x0f\n\x0f\n\x07\
+    \x04\x04\x04\0\x02\x08\x02\x12\x04\x99\x01\x12\x13\n\xe2\x01\n\x06\x04\
+    \x04\x04\0\x02\t\x12\x04\x9e\x01\x04\x14\x1a\xd1\x01\x20Tag-delimited\
+    \x20aggregate.\n\x20Group\x20type\x20is\x20deprecated\x20and\x20not\x20s\
+    upported\x20in\x20proto3.\x20However,\x20Proto3\n\x20implementations\x20\
+    should\x20still\x20be\x20able\x20to\x20parse\x20the\x20group\x20wire\x20\
+    format\x20and\n\x20treat\x20group\x20fields\x20as\x20unknown\x20fields.\
+    \n\n\x0f\n\x07\x04\x04\x04\0\x02\t\x01\x12\x04\x9e\x01\x04\x0e\n\x0f\n\
+    \x07\x04\x04\x04\0\x02\t\x02\x12\x04\x9e\x01\x11\x13\n-\n\x06\x04\x04\
+    \x04\0\x02\n\x12\x04\x9f\x01\x04\x16\"\x1d\x20Length-delimited\x20aggreg\
+    ate.\n\n\x0f\n\x07\x04\x04\x04\0\x02\n\x01\x12\x04\x9f\x01\x04\x10\n\x0f\
+    \n\x07\x04\x04\x04\0\x02\n\x02\x12\x04\x9f\x01\x13\x15\n#\n\x06\x04\x04\
+    \x04\0\x02\x0b\x12\x04\xa2\x01\x04\x14\x1a\x13\x20New\x20in\x20version\
+    \x202.\n\n\x0f\n\x07\x04\x04\x04\0\x02\x0b\x01\x12\x04\xa2\x01\x04\x0e\n\
+    \x0f\n\x07\x04\x04\x04\0\x02\x0b\x02\x12\x04\xa2\x01\x11\x13\n\x0e\n\x06\
+    \x04\x04\x04\0\x02\x0c\x12\x04\xa3\x01\x04\x15\n\x0f\n\x07\x04\x04\x04\0\
+    \x02\x0c\x01\x12\x04\xa3\x01\x04\x0f\n\x0f\n\x07\x04\x04\x04\0\x02\x0c\
+    \x02\x12\x04\xa3\x01\x12\x14\n\x0e\n\x06\x04\x04\x04\0\x02\r\x12\x04\xa4\
+    \x01\x04\x13\n\x0f\n\x07\x04\x04\x04\0\x02\r\x01\x12\x04\xa4\x01\x04\r\n\
+    \x0f\n\x07\x04\x04\x04\0\x02\r\x02\x12\x04\xa4\x01\x10\x12\n\x0e\n\x06\
+    \x04\x04\x04\0\x02\x0e\x12\x04\xa5\x01\x04\x17\n\x0f\n\x07\x04\x04\x04\0\
+    \x02\x0e\x01\x12\x04\xa5\x01\x04\x11\n\x0f\n\x07\x04\x04\x04\0\x02\x0e\
+    \x02\x12\x04\xa5\x01\x14\x16\n\x0e\n\x06\x04\x04\x04\0\x02\x0f\x12\x04\
+    \xa6\x01\x04\x17\n\x0f\n\x07\x04\x04\x04\0\x02\x0f\x01\x12\x04\xa6\x01\
+    \x04\x11\n\x0f\n\x07\x04\x04\x04\0\x02\x0f\x02\x12\x04\xa6\x01\x14\x16\n\
+    '\n\x06\x04\x04\x04\0\x02\x10\x12\x04\xa7\x01\x04\x15\"\x17\x20Uses\x20Z\
+    igZag\x20encoding.\n\n\x0f\n\x07\x04\x04\x04\0\x02\x10\x01\x12\x04\xa7\
+    \x01\x04\x0f\n\x0f\n\x07\x04\x04\x04\0\x02\x10\x02\x12\x04\xa7\x01\x12\
+    \x14\n'\n\x06\x04\x04\x04\0\x02\x11\x12\x04\xa8\x01\x04\x15\"\x17\x20Use\
+    s\x20ZigZag\x20encoding.\n\n\x0f\n\x07\x04\x04\x04\0\x02\x11\x01\x12\x04\
+    \xa8\x01\x04\x0f\n\x0f\n\x07\x04\x04\x04\0\x02\x11\x02\x12\x04\xa8\x01\
+    \x12\x14\n\x0e\n\x04\x04\x04\x04\x01\x12\x06\xab\x01\x02\xb0\x01\x03\n\r\
+    \n\x05\x04\x04\x04\x01\x01\x12\x04\xab\x01\x07\x0c\n*\n\x06\x04\x04\x04\
+    \x01\x02\0\x12\x04\xad\x01\x04\x17\x1a\x1a\x200\x20is\x20reserved\x20for\
+    \x20errors\n\n\x0f\n\x07\x04\x04\x04\x01\x02\0\x01\x12\x04\xad\x01\x04\
+    \x12\n\x0f\n\x07\x04\x04\x04\x01\x02\0\x02\x12\x04\xad\x01\x15\x16\n\x0e\
+    \n\x06\x04\x04\x04\x01\x02\x01\x12\x04\xae\x01\x04\x17\n\x0f\n\x07\x04\
+    \x04\x04\x01\x02\x01\x01\x12\x04\xae\x01\x04\x12\n\x0f\n\x07\x04\x04\x04\
+    \x01\x02\x01\x02\x12\x04\xae\x01\x15\x16\n\x0e\n\x06\x04\x04\x04\x01\x02\
+    \x02\x12\x04\xaf\x01\x04\x17\n\x0f\n\x07\x04\x04\x04\x01\x02\x02\x01\x12\
+    \x04\xaf\x01\x04\x12\n\x0f\n\x07\x04\x04\x04\x01\x02\x02\x02\x12\x04\xaf\
+    \x01\x15\x16\n\x0c\n\x04\x04\x04\x02\0\x12\x04\xb2\x01\x02\x1b\n\r\n\x05\
+    \x04\x04\x02\0\x04\x12\x04\xb2\x01\x02\n\n\r\n\x05\x04\x04\x02\0\x05\x12\
+    \x04\xb2\x01\x0b\x11\n\r\n\x05\x04\x04\x02\0\x01\x12\x04\xb2\x01\x12\x16\
+    \n\r\n\x05\x04\x04\x02\0\x03\x12\x04\xb2\x01\x19\x1a\n\x0c\n\x04\x04\x04\
+    \x02\x01\x12\x04\xb3\x01\x02\x1c\n\r\n\x05\x04\x04\x02\x01\x04\x12\x04\
+    \xb3\x01\x02\n\n\r\n\x05\x04\x04\x02\x01\x05\x12\x04\xb3\x01\x0b\x10\n\r\
+    \n\x05\x04\x04\x02\x01\x01\x12\x04\xb3\x01\x11\x17\n\r\n\x05\x04\x04\x02\
+    \x01\x03\x12\x04\xb3\x01\x1a\x1b\n\x0c\n\x04\x04\x04\x02\x02\x12\x04\xb4\
+    \x01\x02\x1b\n\r\n\x05\x04\x04\x02\x02\x04\x12\x04\xb4\x01\x02\n\n\r\n\
+    \x05\x04\x04\x02\x02\x06\x12\x04\xb4\x01\x0b\x10\n\r\n\x05\x04\x04\x02\
+    \x02\x01\x12\x04\xb4\x01\x11\x16\n\r\n\x05\x04\x04\x02\x02\x03\x12\x04\
+    \xb4\x01\x19\x1a\n\x9c\x01\n\x04\x04\x04\x02\x03\x12\x04\xb8\x01\x02\x19\
+    \x1a\x8d\x01\x20If\x20type_name\x20is\x20set,\x20this\x20need\x20not\x20\
+    be\x20set.\x20\x20If\x20both\x20this\x20and\x20type_name\n\x20are\x20set\
+    ,\x20this\x20must\x20be\x20one\x20of\x20TYPE_ENUM,\x20TYPE_MESSAGE\x20or\
+    \x20TYPE_GROUP.\n\n\r\n\x05\x04\x04\x02\x03\x04\x12\x04\xb8\x01\x02\n\n\
+    \r\n\x05\x04\x04\x02\x03\x06\x12\x04\xb8\x01\x0b\x0f\n\r\n\x05\x04\x04\
+    \x02\x03\x01\x12\x04\xb8\x01\x10\x14\n\r\n\x05\x04\x04\x02\x03\x03\x12\
+    \x04\xb8\x01\x17\x18\n\xb7\x02\n\x04\x04\x04\x02\x04\x12\x04\xbf\x01\x02\
+    \x20\x1a\xa8\x02\x20For\x20message\x20and\x20enum\x20types,\x20this\x20i\
+    s\x20the\x20name\x20of\x20the\x20type.\x20\x20If\x20the\x20name\n\x20sta\
+    rts\x20with\x20a\x20'.',\x20it\x20is\x20fully-qualified.\x20\x20Otherwis\
+    e,\x20C++-like\x20scoping\n\x20rules\x20are\x20used\x20to\x20find\x20the\
+    \x20type\x20(i.e.\x20first\x20the\x20nested\x20types\x20within\x20this\n\
+    \x20message\x20are\x20searched,\x20then\x20within\x20the\x20parent,\x20o\
+    n\x20up\x20to\x20the\x20root\n\x20namespace).\n\n\r\n\x05\x04\x04\x02\
+    \x04\x04\x12\x04\xbf\x01\x02\n\n\r\n\x05\x04\x04\x02\x04\x05\x12\x04\xbf\
+    \x01\x0b\x11\n\r\n\x05\x04\x04\x02\x04\x01\x12\x04\xbf\x01\x12\x1b\n\r\n\
+    \x05\x04\x04\x02\x04\x03\x12\x04\xbf\x01\x1e\x1f\n~\n\x04\x04\x04\x02\
+    \x05\x12\x04\xc3\x01\x02\x1f\x1ap\x20For\x20extensions,\x20this\x20is\
+    \x20the\x20name\x20of\x20the\x20type\x20being\x20extended.\x20\x20It\x20\
+    is\n\x20resolved\x20in\x20the\x20same\x20manner\x20as\x20type_name.\n\n\
+    \r\n\x05\x04\x04\x02\x05\x04\x12\x04\xc3\x01\x02\n\n\r\n\x05\x04\x04\x02\
+    \x05\x05\x12\x04\xc3\x01\x0b\x11\n\r\n\x05\x04\x04\x02\x05\x01\x12\x04\
+    \xc3\x01\x12\x1a\n\r\n\x05\x04\x04\x02\x05\x03\x12\x04\xc3\x01\x1d\x1e\n\
+    \xb1\x02\n\x04\x04\x04\x02\x06\x12\x04\xca\x01\x02$\x1a\xa2\x02\x20For\
+    \x20numeric\x20types,\x20contains\x20the\x20original\x20text\x20represen\
+    tation\x20of\x20the\x20value.\n\x20For\x20booleans,\x20\"true\"\x20or\
+    \x20\"false\".\n\x20For\x20strings,\x20contains\x20the\x20default\x20tex\
+    t\x20contents\x20(not\x20escaped\x20in\x20any\x20way).\n\x20For\x20bytes\
+    ,\x20contains\x20the\x20C\x20escaped\x20value.\x20\x20All\x20bytes\x20>=\
+    \x20128\x20are\x20escaped.\n\x20TODO(kenton):\x20\x20Base-64\x20encode?\
+    \n\n\r\n\x05\x04\x04\x02\x06\x04\x12\x04\xca\x01\x02\n\n\r\n\x05\x04\x04\
+    \x02\x06\x05\x12\x04\xca\x01\x0b\x11\n\r\n\x05\x04\x04\x02\x06\x01\x12\
+    \x04\xca\x01\x12\x1f\n\r\n\x05\x04\x04\x02\x06\x03\x12\x04\xca\x01\"#\n\
+    \x84\x01\n\x04\x04\x04\x02\x07\x12\x04\xce\x01\x02!\x1av\x20If\x20set,\
+    \x20gives\x20the\x20index\x20of\x20a\x20oneof\x20in\x20the\x20containing\
+    \x20type's\x20oneof_decl\n\x20list.\x20\x20This\x20field\x20is\x20a\x20m\
+    ember\x20of\x20that\x20oneof.\n\n\r\n\x05\x04\x04\x02\x07\x04\x12\x04\
+    \xce\x01\x02\n\n\r\n\x05\x04\x04\x02\x07\x05\x12\x04\xce\x01\x0b\x10\n\r\
+    \n\x05\x04\x04\x02\x07\x01\x12\x04\xce\x01\x11\x1c\n\r\n\x05\x04\x04\x02\
+    \x07\x03\x12\x04\xce\x01\x1f\x20\n\xfa\x01\n\x04\x04\x04\x02\x08\x12\x04\
+    \xd4\x01\x02!\x1a\xeb\x01\x20JSON\x20name\x20of\x20this\x20field.\x20The\
+    \x20value\x20is\x20set\x20by\x20protocol\x20compiler.\x20If\x20the\n\x20\
+    user\x20has\x20set\x20a\x20\"json_name\"\x20option\x20on\x20this\x20fiel\
+    d,\x20that\x20option's\x20value\n\x20will\x20be\x20used.\x20Otherwise,\
+    \x20it's\x20deduced\x20from\x20the\x20field's\x20name\x20by\x20convertin\
+    g\n\x20it\x20to\x20camelCase.\n\n\r\n\x05\x04\x04\x02\x08\x04\x12\x04\
+    \xd4\x01\x02\n\n\r\n\x05\x04\x04\x02\x08\x05\x12\x04\xd4\x01\x0b\x11\n\r\
+    \n\x05\x04\x04\x02\x08\x01\x12\x04\xd4\x01\x12\x1b\n\r\n\x05\x04\x04\x02\
+    \x08\x03\x12\x04\xd4\x01\x1e\x20\n\x0c\n\x04\x04\x04\x02\t\x12\x04\xd6\
+    \x01\x02$\n\r\n\x05\x04\x04\x02\t\x04\x12\x04\xd6\x01\x02\n\n\r\n\x05\
+    \x04\x04\x02\t\x06\x12\x04\xd6\x01\x0b\x17\n\r\n\x05\x04\x04\x02\t\x01\
+    \x12\x04\xd6\x01\x18\x1f\n\r\n\x05\x04\x04\x02\t\x03\x12\x04\xd6\x01\"#\
+    \n\xb3\t\n\x04\x04\x04\x02\n\x12\x04\xed\x01\x02%\x1a\xa4\t\x20If\x20tru\
+    e,\x20this\x20is\x20a\x20proto3\x20\"optional\".\x20When\x20a\x20proto3\
+    \x20field\x20is\x20optional,\x20it\n\x20tracks\x20presence\x20regardless\
+    \x20of\x20field\x20type.\n\n\x20When\x20proto3_optional\x20is\x20true,\
+    \x20this\x20field\x20must\x20be\x20belong\x20to\x20a\x20oneof\x20to\n\
+    \x20signal\x20to\x20old\x20proto3\x20clients\x20that\x20presence\x20is\
+    \x20tracked\x20for\x20this\x20field.\x20This\n\x20oneof\x20is\x20known\
+    \x20as\x20a\x20\"synthetic\"\x20oneof,\x20and\x20this\x20field\x20must\
+    \x20be\x20its\x20sole\n\x20member\x20(each\x20proto3\x20optional\x20fiel\
+    d\x20gets\x20its\x20own\x20synthetic\x20oneof).\x20Synthetic\n\x20oneofs\
+    \x20exist\x20in\x20the\x20descriptor\x20only,\x20and\x20do\x20not\x20gen\
+    erate\x20any\x20API.\x20Synthetic\n\x20oneofs\x20must\x20be\x20ordered\
+    \x20after\x20all\x20\"real\"\x20oneofs.\n\n\x20For\x20message\x20fields,\
+    \x20proto3_optional\x20doesn't\x20create\x20any\x20semantic\x20change,\n\
+    \x20since\x20non-repeated\x20message\x20fields\x20always\x20track\x20pre\
+    sence.\x20However\x20it\x20still\n\x20indicates\x20the\x20semantic\x20de\
+    tail\x20of\x20whether\x20the\x20user\x20wrote\x20\"optional\"\x20or\x20n\
+    ot.\n\x20This\x20can\x20be\x20useful\x20for\x20round-tripping\x20the\x20\
+    .proto\x20file.\x20For\x20consistency\x20we\n\x20give\x20message\x20fiel\
+    ds\x20a\x20synthetic\x20oneof\x20also,\x20even\x20though\x20it\x20is\x20\
+    not\x20required\n\x20to\x20track\x20presence.\x20This\x20is\x20especiall\
+    y\x20important\x20because\x20the\x20parser\x20can't\n\x20tell\x20if\x20a\
+    \x20field\x20is\x20a\x20message\x20or\x20an\x20enum,\x20so\x20it\x20must\
+    \x20always\x20create\x20a\n\x20synthetic\x20oneof.\n\n\x20Proto2\x20opti\
+    onal\x20fields\x20do\x20not\x20set\x20this\x20flag,\x20because\x20they\
+    \x20already\x20indicate\n\x20optional\x20with\x20`LABEL_OPTIONAL`.\n\n\r\
+    \n\x05\x04\x04\x02\n\x04\x12\x04\xed\x01\x02\n\n\r\n\x05\x04\x04\x02\n\
+    \x05\x12\x04\xed\x01\x0b\x0f\n\r\n\x05\x04\x04\x02\n\x01\x12\x04\xed\x01\
+    \x10\x1f\n\r\n\x05\x04\x04\x02\n\x03\x12\x04\xed\x01\"$\n\"\n\x02\x04\
+    \x05\x12\x06\xf1\x01\0\xf4\x01\x01\x1a\x14\x20Describes\x20a\x20oneof.\n\
+    \n\x0b\n\x03\x04\x05\x01\x12\x04\xf1\x01\x08\x1c\n\x0c\n\x04\x04\x05\x02\
+    \0\x12\x04\xf2\x01\x02\x1b\n\r\n\x05\x04\x05\x02\0\x04\x12\x04\xf2\x01\
+    \x02\n\n\r\n\x05\x04\x05\x02\0\x05\x12\x04\xf2\x01\x0b\x11\n\r\n\x05\x04\
+    \x05\x02\0\x01\x12\x04\xf2\x01\x12\x16\n\r\n\x05\x04\x05\x02\0\x03\x12\
+    \x04\xf2\x01\x19\x1a\n\x0c\n\x04\x04\x05\x02\x01\x12\x04\xf3\x01\x02$\n\
+    \r\n\x05\x04\x05\x02\x01\x04\x12\x04\xf3\x01\x02\n\n\r\n\x05\x04\x05\x02\
+    \x01\x06\x12\x04\xf3\x01\x0b\x17\n\r\n\x05\x04\x05\x02\x01\x01\x12\x04\
+    \xf3\x01\x18\x1f\n\r\n\x05\x04\x05\x02\x01\x03\x12\x04\xf3\x01\"#\n'\n\
+    \x02\x04\x06\x12\x06\xf7\x01\0\x91\x02\x01\x1a\x19\x20Describes\x20an\
+    \x20enum\x20type.\n\n\x0b\n\x03\x04\x06\x01\x12\x04\xf7\x01\x08\x1b\n\
+    \x0c\n\x04\x04\x06\x02\0\x12\x04\xf8\x01\x02\x1b\n\r\n\x05\x04\x06\x02\0\
+    \x04\x12\x04\xf8\x01\x02\n\n\r\n\x05\x04\x06\x02\0\x05\x12\x04\xf8\x01\
+    \x0b\x11\n\r\n\x05\x04\x06\x02\0\x01\x12\x04\xf8\x01\x12\x16\n\r\n\x05\
+    \x04\x06\x02\0\x03\x12\x04\xf8\x01\x19\x1a\n\x0c\n\x04\x04\x06\x02\x01\
+    \x12\x04\xfa\x01\x02.\n\r\n\x05\x04\x06\x02\x01\x04\x12\x04\xfa\x01\x02\
+    \n\n\r\n\x05\x04\x06\x02\x01\x06\x12\x04\xfa\x01\x0b#\n\r\n\x05\x04\x06\
+    \x02\x01\x01\x12\x04\xfa\x01$)\n\r\n\x05\x04\x06\x02\x01\x03\x12\x04\xfa\
+    \x01,-\n\x0c\n\x04\x04\x06\x02\x02\x12\x04\xfc\x01\x02#\n\r\n\x05\x04\
+    \x06\x02\x02\x04\x12\x04\xfc\x01\x02\n\n\r\n\x05\x04\x06\x02\x02\x06\x12\
+    \x04\xfc\x01\x0b\x16\n\r\n\x05\x04\x06\x02\x02\x01\x12\x04\xfc\x01\x17\
+    \x1e\n\r\n\x05\x04\x06\x02\x02\x03\x12\x04\xfc\x01!\"\n\xaf\x02\n\x04\
+    \x04\x06\x03\0\x12\x06\x84\x02\x02\x87\x02\x03\x1a\x9e\x02\x20Range\x20o\
+    f\x20reserved\x20numeric\x20values.\x20Reserved\x20values\x20may\x20not\
+    \x20be\x20used\x20by\n\x20entries\x20in\x20the\x20same\x20enum.\x20Reser\
+    ved\x20ranges\x20may\x20not\x20overlap.\n\n\x20Note\x20that\x20this\x20i\
+    s\x20distinct\x20from\x20DescriptorProto.ReservedRange\x20in\x20that\x20\
+    it\n\x20is\x20inclusive\x20such\x20that\x20it\x20can\x20appropriately\
+    \x20represent\x20the\x20entire\x20int32\n\x20domain.\n\n\r\n\x05\x04\x06\
+    \x03\0\x01\x12\x04\x84\x02\n\x1b\n\x1c\n\x06\x04\x06\x03\0\x02\0\x12\x04\
+    \x85\x02\x04\x1d\"\x0c\x20Inclusive.\n\n\x0f\n\x07\x04\x06\x03\0\x02\0\
+    \x04\x12\x04\x85\x02\x04\x0c\n\x0f\n\x07\x04\x06\x03\0\x02\0\x05\x12\x04\
+    \x85\x02\r\x12\n\x0f\n\x07\x04\x06\x03\0\x02\0\x01\x12\x04\x85\x02\x13\
+    \x18\n\x0f\n\x07\x04\x06\x03\0\x02\0\x03\x12\x04\x85\x02\x1b\x1c\n\x1c\n\
+    \x06\x04\x06\x03\0\x02\x01\x12\x04\x86\x02\x04\x1b\"\x0c\x20Inclusive.\n\
+    \n\x0f\n\x07\x04\x06\x03\0\x02\x01\x04\x12\x04\x86\x02\x04\x0c\n\x0f\n\
+    \x07\x04\x06\x03\0\x02\x01\x05\x12\x04\x86\x02\r\x12\n\x0f\n\x07\x04\x06\
+    \x03\0\x02\x01\x01\x12\x04\x86\x02\x13\x16\n\x0f\n\x07\x04\x06\x03\0\x02\
+    \x01\x03\x12\x04\x86\x02\x19\x1a\n\xaa\x01\n\x04\x04\x06\x02\x03\x12\x04\
+    \x8c\x02\x020\x1a\x9b\x01\x20Range\x20of\x20reserved\x20numeric\x20value\
+    s.\x20Reserved\x20numeric\x20values\x20may\x20not\x20be\x20used\n\x20by\
+    \x20enum\x20values\x20in\x20the\x20same\x20enum\x20declaration.\x20Reser\
+    ved\x20ranges\x20may\x20not\n\x20overlap.\n\n\r\n\x05\x04\x06\x02\x03\
+    \x04\x12\x04\x8c\x02\x02\n\n\r\n\x05\x04\x06\x02\x03\x06\x12\x04\x8c\x02\
+    \x0b\x1c\n\r\n\x05\x04\x06\x02\x03\x01\x12\x04\x8c\x02\x1d+\n\r\n\x05\
+    \x04\x06\x02\x03\x03\x12\x04\x8c\x02./\nl\n\x04\x04\x06\x02\x04\x12\x04\
+    \x90\x02\x02$\x1a^\x20Reserved\x20enum\x20value\x20names,\x20which\x20ma\
+    y\x20not\x20be\x20reused.\x20A\x20given\x20name\x20may\x20only\n\x20be\
+    \x20reserved\x20once.\n\n\r\n\x05\x04\x06\x02\x04\x04\x12\x04\x90\x02\
+    \x02\n\n\r\n\x05\x04\x06\x02\x04\x05\x12\x04\x90\x02\x0b\x11\n\r\n\x05\
+    \x04\x06\x02\x04\x01\x12\x04\x90\x02\x12\x1f\n\r\n\x05\x04\x06\x02\x04\
+    \x03\x12\x04\x90\x02\"#\n1\n\x02\x04\x07\x12\x06\x94\x02\0\x99\x02\x01\
+    \x1a#\x20Describes\x20a\x20value\x20within\x20an\x20enum.\n\n\x0b\n\x03\
+    \x04\x07\x01\x12\x04\x94\x02\x08\x20\n\x0c\n\x04\x04\x07\x02\0\x12\x04\
+    \x95\x02\x02\x1b\n\r\n\x05\x04\x07\x02\0\x04\x12\x04\x95\x02\x02\n\n\r\n\
+    \x05\x04\x07\x02\0\x05\x12\x04\x95\x02\x0b\x11\n\r\n\x05\x04\x07\x02\0\
+    \x01\x12\x04\x95\x02\x12\x16\n\r\n\x05\x04\x07\x02\0\x03\x12\x04\x95\x02\
+    \x19\x1a\n\x0c\n\x04\x04\x07\x02\x01\x12\x04\x96\x02\x02\x1c\n\r\n\x05\
+    \x04\x07\x02\x01\x04\x12\x04\x96\x02\x02\n\n\r\n\x05\x04\x07\x02\x01\x05\
+    \x12\x04\x96\x02\x0b\x10\n\r\n\x05\x04\x07\x02\x01\x01\x12\x04\x96\x02\
+    \x11\x17\n\r\n\x05\x04\x07\x02\x01\x03\x12\x04\x96\x02\x1a\x1b\n\x0c\n\
+    \x04\x04\x07\x02\x02\x12\x04\x98\x02\x02(\n\r\n\x05\x04\x07\x02\x02\x04\
+    \x12\x04\x98\x02\x02\n\n\r\n\x05\x04\x07\x02\x02\x06\x12\x04\x98\x02\x0b\
+    \x1b\n\r\n\x05\x04\x07\x02\x02\x01\x12\x04\x98\x02\x1c#\n\r\n\x05\x04\
+    \x07\x02\x02\x03\x12\x04\x98\x02&'\n$\n\x02\x04\x08\x12\x06\x9c\x02\0\
+    \xa1\x02\x01\x1a\x16\x20Describes\x20a\x20service.\n\n\x0b\n\x03\x04\x08\
+    \x01\x12\x04\x9c\x02\x08\x1e\n\x0c\n\x04\x04\x08\x02\0\x12\x04\x9d\x02\
+    \x02\x1b\n\r\n\x05\x04\x08\x02\0\x04\x12\x04\x9d\x02\x02\n\n\r\n\x05\x04\
+    \x08\x02\0\x05\x12\x04\x9d\x02\x0b\x11\n\r\n\x05\x04\x08\x02\0\x01\x12\
+    \x04\x9d\x02\x12\x16\n\r\n\x05\x04\x08\x02\0\x03\x12\x04\x9d\x02\x19\x1a\
+    \n\x0c\n\x04\x04\x08\x02\x01\x12\x04\x9e\x02\x02,\n\r\n\x05\x04\x08\x02\
+    \x01\x04\x12\x04\x9e\x02\x02\n\n\r\n\x05\x04\x08\x02\x01\x06\x12\x04\x9e\
+    \x02\x0b\x20\n\r\n\x05\x04\x08\x02\x01\x01\x12\x04\x9e\x02!'\n\r\n\x05\
+    \x04\x08\x02\x01\x03\x12\x04\x9e\x02*+\n\x0c\n\x04\x04\x08\x02\x02\x12\
+    \x04\xa0\x02\x02&\n\r\n\x05\x04\x08\x02\x02\x04\x12\x04\xa0\x02\x02\n\n\
+    \r\n\x05\x04\x08\x02\x02\x06\x12\x04\xa0\x02\x0b\x19\n\r\n\x05\x04\x08\
+    \x02\x02\x01\x12\x04\xa0\x02\x1a!\n\r\n\x05\x04\x08\x02\x02\x03\x12\x04\
+    \xa0\x02$%\n0\n\x02\x04\t\x12\x06\xa4\x02\0\xb2\x02\x01\x1a\"\x20Describ\
+    es\x20a\x20method\x20of\x20a\x20service.\n\n\x0b\n\x03\x04\t\x01\x12\x04\
+    \xa4\x02\x08\x1d\n\x0c\n\x04\x04\t\x02\0\x12\x04\xa5\x02\x02\x1b\n\r\n\
+    \x05\x04\t\x02\0\x04\x12\x04\xa5\x02\x02\n\n\r\n\x05\x04\t\x02\0\x05\x12\
+    \x04\xa5\x02\x0b\x11\n\r\n\x05\x04\t\x02\0\x01\x12\x04\xa5\x02\x12\x16\n\
+    \r\n\x05\x04\t\x02\0\x03\x12\x04\xa5\x02\x19\x1a\n\x97\x01\n\x04\x04\t\
+    \x02\x01\x12\x04\xa9\x02\x02!\x1a\x88\x01\x20Input\x20and\x20output\x20t\
     ype\x20names.\x20\x20These\x20are\x20resolved\x20in\x20the\x20same\x20wa\
     y\x20as\n\x20FieldDescriptorProto.type_name,\x20but\x20must\x20refer\x20\
-    to\x20a\x20message\x20type.\n\n\r\n\x05\x04\x08\x02\x01\x04\x12\x04\xee\
-    \x01\x02\n\n\r\n\x05\x04\x08\x02\x01\x05\x12\x04\xee\x01\x0b\x11\n\r\n\
-    \x05\x04\x08\x02\x01\x01\x12\x04\xee\x01\x12\x1c\n\r\n\x05\x04\x08\x02\
-    \x01\x03\x12\x04\xee\x01\x1f\x20\n\x0c\n\x04\x04\x08\x02\x02\x12\x04\xef\
-    \x01\x02\"\n\r\n\x05\x04\x08\x02\x02\x04\x12\x04\xef\x01\x02\n\n\r\n\x05\
-    \x04\x08\x02\x02\x05\x12\x04\xef\x01\x0b\x11\n\r\n\x05\x04\x08\x02\x02\
-    \x01\x12\x04\xef\x01\x12\x1d\n\r\n\x05\x04\x08\x02\x02\x03\x12\x04\xef\
-    \x01\x20!\n\x0c\n\x04\x04\x08\x02\x03\x12\x04\xf1\x01\x02%\n\r\n\x05\x04\
-    \x08\x02\x03\x04\x12\x04\xf1\x01\x02\n\n\r\n\x05\x04\x08\x02\x03\x06\x12\
-    \x04\xf1\x01\x0b\x18\n\r\n\x05\x04\x08\x02\x03\x01\x12\x04\xf1\x01\x19\
-    \x20\n\r\n\x05\x04\x08\x02\x03\x03\x12\x04\xf1\x01#$\nE\n\x04\x04\x08\
-    \x02\x04\x12\x04\xf4\x01\x025\x1a7\x20Identifies\x20if\x20client\x20stre\
-    ams\x20multiple\x20client\x20messages\n\n\r\n\x05\x04\x08\x02\x04\x04\
-    \x12\x04\xf4\x01\x02\n\n\r\n\x05\x04\x08\x02\x04\x05\x12\x04\xf4\x01\x0b\
-    \x0f\n\r\n\x05\x04\x08\x02\x04\x01\x12\x04\xf4\x01\x10\x20\n\r\n\x05\x04\
-    \x08\x02\x04\x03\x12\x04\xf4\x01#$\n\r\n\x05\x04\x08\x02\x04\x08\x12\x04\
-    \xf4\x01%4\n\r\n\x05\x04\x08\x02\x04\x07\x12\x04\xf4\x01.3\nE\n\x04\x04\
-    \x08\x02\x05\x12\x04\xf6\x01\x025\x1a7\x20Identifies\x20if\x20server\x20\
-    streams\x20multiple\x20server\x20messages\n\n\r\n\x05\x04\x08\x02\x05\
-    \x04\x12\x04\xf6\x01\x02\n\n\r\n\x05\x04\x08\x02\x05\x05\x12\x04\xf6\x01\
-    \x0b\x0f\n\r\n\x05\x04\x08\x02\x05\x01\x12\x04\xf6\x01\x10\x20\n\r\n\x05\
-    \x04\x08\x02\x05\x03\x12\x04\xf6\x01#$\n\r\n\x05\x04\x08\x02\x05\x08\x12\
-    \x04\xf6\x01%4\n\r\n\x05\x04\x08\x02\x05\x07\x12\x04\xf6\x01.3\n\xaf\x0e\
-    \n\x02\x04\t\x12\x06\x9b\x02\0\xf8\x02\x012N\x20========================\
-    ===========================================\n\x20Options\n2\xd0\r\x20Eac\
-    h\x20of\x20the\x20definitions\x20above\x20may\x20have\x20\"options\"\x20\
-    attached.\x20\x20These\x20are\n\x20just\x20annotations\x20which\x20may\
-    \x20cause\x20code\x20to\x20be\x20generated\x20slightly\x20differently\n\
-    \x20or\x20may\x20contain\x20hints\x20for\x20code\x20that\x20manipulates\
-    \x20protocol\x20messages.\n\n\x20Clients\x20may\x20define\x20custom\x20o\
-    ptions\x20as\x20extensions\x20of\x20the\x20*Options\x20messages.\n\x20Th\
-    ese\x20extensions\x20may\x20not\x20yet\x20be\x20known\x20at\x20parsing\
-    \x20time,\x20so\x20the\x20parser\x20cannot\n\x20store\x20the\x20values\
-    \x20in\x20them.\x20\x20Instead\x20it\x20stores\x20them\x20in\x20a\x20fie\
-    ld\x20in\x20the\x20*Options\n\x20message\x20called\x20uninterpreted_opti\
-    on.\x20This\x20field\x20must\x20have\x20the\x20same\x20name\n\x20across\
-    \x20all\x20*Options\x20messages.\x20We\x20then\x20use\x20this\x20field\
-    \x20to\x20populate\x20the\n\x20extensions\x20when\x20we\x20build\x20a\
-    \x20descriptor,\x20at\x20which\x20point\x20all\x20protos\x20have\x20been\
-    \n\x20parsed\x20and\x20so\x20all\x20extensions\x20are\x20known.\n\n\x20E\
-    xtension\x20numbers\x20for\x20custom\x20options\x20may\x20be\x20chosen\
-    \x20as\x20follows:\n\x20*\x20For\x20options\x20which\x20will\x20only\x20\
-    be\x20used\x20within\x20a\x20single\x20application\x20or\n\x20\x20\x20or\
-    ganization,\x20or\x20for\x20experimental\x20options,\x20use\x20field\x20\
-    numbers\x2050000\n\x20\x20\x20through\x2099999.\x20\x20It\x20is\x20up\
-    \x20to\x20you\x20to\x20ensure\x20that\x20you\x20do\x20not\x20use\x20the\
-    \n\x20\x20\x20same\x20number\x20for\x20multiple\x20options.\n\x20*\x20Fo\
-    r\x20options\x20which\x20will\x20be\x20published\x20and\x20used\x20publi\
-    cly\x20by\x20multiple\n\x20\x20\x20independent\x20entities,\x20e-mail\
-    \x20protobuf-global-extension-registry@google.com\n\x20\x20\x20to\x20res\
-    erve\x20extension\x20numbers.\x20Simply\x20provide\x20your\x20project\
-    \x20name\x20(e.g.\n\x20\x20\x20Objective-C\x20plugin)\x20and\x20your\x20\
-    project\x20website\x20(if\x20available)\x20--\x20there's\x20no\n\x20\x20\
-    \x20need\x20to\x20explain\x20how\x20you\x20intend\x20to\x20use\x20them.\
-    \x20Usually\x20you\x20only\x20need\x20one\n\x20\x20\x20extension\x20numb\
-    er.\x20You\x20can\x20declare\x20multiple\x20options\x20with\x20only\x20o\
-    ne\x20extension\n\x20\x20\x20number\x20by\x20putting\x20them\x20in\x20a\
-    \x20sub-message.\x20See\x20the\x20Custom\x20Options\x20section\x20of\n\
-    \x20\x20\x20the\x20docs\x20for\x20examples:\n\x20\x20\x20https://develop\
-    ers.google.com/protocol-buffers/docs/proto#options\n\x20\x20\x20If\x20th\
-    is\x20turns\x20out\x20to\x20be\x20popular,\x20a\x20web\x20service\x20wil\
-    l\x20be\x20set\x20up\n\x20\x20\x20to\x20automatically\x20assign\x20optio\
-    n\x20numbers.\n\n\x0b\n\x03\x04\t\x01\x12\x04\x9b\x02\x08\x13\n\xf4\x01\
-    \n\x04\x04\t\x02\0\x12\x04\xa1\x02\x02#\x1a\xe5\x01\x20Sets\x20the\x20Ja\
-    va\x20package\x20where\x20classes\x20generated\x20from\x20this\x20.proto\
-    \x20will\x20be\n\x20placed.\x20\x20By\x20default,\x20the\x20proto\x20pac\
-    kage\x20is\x20used,\x20but\x20this\x20is\x20often\n\x20inappropriate\x20\
-    because\x20proto\x20packages\x20do\x20not\x20normally\x20start\x20with\
-    \x20backwards\n\x20domain\x20names.\n\n\r\n\x05\x04\t\x02\0\x04\x12\x04\
-    \xa1\x02\x02\n\n\r\n\x05\x04\t\x02\0\x05\x12\x04\xa1\x02\x0b\x11\n\r\n\
-    \x05\x04\t\x02\0\x01\x12\x04\xa1\x02\x12\x1e\n\r\n\x05\x04\t\x02\0\x03\
-    \x12\x04\xa1\x02!\"\n\xbf\x02\n\x04\x04\t\x02\x01\x12\x04\xa9\x02\x02+\
-    \x1a\xb0\x02\x20If\x20set,\x20all\x20the\x20classes\x20from\x20the\x20.p\
-    roto\x20file\x20are\x20wrapped\x20in\x20a\x20single\n\x20outer\x20class\
-    \x20with\x20the\x20given\x20name.\x20\x20This\x20applies\x20to\x20both\
-    \x20Proto1\n\x20(equivalent\x20to\x20the\x20old\x20\"--one_java_file\"\
-    \x20option)\x20and\x20Proto2\x20(where\n\x20a\x20.proto\x20always\x20tra\
-    nslates\x20to\x20a\x20single\x20class,\x20but\x20you\x20may\x20want\x20t\
-    o\n\x20explicitly\x20choose\x20the\x20class\x20name).\n\n\r\n\x05\x04\t\
-    \x02\x01\x04\x12\x04\xa9\x02\x02\n\n\r\n\x05\x04\t\x02\x01\x05\x12\x04\
-    \xa9\x02\x0b\x11\n\r\n\x05\x04\t\x02\x01\x01\x12\x04\xa9\x02\x12&\n\r\n\
-    \x05\x04\t\x02\x01\x03\x12\x04\xa9\x02)*\n\xa3\x03\n\x04\x04\t\x02\x02\
-    \x12\x04\xb1\x02\x029\x1a\x94\x03\x20If\x20set\x20true,\x20then\x20the\
-    \x20Java\x20code\x20generator\x20will\x20generate\x20a\x20separate\x20.j\
-    ava\n\x20file\x20for\x20each\x20top-level\x20message,\x20enum,\x20and\
-    \x20service\x20defined\x20in\x20the\x20.proto\n\x20file.\x20\x20Thus,\
-    \x20these\x20types\x20will\x20*not*\x20be\x20nested\x20inside\x20the\x20\
-    outer\x20class\n\x20named\x20by\x20java_outer_classname.\x20\x20However,\
-    \x20the\x20outer\x20class\x20will\x20still\x20be\n\x20generated\x20to\
-    \x20contain\x20the\x20file's\x20getDescriptor()\x20method\x20as\x20well\
-    \x20as\x20any\n\x20top-level\x20extensions\x20defined\x20in\x20the\x20fi\
-    le.\n\n\r\n\x05\x04\t\x02\x02\x04\x12\x04\xb1\x02\x02\n\n\r\n\x05\x04\t\
-    \x02\x02\x05\x12\x04\xb1\x02\x0b\x0f\n\r\n\x05\x04\t\x02\x02\x01\x12\x04\
-    \xb1\x02\x10#\n\r\n\x05\x04\t\x02\x02\x03\x12\x04\xb1\x02&(\n\r\n\x05\
-    \x04\t\x02\x02\x08\x12\x04\xb1\x02)8\n\r\n\x05\x04\t\x02\x02\x07\x12\x04\
-    \xb1\x0227\n)\n\x04\x04\t\x02\x03\x12\x04\xb4\x02\x02E\x1a\x1b\x20This\
-    \x20option\x20does\x20nothing.\n\n\r\n\x05\x04\t\x02\x03\x04\x12\x04\xb4\
-    \x02\x02\n\n\r\n\x05\x04\t\x02\x03\x05\x12\x04\xb4\x02\x0b\x0f\n\r\n\x05\
-    \x04\t\x02\x03\x01\x12\x04\xb4\x02\x10-\n\r\n\x05\x04\t\x02\x03\x03\x12\
-    \x04\xb4\x0202\n\r\n\x05\x04\t\x02\x03\x08\x12\x04\xb4\x023D\n\x0e\n\x06\
-    \x04\t\x02\x03\x08\x03\x12\x04\xb4\x024C\n\xe6\x02\n\x04\x04\t\x02\x04\
-    \x12\x04\xbc\x02\x02<\x1a\xd7\x02\x20If\x20set\x20true,\x20then\x20the\
-    \x20Java2\x20code\x20generator\x20will\x20generate\x20code\x20that\n\x20\
-    throws\x20an\x20exception\x20whenever\x20an\x20attempt\x20is\x20made\x20\
-    to\x20assign\x20a\x20non-UTF-8\n\x20byte\x20sequence\x20to\x20a\x20strin\
-    g\x20field.\n\x20Message\x20reflection\x20will\x20do\x20the\x20same.\n\
-    \x20However,\x20an\x20extension\x20field\x20still\x20accepts\x20non-UTF-\
-    8\x20byte\x20sequences.\n\x20This\x20option\x20has\x20no\x20effect\x20on\
-    \x20when\x20used\x20with\x20the\x20lite\x20runtime.\n\n\r\n\x05\x04\t\
-    \x02\x04\x04\x12\x04\xbc\x02\x02\n\n\r\n\x05\x04\t\x02\x04\x05\x12\x04\
-    \xbc\x02\x0b\x0f\n\r\n\x05\x04\t\x02\x04\x01\x12\x04\xbc\x02\x10&\n\r\n\
-    \x05\x04\t\x02\x04\x03\x12\x04\xbc\x02)+\n\r\n\x05\x04\t\x02\x04\x08\x12\
-    \x04\xbc\x02,;\n\r\n\x05\x04\t\x02\x04\x07\x12\x04\xbc\x025:\nL\n\x04\
-    \x04\t\x04\0\x12\x06\xc0\x02\x02\xc5\x02\x03\x1a<\x20Generated\x20classe\
-    s\x20can\x20be\x20optimized\x20for\x20speed\x20or\x20code\x20size.\n\n\r\
-    \n\x05\x04\t\x04\0\x01\x12\x04\xc0\x02\x07\x13\nD\n\x06\x04\t\x04\0\x02\
-    \0\x12\x04\xc1\x02\x04\x0e\"4\x20Generate\x20complete\x20code\x20for\x20\
-    parsing,\x20serialization,\n\n\x0f\n\x07\x04\t\x04\0\x02\0\x01\x12\x04\
-    \xc1\x02\x04\t\n\x0f\n\x07\x04\t\x04\0\x02\0\x02\x12\x04\xc1\x02\x0c\r\n\
-    G\n\x06\x04\t\x04\0\x02\x01\x12\x04\xc3\x02\x04\x12\x1a\x06\x20etc.\n\"/\
-    \x20Use\x20ReflectionOps\x20to\x20implement\x20these\x20methods.\n\n\x0f\
-    \n\x07\x04\t\x04\0\x02\x01\x01\x12\x04\xc3\x02\x04\r\n\x0f\n\x07\x04\t\
-    \x04\0\x02\x01\x02\x12\x04\xc3\x02\x10\x11\nG\n\x06\x04\t\x04\0\x02\x02\
-    \x12\x04\xc4\x02\x04\x15\"7\x20Generate\x20code\x20using\x20MessageLite\
-    \x20and\x20the\x20lite\x20runtime.\n\n\x0f\n\x07\x04\t\x04\0\x02\x02\x01\
-    \x12\x04\xc4\x02\x04\x10\n\x0f\n\x07\x04\t\x04\0\x02\x02\x02\x12\x04\xc4\
-    \x02\x13\x14\n\x0c\n\x04\x04\t\x02\x05\x12\x04\xc6\x02\x029\n\r\n\x05\
-    \x04\t\x02\x05\x04\x12\x04\xc6\x02\x02\n\n\r\n\x05\x04\t\x02\x05\x06\x12\
-    \x04\xc6\x02\x0b\x17\n\r\n\x05\x04\t\x02\x05\x01\x12\x04\xc6\x02\x18$\n\
-    \r\n\x05\x04\t\x02\x05\x03\x12\x04\xc6\x02'(\n\r\n\x05\x04\t\x02\x05\x08\
-    \x12\x04\xc6\x02)8\n\r\n\x05\x04\t\x02\x05\x07\x12\x04\xc6\x0227\n\xe2\
-    \x02\n\x04\x04\t\x02\x06\x12\x04\xcd\x02\x02\"\x1a\xd3\x02\x20Sets\x20th\
-    e\x20Go\x20package\x20where\x20structs\x20generated\x20from\x20this\x20.\
-    proto\x20will\x20be\n\x20placed.\x20If\x20omitted,\x20the\x20Go\x20packa\
-    ge\x20will\x20be\x20derived\x20from\x20the\x20following:\n\x20\x20\x20-\
-    \x20The\x20basename\x20of\x20the\x20package\x20import\x20path,\x20if\x20\
-    provided.\n\x20\x20\x20-\x20Otherwise,\x20the\x20package\x20statement\
-    \x20in\x20the\x20.proto\x20file,\x20if\x20present.\n\x20\x20\x20-\x20Oth\
-    erwise,\x20the\x20basename\x20of\x20the\x20.proto\x20file,\x20without\
-    \x20extension.\n\n\r\n\x05\x04\t\x02\x06\x04\x12\x04\xcd\x02\x02\n\n\r\n\
-    \x05\x04\t\x02\x06\x05\x12\x04\xcd\x02\x0b\x11\n\r\n\x05\x04\t\x02\x06\
-    \x01\x12\x04\xcd\x02\x12\x1c\n\r\n\x05\x04\t\x02\x06\x03\x12\x04\xcd\x02\
-    \x1f!\n\xd4\x04\n\x04\x04\t\x02\x07\x12\x04\xdb\x02\x029\x1a\xc5\x04\x20\
-    Should\x20generic\x20services\x20be\x20generated\x20in\x20each\x20langua\
-    ge?\x20\x20\"Generic\"\x20services\n\x20are\x20not\x20specific\x20to\x20\
-    any\x20particular\x20RPC\x20system.\x20\x20They\x20are\x20generated\x20b\
-    y\x20the\n\x20main\x20code\x20generators\x20in\x20each\x20language\x20(w\
-    ithout\x20additional\x20plugins).\n\x20Generic\x20services\x20were\x20th\
-    e\x20only\x20kind\x20of\x20service\x20generation\x20supported\x20by\n\
-    \x20early\x20versions\x20of\x20google.protobuf.\n\n\x20Generic\x20servic\
-    es\x20are\x20now\x20considered\x20deprecated\x20in\x20favor\x20of\x20usi\
-    ng\x20plugins\n\x20that\x20generate\x20code\x20specific\x20to\x20your\
-    \x20particular\x20RPC\x20system.\x20\x20Therefore,\n\x20these\x20default\
-    \x20to\x20false.\x20\x20Old\x20code\x20which\x20depends\x20on\x20generic\
-    \x20services\x20should\n\x20explicitly\x20set\x20them\x20to\x20true.\n\n\
-    \r\n\x05\x04\t\x02\x07\x04\x12\x04\xdb\x02\x02\n\n\r\n\x05\x04\t\x02\x07\
-    \x05\x12\x04\xdb\x02\x0b\x0f\n\r\n\x05\x04\t\x02\x07\x01\x12\x04\xdb\x02\
-    \x10#\n\r\n\x05\x04\t\x02\x07\x03\x12\x04\xdb\x02&(\n\r\n\x05\x04\t\x02\
-    \x07\x08\x12\x04\xdb\x02)8\n\r\n\x05\x04\t\x02\x07\x07\x12\x04\xdb\x0227\
-    \n\x0c\n\x04\x04\t\x02\x08\x12\x04\xdc\x02\x02;\n\r\n\x05\x04\t\x02\x08\
-    \x04\x12\x04\xdc\x02\x02\n\n\r\n\x05\x04\t\x02\x08\x05\x12\x04\xdc\x02\
-    \x0b\x0f\n\r\n\x05\x04\t\x02\x08\x01\x12\x04\xdc\x02\x10%\n\r\n\x05\x04\
-    \t\x02\x08\x03\x12\x04\xdc\x02(*\n\r\n\x05\x04\t\x02\x08\x08\x12\x04\xdc\
-    \x02+:\n\r\n\x05\x04\t\x02\x08\x07\x12\x04\xdc\x0249\n\x0c\n\x04\x04\t\
-    \x02\t\x12\x04\xdd\x02\x029\n\r\n\x05\x04\t\x02\t\x04\x12\x04\xdd\x02\
-    \x02\n\n\r\n\x05\x04\t\x02\t\x05\x12\x04\xdd\x02\x0b\x0f\n\r\n\x05\x04\t\
-    \x02\t\x01\x12\x04\xdd\x02\x10#\n\r\n\x05\x04\t\x02\t\x03\x12\x04\xdd\
-    \x02&(\n\r\n\x05\x04\t\x02\t\x08\x12\x04\xdd\x02)8\n\r\n\x05\x04\t\x02\t\
-    \x07\x12\x04\xdd\x0227\n\xf3\x01\n\x04\x04\t\x02\n\x12\x04\xe3\x02\x020\
-    \x1a\xe4\x01\x20Is\x20this\x20file\x20deprecated?\n\x20Depending\x20on\
-    \x20the\x20target\x20platform,\x20this\x20can\x20emit\x20Deprecated\x20a\
-    nnotations\n\x20for\x20everything\x20in\x20the\x20file,\x20or\x20it\x20w\
-    ill\x20be\x20completely\x20ignored;\x20in\x20the\x20very\n\x20least,\x20\
-    this\x20is\x20a\x20formalization\x20for\x20deprecating\x20files.\n\n\r\n\
-    \x05\x04\t\x02\n\x04\x12\x04\xe3\x02\x02\n\n\r\n\x05\x04\t\x02\n\x05\x12\
-    \x04\xe3\x02\x0b\x0f\n\r\n\x05\x04\t\x02\n\x01\x12\x04\xe3\x02\x10\x1a\n\
-    \r\n\x05\x04\t\x02\n\x03\x12\x04\xe3\x02\x1d\x1f\n\r\n\x05\x04\t\x02\n\
-    \x08\x12\x04\xe3\x02\x20/\n\r\n\x05\x04\t\x02\n\x07\x12\x04\xe3\x02).\n\
-    \x7f\n\x04\x04\t\x02\x0b\x12\x04\xe7\x02\x026\x1aq\x20Enables\x20the\x20\
-    use\x20of\x20arenas\x20for\x20the\x20proto\x20messages\x20in\x20this\x20\
-    file.\x20This\x20applies\n\x20only\x20to\x20generated\x20classes\x20for\
-    \x20C++.\n\n\r\n\x05\x04\t\x02\x0b\x04\x12\x04\xe7\x02\x02\n\n\r\n\x05\
-    \x04\t\x02\x0b\x05\x12\x04\xe7\x02\x0b\x0f\n\r\n\x05\x04\t\x02\x0b\x01\
-    \x12\x04\xe7\x02\x10\x20\n\r\n\x05\x04\t\x02\x0b\x03\x12\x04\xe7\x02#%\n\
-    \r\n\x05\x04\t\x02\x0b\x08\x12\x04\xe7\x02&5\n\r\n\x05\x04\t\x02\x0b\x07\
-    \x12\x04\xe7\x02/4\n\x92\x01\n\x04\x04\t\x02\x0c\x12\x04\xec\x02\x02)\
+    to\x20a\x20message\x20type.\n\n\r\n\x05\x04\t\x02\x01\x04\x12\x04\xa9\
+    \x02\x02\n\n\r\n\x05\x04\t\x02\x01\x05\x12\x04\xa9\x02\x0b\x11\n\r\n\x05\
+    \x04\t\x02\x01\x01\x12\x04\xa9\x02\x12\x1c\n\r\n\x05\x04\t\x02\x01\x03\
+    \x12\x04\xa9\x02\x1f\x20\n\x0c\n\x04\x04\t\x02\x02\x12\x04\xaa\x02\x02\"\
+    \n\r\n\x05\x04\t\x02\x02\x04\x12\x04\xaa\x02\x02\n\n\r\n\x05\x04\t\x02\
+    \x02\x05\x12\x04\xaa\x02\x0b\x11\n\r\n\x05\x04\t\x02\x02\x01\x12\x04\xaa\
+    \x02\x12\x1d\n\r\n\x05\x04\t\x02\x02\x03\x12\x04\xaa\x02\x20!\n\x0c\n\
+    \x04\x04\t\x02\x03\x12\x04\xac\x02\x02%\n\r\n\x05\x04\t\x02\x03\x04\x12\
+    \x04\xac\x02\x02\n\n\r\n\x05\x04\t\x02\x03\x06\x12\x04\xac\x02\x0b\x18\n\
+    \r\n\x05\x04\t\x02\x03\x01\x12\x04\xac\x02\x19\x20\n\r\n\x05\x04\t\x02\
+    \x03\x03\x12\x04\xac\x02#$\nE\n\x04\x04\t\x02\x04\x12\x04\xaf\x02\x027\
+    \x1a7\x20Identifies\x20if\x20client\x20streams\x20multiple\x20client\x20\
+    messages\n\n\r\n\x05\x04\t\x02\x04\x04\x12\x04\xaf\x02\x02\n\n\r\n\x05\
+    \x04\t\x02\x04\x05\x12\x04\xaf\x02\x0b\x0f\n\r\n\x05\x04\t\x02\x04\x01\
+    \x12\x04\xaf\x02\x10\x20\n\r\n\x05\x04\t\x02\x04\x03\x12\x04\xaf\x02#$\n\
+    \r\n\x05\x04\t\x02\x04\x08\x12\x04\xaf\x02%6\n\r\n\x05\x04\t\x02\x04\x07\
+    \x12\x04\xaf\x0205\nE\n\x04\x04\t\x02\x05\x12\x04\xb1\x02\x027\x1a7\x20I\
+    dentifies\x20if\x20server\x20streams\x20multiple\x20server\x20messages\n\
+    \n\r\n\x05\x04\t\x02\x05\x04\x12\x04\xb1\x02\x02\n\n\r\n\x05\x04\t\x02\
+    \x05\x05\x12\x04\xb1\x02\x0b\x0f\n\r\n\x05\x04\t\x02\x05\x01\x12\x04\xb1\
+    \x02\x10\x20\n\r\n\x05\x04\t\x02\x05\x03\x12\x04\xb1\x02#$\n\r\n\x05\x04\
+    \t\x02\x05\x08\x12\x04\xb1\x02%6\n\r\n\x05\x04\t\x02\x05\x07\x12\x04\xb1\
+    \x0205\n\xaf\x0e\n\x02\x04\n\x12\x06\xd5\x02\0\xd0\x03\x012N\x20========\
+    ===========================================================\n\x20Options\
+    \n2\xd0\r\x20Each\x20of\x20the\x20definitions\x20above\x20may\x20have\
+    \x20\"options\"\x20attached.\x20\x20These\x20are\n\x20just\x20annotation\
+    s\x20which\x20may\x20cause\x20code\x20to\x20be\x20generated\x20slightly\
+    \x20differently\n\x20or\x20may\x20contain\x20hints\x20for\x20code\x20tha\
+    t\x20manipulates\x20protocol\x20messages.\n\n\x20Clients\x20may\x20defin\
+    e\x20custom\x20options\x20as\x20extensions\x20of\x20the\x20*Options\x20m\
+    essages.\n\x20These\x20extensions\x20may\x20not\x20yet\x20be\x20known\
+    \x20at\x20parsing\x20time,\x20so\x20the\x20parser\x20cannot\n\x20store\
+    \x20the\x20values\x20in\x20them.\x20\x20Instead\x20it\x20stores\x20them\
+    \x20in\x20a\x20field\x20in\x20the\x20*Options\n\x20message\x20called\x20\
+    uninterpreted_option.\x20This\x20field\x20must\x20have\x20the\x20same\
+    \x20name\n\x20across\x20all\x20*Options\x20messages.\x20We\x20then\x20us\
+    e\x20this\x20field\x20to\x20populate\x20the\n\x20extensions\x20when\x20w\
+    e\x20build\x20a\x20descriptor,\x20at\x20which\x20point\x20all\x20protos\
+    \x20have\x20been\n\x20parsed\x20and\x20so\x20all\x20extensions\x20are\
+    \x20known.\n\n\x20Extension\x20numbers\x20for\x20custom\x20options\x20ma\
+    y\x20be\x20chosen\x20as\x20follows:\n\x20*\x20For\x20options\x20which\
+    \x20will\x20only\x20be\x20used\x20within\x20a\x20single\x20application\
+    \x20or\n\x20\x20\x20organization,\x20or\x20for\x20experimental\x20option\
+    s,\x20use\x20field\x20numbers\x2050000\n\x20\x20\x20through\x2099999.\
+    \x20\x20It\x20is\x20up\x20to\x20you\x20to\x20ensure\x20that\x20you\x20do\
+    \x20not\x20use\x20the\n\x20\x20\x20same\x20number\x20for\x20multiple\x20\
+    options.\n\x20*\x20For\x20options\x20which\x20will\x20be\x20published\
+    \x20and\x20used\x20publicly\x20by\x20multiple\n\x20\x20\x20independent\
+    \x20entities,\x20e-mail\x20protobuf-global-extension-registry@google.com\
+    \n\x20\x20\x20to\x20reserve\x20extension\x20numbers.\x20Simply\x20provid\
+    e\x20your\x20project\x20name\x20(e.g.\n\x20\x20\x20Objective-C\x20plugin\
+    )\x20and\x20your\x20project\x20website\x20(if\x20available)\x20--\x20the\
+    re's\x20no\n\x20\x20\x20need\x20to\x20explain\x20how\x20you\x20intend\
+    \x20to\x20use\x20them.\x20Usually\x20you\x20only\x20need\x20one\n\x20\
+    \x20\x20extension\x20number.\x20You\x20can\x20declare\x20multiple\x20opt\
+    ions\x20with\x20only\x20one\x20extension\n\x20\x20\x20number\x20by\x20pu\
+    tting\x20them\x20in\x20a\x20sub-message.\x20See\x20the\x20Custom\x20Opti\
+    ons\x20section\x20of\n\x20\x20\x20the\x20docs\x20for\x20examples:\n\x20\
+    \x20\x20https://developers.google.com/protocol-buffers/docs/proto#option\
+    s\n\x20\x20\x20If\x20this\x20turns\x20out\x20to\x20be\x20popular,\x20a\
+    \x20web\x20service\x20will\x20be\x20set\x20up\n\x20\x20\x20to\x20automat\
+    ically\x20assign\x20option\x20numbers.\n\n\x0b\n\x03\x04\n\x01\x12\x04\
+    \xd5\x02\x08\x13\n\xf4\x01\n\x04\x04\n\x02\0\x12\x04\xdb\x02\x02#\x1a\
+    \xe5\x01\x20Sets\x20the\x20Java\x20package\x20where\x20classes\x20genera\
+    ted\x20from\x20this\x20.proto\x20will\x20be\n\x20placed.\x20\x20By\x20de\
+    fault,\x20the\x20proto\x20package\x20is\x20used,\x20but\x20this\x20is\
+    \x20often\n\x20inappropriate\x20because\x20proto\x20packages\x20do\x20no\
+    t\x20normally\x20start\x20with\x20backwards\n\x20domain\x20names.\n\n\r\
+    \n\x05\x04\n\x02\0\x04\x12\x04\xdb\x02\x02\n\n\r\n\x05\x04\n\x02\0\x05\
+    \x12\x04\xdb\x02\x0b\x11\n\r\n\x05\x04\n\x02\0\x01\x12\x04\xdb\x02\x12\
+    \x1e\n\r\n\x05\x04\n\x02\0\x03\x12\x04\xdb\x02!\"\n\xbf\x02\n\x04\x04\n\
+    \x02\x01\x12\x04\xe3\x02\x02+\x1a\xb0\x02\x20If\x20set,\x20all\x20the\
+    \x20classes\x20from\x20the\x20.proto\x20file\x20are\x20wrapped\x20in\x20\
+    a\x20single\n\x20outer\x20class\x20with\x20the\x20given\x20name.\x20\x20\
+    This\x20applies\x20to\x20both\x20Proto1\n\x20(equivalent\x20to\x20the\
+    \x20old\x20\"--one_java_file\"\x20option)\x20and\x20Proto2\x20(where\n\
+    \x20a\x20.proto\x20always\x20translates\x20to\x20a\x20single\x20class,\
+    \x20but\x20you\x20may\x20want\x20to\n\x20explicitly\x20choose\x20the\x20\
+    class\x20name).\n\n\r\n\x05\x04\n\x02\x01\x04\x12\x04\xe3\x02\x02\n\n\r\
+    \n\x05\x04\n\x02\x01\x05\x12\x04\xe3\x02\x0b\x11\n\r\n\x05\x04\n\x02\x01\
+    \x01\x12\x04\xe3\x02\x12&\n\r\n\x05\x04\n\x02\x01\x03\x12\x04\xe3\x02)*\
+    \n\xa3\x03\n\x04\x04\n\x02\x02\x12\x04\xeb\x02\x02;\x1a\x94\x03\x20If\
+    \x20set\x20true,\x20then\x20the\x20Java\x20code\x20generator\x20will\x20\
+    generate\x20a\x20separate\x20.java\n\x20file\x20for\x20each\x20top-level\
+    \x20message,\x20enum,\x20and\x20service\x20defined\x20in\x20the\x20.prot\
+    o\n\x20file.\x20\x20Thus,\x20these\x20types\x20will\x20*not*\x20be\x20ne\
+    sted\x20inside\x20the\x20outer\x20class\n\x20named\x20by\x20java_outer_c\
+    lassname.\x20\x20However,\x20the\x20outer\x20class\x20will\x20still\x20b\
+    e\n\x20generated\x20to\x20contain\x20the\x20file's\x20getDescriptor()\
+    \x20method\x20as\x20well\x20as\x20any\n\x20top-level\x20extensions\x20de\
+    fined\x20in\x20the\x20file.\n\n\r\n\x05\x04\n\x02\x02\x04\x12\x04\xeb\
+    \x02\x02\n\n\r\n\x05\x04\n\x02\x02\x05\x12\x04\xeb\x02\x0b\x0f\n\r\n\x05\
+    \x04\n\x02\x02\x01\x12\x04\xeb\x02\x10#\n\r\n\x05\x04\n\x02\x02\x03\x12\
+    \x04\xeb\x02&(\n\r\n\x05\x04\n\x02\x02\x08\x12\x04\xeb\x02):\n\r\n\x05\
+    \x04\n\x02\x02\x07\x12\x04\xeb\x0249\n)\n\x04\x04\n\x02\x03\x12\x04\xee\
+    \x02\x02E\x1a\x1b\x20This\x20option\x20does\x20nothing.\n\n\r\n\x05\x04\
+    \n\x02\x03\x04\x12\x04\xee\x02\x02\n\n\r\n\x05\x04\n\x02\x03\x05\x12\x04\
+    \xee\x02\x0b\x0f\n\r\n\x05\x04\n\x02\x03\x01\x12\x04\xee\x02\x10-\n\r\n\
+    \x05\x04\n\x02\x03\x03\x12\x04\xee\x0202\n\r\n\x05\x04\n\x02\x03\x08\x12\
+    \x04\xee\x023D\n\x0e\n\x06\x04\n\x02\x03\x08\x03\x12\x04\xee\x024C\n\xe6\
+    \x02\n\x04\x04\n\x02\x04\x12\x04\xf6\x02\x02>\x1a\xd7\x02\x20If\x20set\
+    \x20true,\x20then\x20the\x20Java2\x20code\x20generator\x20will\x20genera\
+    te\x20code\x20that\n\x20throws\x20an\x20exception\x20whenever\x20an\x20a\
+    ttempt\x20is\x20made\x20to\x20assign\x20a\x20non-UTF-8\n\x20byte\x20sequ\
+    ence\x20to\x20a\x20string\x20field.\n\x20Message\x20reflection\x20will\
+    \x20do\x20the\x20same.\n\x20However,\x20an\x20extension\x20field\x20stil\
+    l\x20accepts\x20non-UTF-8\x20byte\x20sequences.\n\x20This\x20option\x20h\
+    as\x20no\x20effect\x20on\x20when\x20used\x20with\x20the\x20lite\x20runti\
+    me.\n\n\r\n\x05\x04\n\x02\x04\x04\x12\x04\xf6\x02\x02\n\n\r\n\x05\x04\n\
+    \x02\x04\x05\x12\x04\xf6\x02\x0b\x0f\n\r\n\x05\x04\n\x02\x04\x01\x12\x04\
+    \xf6\x02\x10&\n\r\n\x05\x04\n\x02\x04\x03\x12\x04\xf6\x02)+\n\r\n\x05\
+    \x04\n\x02\x04\x08\x12\x04\xf6\x02,=\n\r\n\x05\x04\n\x02\x04\x07\x12\x04\
+    \xf6\x027<\nL\n\x04\x04\n\x04\0\x12\x06\xfa\x02\x02\xff\x02\x03\x1a<\x20\
+    Generated\x20classes\x20can\x20be\x20optimized\x20for\x20speed\x20or\x20\
+    code\x20size.\n\n\r\n\x05\x04\n\x04\0\x01\x12\x04\xfa\x02\x07\x13\nD\n\
+    \x06\x04\n\x04\0\x02\0\x12\x04\xfb\x02\x04\x0e\"4\x20Generate\x20complet\
+    e\x20code\x20for\x20parsing,\x20serialization,\n\n\x0f\n\x07\x04\n\x04\0\
+    \x02\0\x01\x12\x04\xfb\x02\x04\t\n\x0f\n\x07\x04\n\x04\0\x02\0\x02\x12\
+    \x04\xfb\x02\x0c\r\nG\n\x06\x04\n\x04\0\x02\x01\x12\x04\xfd\x02\x04\x12\
+    \x1a\x06\x20etc.\n\"/\x20Use\x20ReflectionOps\x20to\x20implement\x20thes\
+    e\x20methods.\n\n\x0f\n\x07\x04\n\x04\0\x02\x01\x01\x12\x04\xfd\x02\x04\
+    \r\n\x0f\n\x07\x04\n\x04\0\x02\x01\x02\x12\x04\xfd\x02\x10\x11\nG\n\x06\
+    \x04\n\x04\0\x02\x02\x12\x04\xfe\x02\x04\x15\"7\x20Generate\x20code\x20u\
+    sing\x20MessageLite\x20and\x20the\x20lite\x20runtime.\n\n\x0f\n\x07\x04\
+    \n\x04\0\x02\x02\x01\x12\x04\xfe\x02\x04\x10\n\x0f\n\x07\x04\n\x04\0\x02\
+    \x02\x02\x12\x04\xfe\x02\x13\x14\n\x0c\n\x04\x04\n\x02\x05\x12\x04\x80\
+    \x03\x02;\n\r\n\x05\x04\n\x02\x05\x04\x12\x04\x80\x03\x02\n\n\r\n\x05\
+    \x04\n\x02\x05\x06\x12\x04\x80\x03\x0b\x17\n\r\n\x05\x04\n\x02\x05\x01\
+    \x12\x04\x80\x03\x18$\n\r\n\x05\x04\n\x02\x05\x03\x12\x04\x80\x03'(\n\r\
+    \n\x05\x04\n\x02\x05\x08\x12\x04\x80\x03):\n\r\n\x05\x04\n\x02\x05\x07\
+    \x12\x04\x80\x0349\n\xe2\x02\n\x04\x04\n\x02\x06\x12\x04\x87\x03\x02\"\
+    \x1a\xd3\x02\x20Sets\x20the\x20Go\x20package\x20where\x20structs\x20gene\
+    rated\x20from\x20this\x20.proto\x20will\x20be\n\x20placed.\x20If\x20omit\
+    ted,\x20the\x20Go\x20package\x20will\x20be\x20derived\x20from\x20the\x20\
+    following:\n\x20\x20\x20-\x20The\x20basename\x20of\x20the\x20package\x20\
+    import\x20path,\x20if\x20provided.\n\x20\x20\x20-\x20Otherwise,\x20the\
+    \x20package\x20statement\x20in\x20the\x20.proto\x20file,\x20if\x20presen\
+    t.\n\x20\x20\x20-\x20Otherwise,\x20the\x20basename\x20of\x20the\x20.prot\
+    o\x20file,\x20without\x20extension.\n\n\r\n\x05\x04\n\x02\x06\x04\x12\
+    \x04\x87\x03\x02\n\n\r\n\x05\x04\n\x02\x06\x05\x12\x04\x87\x03\x0b\x11\n\
+    \r\n\x05\x04\n\x02\x06\x01\x12\x04\x87\x03\x12\x1c\n\r\n\x05\x04\n\x02\
+    \x06\x03\x12\x04\x87\x03\x1f!\n\xd4\x04\n\x04\x04\n\x02\x07\x12\x04\x96\
+    \x03\x02;\x1a\xc5\x04\x20Should\x20generic\x20services\x20be\x20generate\
+    d\x20in\x20each\x20language?\x20\x20\"Generic\"\x20services\n\x20are\x20\
+    not\x20specific\x20to\x20any\x20particular\x20RPC\x20system.\x20\x20They\
+    \x20are\x20generated\x20by\x20the\n\x20main\x20code\x20generators\x20in\
+    \x20each\x20language\x20(without\x20additional\x20plugins).\n\x20Generic\
+    \x20services\x20were\x20the\x20only\x20kind\x20of\x20service\x20generati\
+    on\x20supported\x20by\n\x20early\x20versions\x20of\x20google.protobuf.\n\
+    \n\x20Generic\x20services\x20are\x20now\x20considered\x20deprecated\x20i\
+    n\x20favor\x20of\x20using\x20plugins\n\x20that\x20generate\x20code\x20sp\
+    ecific\x20to\x20your\x20particular\x20RPC\x20system.\x20\x20Therefore,\n\
+    \x20these\x20default\x20to\x20false.\x20\x20Old\x20code\x20which\x20depe\
+    nds\x20on\x20generic\x20services\x20should\n\x20explicitly\x20set\x20the\
+    m\x20to\x20true.\n\n\r\n\x05\x04\n\x02\x07\x04\x12\x04\x96\x03\x02\n\n\r\
+    \n\x05\x04\n\x02\x07\x05\x12\x04\x96\x03\x0b\x0f\n\r\n\x05\x04\n\x02\x07\
+    \x01\x12\x04\x96\x03\x10#\n\r\n\x05\x04\n\x02\x07\x03\x12\x04\x96\x03&(\
+    \n\r\n\x05\x04\n\x02\x07\x08\x12\x04\x96\x03):\n\r\n\x05\x04\n\x02\x07\
+    \x07\x12\x04\x96\x0349\n\x0c\n\x04\x04\n\x02\x08\x12\x04\x97\x03\x02=\n\
+    \r\n\x05\x04\n\x02\x08\x04\x12\x04\x97\x03\x02\n\n\r\n\x05\x04\n\x02\x08\
+    \x05\x12\x04\x97\x03\x0b\x0f\n\r\n\x05\x04\n\x02\x08\x01\x12\x04\x97\x03\
+    \x10%\n\r\n\x05\x04\n\x02\x08\x03\x12\x04\x97\x03(*\n\r\n\x05\x04\n\x02\
+    \x08\x08\x12\x04\x97\x03+<\n\r\n\x05\x04\n\x02\x08\x07\x12\x04\x97\x036;\
+    \n\x0c\n\x04\x04\n\x02\t\x12\x04\x98\x03\x02;\n\r\n\x05\x04\n\x02\t\x04\
+    \x12\x04\x98\x03\x02\n\n\r\n\x05\x04\n\x02\t\x05\x12\x04\x98\x03\x0b\x0f\
+    \n\r\n\x05\x04\n\x02\t\x01\x12\x04\x98\x03\x10#\n\r\n\x05\x04\n\x02\t\
+    \x03\x12\x04\x98\x03&(\n\r\n\x05\x04\n\x02\t\x08\x12\x04\x98\x03):\n\r\n\
+    \x05\x04\n\x02\t\x07\x12\x04\x98\x0349\n\x0c\n\x04\x04\n\x02\n\x12\x04\
+    \x99\x03\x02<\n\r\n\x05\x04\n\x02\n\x04\x12\x04\x99\x03\x02\n\n\r\n\x05\
+    \x04\n\x02\n\x05\x12\x04\x99\x03\x0b\x0f\n\r\n\x05\x04\n\x02\n\x01\x12\
+    \x04\x99\x03\x10$\n\r\n\x05\x04\n\x02\n\x03\x12\x04\x99\x03')\n\r\n\x05\
+    \x04\n\x02\n\x08\x12\x04\x99\x03*;\n\r\n\x05\x04\n\x02\n\x07\x12\x04\x99\
+    \x035:\n\xf3\x01\n\x04\x04\n\x02\x0b\x12\x04\x9f\x03\x022\x1a\xe4\x01\
+    \x20Is\x20this\x20file\x20deprecated?\n\x20Depending\x20on\x20the\x20tar\
+    get\x20platform,\x20this\x20can\x20emit\x20Deprecated\x20annotations\n\
+    \x20for\x20everything\x20in\x20the\x20file,\x20or\x20it\x20will\x20be\
+    \x20completely\x20ignored;\x20in\x20the\x20very\n\x20least,\x20this\x20i\
+    s\x20a\x20formalization\x20for\x20deprecating\x20files.\n\n\r\n\x05\x04\
+    \n\x02\x0b\x04\x12\x04\x9f\x03\x02\n\n\r\n\x05\x04\n\x02\x0b\x05\x12\x04\
+    \x9f\x03\x0b\x0f\n\r\n\x05\x04\n\x02\x0b\x01\x12\x04\x9f\x03\x10\x1a\n\r\
+    \n\x05\x04\n\x02\x0b\x03\x12\x04\x9f\x03\x1d\x1f\n\r\n\x05\x04\n\x02\x0b\
+    \x08\x12\x04\x9f\x03\x201\n\r\n\x05\x04\n\x02\x0b\x07\x12\x04\x9f\x03+0\
+    \n\x7f\n\x04\x04\n\x02\x0c\x12\x04\xa3\x03\x027\x1aq\x20Enables\x20the\
+    \x20use\x20of\x20arenas\x20for\x20the\x20proto\x20messages\x20in\x20this\
+    \x20file.\x20This\x20applies\n\x20only\x20to\x20generated\x20classes\x20\
+    for\x20C++.\n\n\r\n\x05\x04\n\x02\x0c\x04\x12\x04\xa3\x03\x02\n\n\r\n\
+    \x05\x04\n\x02\x0c\x05\x12\x04\xa3\x03\x0b\x0f\n\r\n\x05\x04\n\x02\x0c\
+    \x01\x12\x04\xa3\x03\x10\x20\n\r\n\x05\x04\n\x02\x0c\x03\x12\x04\xa3\x03\
+    #%\n\r\n\x05\x04\n\x02\x0c\x08\x12\x04\xa3\x03&6\n\r\n\x05\x04\n\x02\x0c\
+    \x07\x12\x04\xa3\x0315\n\x92\x01\n\x04\x04\n\x02\r\x12\x04\xa8\x03\x02)\
     \x1a\x83\x01\x20Sets\x20the\x20objective\x20c\x20class\x20prefix\x20whic\
     h\x20is\x20prepended\x20to\x20all\x20objective\x20c\n\x20generated\x20cl\
     asses\x20from\x20this\x20.proto.\x20There\x20is\x20no\x20default.\n\n\r\
-    \n\x05\x04\t\x02\x0c\x04\x12\x04\xec\x02\x02\n\n\r\n\x05\x04\t\x02\x0c\
-    \x05\x12\x04\xec\x02\x0b\x11\n\r\n\x05\x04\t\x02\x0c\x01\x12\x04\xec\x02\
-    \x12#\n\r\n\x05\x04\t\x02\x0c\x03\x12\x04\xec\x02&(\nI\n\x04\x04\t\x02\r\
-    \x12\x04\xef\x02\x02(\x1a;\x20Namespace\x20for\x20generated\x20classes;\
-    \x20defaults\x20to\x20the\x20package.\n\n\r\n\x05\x04\t\x02\r\x04\x12\
-    \x04\xef\x02\x02\n\n\r\n\x05\x04\t\x02\r\x05\x12\x04\xef\x02\x0b\x11\n\r\
-    \n\x05\x04\t\x02\r\x01\x12\x04\xef\x02\x12\"\n\r\n\x05\x04\t\x02\r\x03\
-    \x12\x04\xef\x02%'\nO\n\x04\x04\t\x02\x0e\x12\x04\xf2\x02\x02:\x1aA\x20T\
+    \n\x05\x04\n\x02\r\x04\x12\x04\xa8\x03\x02\n\n\r\n\x05\x04\n\x02\r\x05\
+    \x12\x04\xa8\x03\x0b\x11\n\r\n\x05\x04\n\x02\r\x01\x12\x04\xa8\x03\x12#\
+    \n\r\n\x05\x04\n\x02\r\x03\x12\x04\xa8\x03&(\nI\n\x04\x04\n\x02\x0e\x12\
+    \x04\xab\x03\x02(\x1a;\x20Namespace\x20for\x20generated\x20classes;\x20d\
+    efaults\x20to\x20the\x20package.\n\n\r\n\x05\x04\n\x02\x0e\x04\x12\x04\
+    \xab\x03\x02\n\n\r\n\x05\x04\n\x02\x0e\x05\x12\x04\xab\x03\x0b\x11\n\r\n\
+    \x05\x04\n\x02\x0e\x01\x12\x04\xab\x03\x12\"\n\r\n\x05\x04\n\x02\x0e\x03\
+    \x12\x04\xab\x03%'\n\x91\x02\n\x04\x04\n\x02\x0f\x12\x04\xb1\x03\x02$\
+    \x1a\x82\x02\x20By\x20default\x20Swift\x20generators\x20will\x20take\x20\
+    the\x20proto\x20package\x20and\x20CamelCase\x20it\n\x20replacing\x20'.'\
+    \x20with\x20underscore\x20and\x20use\x20that\x20to\x20prefix\x20the\x20t\
+    ypes/symbols\n\x20defined.\x20When\x20this\x20options\x20is\x20provided,\
+    \x20they\x20will\x20use\x20this\x20value\x20instead\n\x20to\x20prefix\
+    \x20the\x20types/symbols\x20defined.\n\n\r\n\x05\x04\n\x02\x0f\x04\x12\
+    \x04\xb1\x03\x02\n\n\r\n\x05\x04\n\x02\x0f\x05\x12\x04\xb1\x03\x0b\x11\n\
+    \r\n\x05\x04\n\x02\x0f\x01\x12\x04\xb1\x03\x12\x1e\n\r\n\x05\x04\n\x02\
+    \x0f\x03\x12\x04\xb1\x03!#\n~\n\x04\x04\n\x02\x10\x12\x04\xb5\x03\x02(\
+    \x1ap\x20Sets\x20the\x20php\x20class\x20prefix\x20which\x20is\x20prepend\
+    ed\x20to\x20all\x20php\x20generated\x20classes\n\x20from\x20this\x20.pro\
+    to.\x20Default\x20is\x20empty.\n\n\r\n\x05\x04\n\x02\x10\x04\x12\x04\xb5\
+    \x03\x02\n\n\r\n\x05\x04\n\x02\x10\x05\x12\x04\xb5\x03\x0b\x11\n\r\n\x05\
+    \x04\n\x02\x10\x01\x12\x04\xb5\x03\x12\"\n\r\n\x05\x04\n\x02\x10\x03\x12\
+    \x04\xb5\x03%'\n\xbe\x01\n\x04\x04\n\x02\x11\x12\x04\xba\x03\x02%\x1a\
+    \xaf\x01\x20Use\x20this\x20option\x20to\x20change\x20the\x20namespace\
+    \x20of\x20php\x20generated\x20classes.\x20Default\n\x20is\x20empty.\x20W\
+    hen\x20this\x20option\x20is\x20empty,\x20the\x20package\x20name\x20will\
+    \x20be\x20used\x20for\n\x20determining\x20the\x20namespace.\n\n\r\n\x05\
+    \x04\n\x02\x11\x04\x12\x04\xba\x03\x02\n\n\r\n\x05\x04\n\x02\x11\x05\x12\
+    \x04\xba\x03\x0b\x11\n\r\n\x05\x04\n\x02\x11\x01\x12\x04\xba\x03\x12\x1f\
+    \n\r\n\x05\x04\n\x02\x11\x03\x12\x04\xba\x03\"$\n\xca\x01\n\x04\x04\n\
+    \x02\x12\x12\x04\xbf\x03\x02.\x1a\xbb\x01\x20Use\x20this\x20option\x20to\
+    \x20change\x20the\x20namespace\x20of\x20php\x20generated\x20metadata\x20\
+    classes.\n\x20Default\x20is\x20empty.\x20When\x20this\x20option\x20is\
+    \x20empty,\x20the\x20proto\x20file\x20name\x20will\x20be\n\x20used\x20fo\
+    r\x20determining\x20the\x20namespace.\n\n\r\n\x05\x04\n\x02\x12\x04\x12\
+    \x04\xbf\x03\x02\n\n\r\n\x05\x04\n\x02\x12\x05\x12\x04\xbf\x03\x0b\x11\n\
+    \r\n\x05\x04\n\x02\x12\x01\x12\x04\xbf\x03\x12(\n\r\n\x05\x04\n\x02\x12\
+    \x03\x12\x04\xbf\x03+-\n\xc2\x01\n\x04\x04\n\x02\x13\x12\x04\xc4\x03\x02\
+    $\x1a\xb3\x01\x20Use\x20this\x20option\x20to\x20change\x20the\x20package\
+    \x20of\x20ruby\x20generated\x20classes.\x20Default\n\x20is\x20empty.\x20\
+    When\x20this\x20option\x20is\x20not\x20set,\x20the\x20package\x20name\
+    \x20will\x20be\x20used\x20for\n\x20determining\x20the\x20ruby\x20package\
+    .\n\n\r\n\x05\x04\n\x02\x13\x04\x12\x04\xc4\x03\x02\n\n\r\n\x05\x04\n\
+    \x02\x13\x05\x12\x04\xc4\x03\x0b\x11\n\r\n\x05\x04\n\x02\x13\x01\x12\x04\
+    \xc4\x03\x12\x1e\n\r\n\x05\x04\n\x02\x13\x03\x12\x04\xc4\x03!#\n|\n\x04\
+    \x04\n\x02\x14\x12\x04\xc9\x03\x02:\x1an\x20The\x20parser\x20stores\x20o\
+    ptions\x20it\x20doesn't\x20recognize\x20here.\n\x20See\x20the\x20documen\
+    tation\x20for\x20the\x20\"Options\"\x20section\x20above.\n\n\r\n\x05\x04\
+    \n\x02\x14\x04\x12\x04\xc9\x03\x02\n\n\r\n\x05\x04\n\x02\x14\x06\x12\x04\
+    \xc9\x03\x0b\x1e\n\r\n\x05\x04\n\x02\x14\x01\x12\x04\xc9\x03\x1f3\n\r\n\
+    \x05\x04\n\x02\x14\x03\x12\x04\xc9\x0369\n\x87\x01\n\x03\x04\n\x05\x12\
+    \x04\xcd\x03\x02\x19\x1az\x20Clients\x20can\x20define\x20custom\x20optio\
+    ns\x20in\x20extensions\x20of\x20this\x20message.\n\x20See\x20the\x20docu\
+    mentation\x20for\x20the\x20\"Options\"\x20section\x20above.\n\n\x0c\n\
+    \x04\x04\n\x05\0\x12\x04\xcd\x03\r\x18\n\r\n\x05\x04\n\x05\0\x01\x12\x04\
+    \xcd\x03\r\x11\n\r\n\x05\x04\n\x05\0\x02\x12\x04\xcd\x03\x15\x18\n\x0b\n\
+    \x03\x04\n\t\x12\x04\xcf\x03\x02\x0e\n\x0c\n\x04\x04\n\t\0\x12\x04\xcf\
+    \x03\x0b\r\n\r\n\x05\x04\n\t\0\x01\x12\x04\xcf\x03\x0b\r\n\r\n\x05\x04\n\
+    \t\0\x02\x12\x04\xcf\x03\x0b\r\n\x0c\n\x02\x04\x0b\x12\x06\xd2\x03\0\x92\
+    \x04\x01\n\x0b\n\x03\x04\x0b\x01\x12\x04\xd2\x03\x08\x16\n\xd8\x05\n\x04\
+    \x04\x0b\x02\0\x12\x04\xe5\x03\x02>\x1a\xc9\x05\x20Set\x20true\x20to\x20\
+    use\x20the\x20old\x20proto1\x20MessageSet\x20wire\x20format\x20for\x20ex\
+    tensions.\n\x20This\x20is\x20provided\x20for\x20backwards-compatibility\
+    \x20with\x20the\x20MessageSet\x20wire\n\x20format.\x20\x20You\x20should\
+    \x20not\x20use\x20this\x20for\x20any\x20other\x20reason:\x20\x20It's\x20\
+    less\n\x20efficient,\x20has\x20fewer\x20features,\x20and\x20is\x20more\
+    \x20complicated.\n\n\x20The\x20message\x20must\x20be\x20defined\x20exact\
+    ly\x20as\x20follows:\n\x20\x20\x20message\x20Foo\x20{\n\x20\x20\x20\x20\
+    \x20option\x20message_set_wire_format\x20=\x20true;\n\x20\x20\x20\x20\
+    \x20extensions\x204\x20to\x20max;\n\x20\x20\x20}\n\x20Note\x20that\x20th\
+    e\x20message\x20cannot\x20have\x20any\x20defined\x20fields;\x20MessageSe\
+    ts\x20only\n\x20have\x20extensions.\n\n\x20All\x20extensions\x20of\x20yo\
+    ur\x20type\x20must\x20be\x20singular\x20messages;\x20e.g.\x20they\x20can\
+    not\n\x20be\x20int32s,\x20enums,\x20or\x20repeated\x20messages.\n\n\x20B\
+    ecause\x20this\x20is\x20an\x20option,\x20the\x20above\x20two\x20restrict\
+    ions\x20are\x20not\x20enforced\x20by\n\x20the\x20protocol\x20compiler.\n\
+    \n\r\n\x05\x04\x0b\x02\0\x04\x12\x04\xe5\x03\x02\n\n\r\n\x05\x04\x0b\x02\
+    \0\x05\x12\x04\xe5\x03\x0b\x0f\n\r\n\x05\x04\x0b\x02\0\x01\x12\x04\xe5\
+    \x03\x10'\n\r\n\x05\x04\x0b\x02\0\x03\x12\x04\xe5\x03*+\n\r\n\x05\x04\
+    \x0b\x02\0\x08\x12\x04\xe5\x03,=\n\r\n\x05\x04\x0b\x02\0\x07\x12\x04\xe5\
+    \x037<\n\xeb\x01\n\x04\x04\x0b\x02\x01\x12\x04\xea\x03\x02F\x1a\xdc\x01\
+    \x20Disables\x20the\x20generation\x20of\x20the\x20standard\x20\"descript\
+    or()\"\x20accessor,\x20which\x20can\n\x20conflict\x20with\x20a\x20field\
+    \x20of\x20the\x20same\x20name.\x20\x20This\x20is\x20meant\x20to\x20make\
+    \x20migration\n\x20from\x20proto1\x20easier;\x20new\x20code\x20should\
+    \x20avoid\x20fields\x20named\x20\"descriptor\".\n\n\r\n\x05\x04\x0b\x02\
+    \x01\x04\x12\x04\xea\x03\x02\n\n\r\n\x05\x04\x0b\x02\x01\x05\x12\x04\xea\
+    \x03\x0b\x0f\n\r\n\x05\x04\x0b\x02\x01\x01\x12\x04\xea\x03\x10/\n\r\n\
+    \x05\x04\x0b\x02\x01\x03\x12\x04\xea\x0323\n\r\n\x05\x04\x0b\x02\x01\x08\
+    \x12\x04\xea\x034E\n\r\n\x05\x04\x0b\x02\x01\x07\x12\x04\xea\x03?D\n\xee\
+    \x01\n\x04\x04\x0b\x02\x02\x12\x04\xf0\x03\x021\x1a\xdf\x01\x20Is\x20thi\
+    s\x20message\x20deprecated?\n\x20Depending\x20on\x20the\x20target\x20pla\
+    tform,\x20this\x20can\x20emit\x20Deprecated\x20annotations\n\x20for\x20t\
+    he\x20message,\x20or\x20it\x20will\x20be\x20completely\x20ignored;\x20in\
+    \x20the\x20very\x20least,\n\x20this\x20is\x20a\x20formalization\x20for\
+    \x20deprecating\x20messages.\n\n\r\n\x05\x04\x0b\x02\x02\x04\x12\x04\xf0\
+    \x03\x02\n\n\r\n\x05\x04\x0b\x02\x02\x05\x12\x04\xf0\x03\x0b\x0f\n\r\n\
+    \x05\x04\x0b\x02\x02\x01\x12\x04\xf0\x03\x10\x1a\n\r\n\x05\x04\x0b\x02\
+    \x02\x03\x12\x04\xf0\x03\x1d\x1e\n\r\n\x05\x04\x0b\x02\x02\x08\x12\x04\
+    \xf0\x03\x1f0\n\r\n\x05\x04\x0b\x02\x02\x07\x12\x04\xf0\x03*/\n\xa0\x06\
+    \n\x04\x04\x0b\x02\x03\x12\x04\x87\x04\x02\x1e\x1a\x91\x06\x20Whether\
+    \x20the\x20message\x20is\x20an\x20automatically\x20generated\x20map\x20e\
+    ntry\x20type\x20for\x20the\n\x20maps\x20field.\n\n\x20For\x20maps\x20fie\
+    lds:\n\x20\x20\x20\x20\x20map<KeyType,\x20ValueType>\x20map_field\x20=\
+    \x201;\n\x20The\x20parsed\x20descriptor\x20looks\x20like:\n\x20\x20\x20\
+    \x20\x20message\x20MapFieldEntry\x20{\n\x20\x20\x20\x20\x20\x20\x20\x20\
+    \x20option\x20map_entry\x20=\x20true;\n\x20\x20\x20\x20\x20\x20\x20\x20\
+    \x20optional\x20KeyType\x20key\x20=\x201;\n\x20\x20\x20\x20\x20\x20\x20\
+    \x20\x20optional\x20ValueType\x20value\x20=\x202;\n\x20\x20\x20\x20\x20}\
+    \n\x20\x20\x20\x20\x20repeated\x20MapFieldEntry\x20map_field\x20=\x201;\
+    \n\n\x20Implementations\x20may\x20choose\x20not\x20to\x20generate\x20the\
+    \x20map_entry=true\x20message,\x20but\n\x20use\x20a\x20native\x20map\x20\
+    in\x20the\x20target\x20language\x20to\x20hold\x20the\x20keys\x20and\x20v\
+    alues.\n\x20The\x20reflection\x20APIs\x20in\x20such\x20implementations\
+    \x20still\x20need\x20to\x20work\x20as\n\x20if\x20the\x20field\x20is\x20a\
+    \x20repeated\x20message\x20field.\n\n\x20NOTE:\x20Do\x20not\x20set\x20th\
+    e\x20option\x20in\x20.proto\x20files.\x20Always\x20use\x20the\x20maps\
+    \x20syntax\n\x20instead.\x20The\x20option\x20should\x20only\x20be\x20imp\
+    licitly\x20set\x20by\x20the\x20proto\x20compiler\n\x20parser.\n\n\r\n\
+    \x05\x04\x0b\x02\x03\x04\x12\x04\x87\x04\x02\n\n\r\n\x05\x04\x0b\x02\x03\
+    \x05\x12\x04\x87\x04\x0b\x0f\n\r\n\x05\x04\x0b\x02\x03\x01\x12\x04\x87\
+    \x04\x10\x19\n\r\n\x05\x04\x0b\x02\x03\x03\x12\x04\x87\x04\x1c\x1d\n$\n\
+    \x03\x04\x0b\t\x12\x04\x89\x04\x02\r\"\x17\x20javalite_serializable\n\n\
+    \x0c\n\x04\x04\x0b\t\0\x12\x04\x89\x04\x0b\x0c\n\r\n\x05\x04\x0b\t\0\x01\
+    \x12\x04\x89\x04\x0b\x0c\n\r\n\x05\x04\x0b\t\0\x02\x12\x04\x89\x04\x0b\
+    \x0c\n\x1f\n\x03\x04\x0b\t\x12\x04\x8a\x04\x02\r\"\x12\x20javanano_as_li\
+    te\n\n\x0c\n\x04\x04\x0b\t\x01\x12\x04\x8a\x04\x0b\x0c\n\r\n\x05\x04\x0b\
+    \t\x01\x01\x12\x04\x8a\x04\x0b\x0c\n\r\n\x05\x04\x0b\t\x01\x02\x12\x04\
+    \x8a\x04\x0b\x0c\nO\n\x04\x04\x0b\x02\x04\x12\x04\x8e\x04\x02:\x1aA\x20T\
     he\x20parser\x20stores\x20options\x20it\x20doesn't\x20recognize\x20here.\
-    \x20See\x20above.\n\n\r\n\x05\x04\t\x02\x0e\x04\x12\x04\xf2\x02\x02\n\n\
-    \r\n\x05\x04\t\x02\x0e\x06\x12\x04\xf2\x02\x0b\x1e\n\r\n\x05\x04\t\x02\
-    \x0e\x01\x12\x04\xf2\x02\x1f3\n\r\n\x05\x04\t\x02\x0e\x03\x12\x04\xf2\
-    \x0269\nZ\n\x03\x04\t\x05\x12\x04\xf5\x02\x02\x19\x1aM\x20Clients\x20can\
-    \x20define\x20custom\x20options\x20in\x20extensions\x20of\x20this\x20mes\
-    sage.\x20See\x20above.\n\n\x0c\n\x04\x04\t\x05\0\x12\x04\xf5\x02\r\x18\n\
-    \r\n\x05\x04\t\x05\0\x01\x12\x04\xf5\x02\r\x11\n\r\n\x05\x04\t\x05\0\x02\
-    \x12\x04\xf5\x02\x15\x18\n\x0c\n\x02\x04\n\x12\x06\xfa\x02\0\xb8\x03\x01\
-    \n\x0b\n\x03\x04\n\x01\x12\x04\xfa\x02\x08\x16\n\xd8\x05\n\x04\x04\n\x02\
-    \0\x12\x04\x8d\x03\x02<\x1a\xc9\x05\x20Set\x20true\x20to\x20use\x20the\
-    \x20old\x20proto1\x20MessageSet\x20wire\x20format\x20for\x20extensions.\
-    \n\x20This\x20is\x20provided\x20for\x20backwards-compatibility\x20with\
-    \x20the\x20MessageSet\x20wire\n\x20format.\x20\x20You\x20should\x20not\
-    \x20use\x20this\x20for\x20any\x20other\x20reason:\x20\x20It's\x20less\n\
-    \x20efficient,\x20has\x20fewer\x20features,\x20and\x20is\x20more\x20comp\
-    licated.\n\n\x20The\x20message\x20must\x20be\x20defined\x20exactly\x20as\
-    \x20follows:\n\x20\x20\x20message\x20Foo\x20{\n\x20\x20\x20\x20\x20optio\
-    n\x20message_set_wire_format\x20=\x20true;\n\x20\x20\x20\x20\x20extensio\
-    ns\x204\x20to\x20max;\n\x20\x20\x20}\n\x20Note\x20that\x20the\x20message\
-    \x20cannot\x20have\x20any\x20defined\x20fields;\x20MessageSets\x20only\n\
-    \x20have\x20extensions.\n\n\x20All\x20extensions\x20of\x20your\x20type\
-    \x20must\x20be\x20singular\x20messages;\x20e.g.\x20they\x20cannot\n\x20b\
-    e\x20int32s,\x20enums,\x20or\x20repeated\x20messages.\n\n\x20Because\x20\
-    this\x20is\x20an\x20option,\x20the\x20above\x20two\x20restrictions\x20ar\
-    e\x20not\x20enforced\x20by\n\x20the\x20protocol\x20compiler.\n\n\r\n\x05\
-    \x04\n\x02\0\x04\x12\x04\x8d\x03\x02\n\n\r\n\x05\x04\n\x02\0\x05\x12\x04\
-    \x8d\x03\x0b\x0f\n\r\n\x05\x04\n\x02\0\x01\x12\x04\x8d\x03\x10'\n\r\n\
-    \x05\x04\n\x02\0\x03\x12\x04\x8d\x03*+\n\r\n\x05\x04\n\x02\0\x08\x12\x04\
-    \x8d\x03,;\n\r\n\x05\x04\n\x02\0\x07\x12\x04\x8d\x035:\n\xeb\x01\n\x04\
-    \x04\n\x02\x01\x12\x04\x92\x03\x02D\x1a\xdc\x01\x20Disables\x20the\x20ge\
-    neration\x20of\x20the\x20standard\x20\"descriptor()\"\x20accessor,\x20wh\
-    ich\x20can\n\x20conflict\x20with\x20a\x20field\x20of\x20the\x20same\x20n\
-    ame.\x20\x20This\x20is\x20meant\x20to\x20make\x20migration\n\x20from\x20\
-    proto1\x20easier;\x20new\x20code\x20should\x20avoid\x20fields\x20named\
-    \x20\"descriptor\".\n\n\r\n\x05\x04\n\x02\x01\x04\x12\x04\x92\x03\x02\n\
-    \n\r\n\x05\x04\n\x02\x01\x05\x12\x04\x92\x03\x0b\x0f\n\r\n\x05\x04\n\x02\
-    \x01\x01\x12\x04\x92\x03\x10/\n\r\n\x05\x04\n\x02\x01\x03\x12\x04\x92\
-    \x0323\n\r\n\x05\x04\n\x02\x01\x08\x12\x04\x92\x034C\n\r\n\x05\x04\n\x02\
-    \x01\x07\x12\x04\x92\x03=B\n\xee\x01\n\x04\x04\n\x02\x02\x12\x04\x98\x03\
-    \x02/\x1a\xdf\x01\x20Is\x20this\x20message\x20deprecated?\n\x20Depending\
-    \x20on\x20the\x20target\x20platform,\x20this\x20can\x20emit\x20Deprecate\
-    d\x20annotations\n\x20for\x20the\x20message,\x20or\x20it\x20will\x20be\
-    \x20completely\x20ignored;\x20in\x20the\x20very\x20least,\n\x20this\x20i\
-    s\x20a\x20formalization\x20for\x20deprecating\x20messages.\n\n\r\n\x05\
-    \x04\n\x02\x02\x04\x12\x04\x98\x03\x02\n\n\r\n\x05\x04\n\x02\x02\x05\x12\
-    \x04\x98\x03\x0b\x0f\n\r\n\x05\x04\n\x02\x02\x01\x12\x04\x98\x03\x10\x1a\
-    \n\r\n\x05\x04\n\x02\x02\x03\x12\x04\x98\x03\x1d\x1e\n\r\n\x05\x04\n\x02\
-    \x02\x08\x12\x04\x98\x03\x1f.\n\r\n\x05\x04\n\x02\x02\x07\x12\x04\x98\
-    \x03(-\n\x9e\x06\n\x04\x04\n\x02\x03\x12\x04\xaf\x03\x02\x1e\x1a\x8f\x06\
-    \x20Whether\x20the\x20message\x20is\x20an\x20automatically\x20generated\
-    \x20map\x20entry\x20type\x20for\x20the\n\x20maps\x20field.\n\n\x20For\
-    \x20maps\x20fields:\n\x20\x20\x20\x20\x20map<KeyType,\x20ValueType>\x20m\
-    ap_field\x20=\x201;\n\x20The\x20parsed\x20descriptor\x20looks\x20like:\n\
-    \x20\x20\x20\x20\x20message\x20MapFieldEntry\x20{\n\x20\x20\x20\x20\x20\
-    \x20\x20\x20\x20option\x20map_entry\x20=\x20true;\n\x20\x20\x20\x20\x20\
-    \x20\x20\x20\x20optional\x20KeyType\x20key\x20=\x201;\n\x20\x20\x20\x20\
-    \x20\x20\x20\x20\x20optional\x20ValueType\x20value\x20=\x202;\n\x20\x20\
-    \x20\x20\x20}\n\x20\x20\x20\x20\x20repeated\x20MapFieldEntry\x20map_fiel\
-    d\x20=\x201;\n\n\x20Implementations\x20may\x20choose\x20not\x20to\x20gen\
-    erate\x20the\x20map_entry=true\x20message,\x20but\n\x20use\x20a\x20nativ\
-    e\x20map\x20in\x20the\x20target\x20language\x20to\x20hold\x20the\x20keys\
-    \x20and\x20values.\n\x20The\x20reflection\x20APIs\x20in\x20such\x20imple\
-    mentions\x20still\x20need\x20to\x20work\x20as\n\x20if\x20the\x20field\
-    \x20is\x20a\x20repeated\x20message\x20field.\n\n\x20NOTE:\x20Do\x20not\
-    \x20set\x20the\x20option\x20in\x20.proto\x20files.\x20Always\x20use\x20t\
-    he\x20maps\x20syntax\n\x20instead.\x20The\x20option\x20should\x20only\
-    \x20be\x20implicitly\x20set\x20by\x20the\x20proto\x20compiler\n\x20parse\
-    r.\n\n\r\n\x05\x04\n\x02\x03\x04\x12\x04\xaf\x03\x02\n\n\r\n\x05\x04\n\
-    \x02\x03\x05\x12\x04\xaf\x03\x0b\x0f\n\r\n\x05\x04\n\x02\x03\x01\x12\x04\
-    \xaf\x03\x10\x19\n\r\n\x05\x04\n\x02\x03\x03\x12\x04\xaf\x03\x1c\x1d\nO\
-    \n\x04\x04\n\x02\x04\x12\x04\xb2\x03\x02:\x1aA\x20The\x20parser\x20store\
-    s\x20options\x20it\x20doesn't\x20recognize\x20here.\x20See\x20above.\n\n\
-    \r\n\x05\x04\n\x02\x04\x04\x12\x04\xb2\x03\x02\n\n\r\n\x05\x04\n\x02\x04\
-    \x06\x12\x04\xb2\x03\x0b\x1e\n\r\n\x05\x04\n\x02\x04\x01\x12\x04\xb2\x03\
-    \x1f3\n\r\n\x05\x04\n\x02\x04\x03\x12\x04\xb2\x0369\nZ\n\x03\x04\n\x05\
-    \x12\x04\xb5\x03\x02\x19\x1aM\x20Clients\x20can\x20define\x20custom\x20o\
-    ptions\x20in\x20extensions\x20of\x20this\x20message.\x20See\x20above.\n\
-    \n\x0c\n\x04\x04\n\x05\0\x12\x04\xb5\x03\r\x18\n\r\n\x05\x04\n\x05\0\x01\
-    \x12\x04\xb5\x03\r\x11\n\r\n\x05\x04\n\x05\0\x02\x12\x04\xb5\x03\x15\x18\
-    \n\x0c\n\x02\x04\x0b\x12\x06\xba\x03\0\x93\x04\x01\n\x0b\n\x03\x04\x0b\
-    \x01\x12\x04\xba\x03\x08\x14\n\xa3\x02\n\x04\x04\x0b\x02\0\x12\x04\xbf\
-    \x03\x02.\x1a\x94\x02\x20The\x20ctype\x20option\x20instructs\x20the\x20C\
-    ++\x20code\x20generator\x20to\x20use\x20a\x20different\n\x20representati\
-    on\x20of\x20the\x20field\x20than\x20it\x20normally\x20would.\x20\x20See\
-    \x20the\x20specific\n\x20options\x20below.\x20\x20This\x20option\x20is\
-    \x20not\x20yet\x20implemented\x20in\x20the\x20open\x20source\n\x20releas\
-    e\x20--\x20sorry,\x20we'll\x20try\x20to\x20include\x20it\x20in\x20a\x20f\
-    uture\x20version!\n\n\r\n\x05\x04\x0b\x02\0\x04\x12\x04\xbf\x03\x02\n\n\
-    \r\n\x05\x04\x0b\x02\0\x06\x12\x04\xbf\x03\x0b\x10\n\r\n\x05\x04\x0b\x02\
-    \0\x01\x12\x04\xbf\x03\x11\x16\n\r\n\x05\x04\x0b\x02\0\x03\x12\x04\xbf\
-    \x03\x19\x1a\n\r\n\x05\x04\x0b\x02\0\x08\x12\x04\xbf\x03\x1b-\n\r\n\x05\
-    \x04\x0b\x02\0\x07\x12\x04\xbf\x03&,\n\x0e\n\x04\x04\x0b\x04\0\x12\x06\
-    \xc0\x03\x02\xc7\x03\x03\n\r\n\x05\x04\x0b\x04\0\x01\x12\x04\xc0\x03\x07\
-    \x0c\n\x1f\n\x06\x04\x0b\x04\0\x02\0\x12\x04\xc2\x03\x04\x0f\x1a\x0f\x20\
-    Default\x20mode.\n\n\x0f\n\x07\x04\x0b\x04\0\x02\0\x01\x12\x04\xc2\x03\
-    \x04\n\n\x0f\n\x07\x04\x0b\x04\0\x02\0\x02\x12\x04\xc2\x03\r\x0e\n\x0e\n\
-    \x06\x04\x0b\x04\0\x02\x01\x12\x04\xc4\x03\x04\r\n\x0f\n\x07\x04\x0b\x04\
-    \0\x02\x01\x01\x12\x04\xc4\x03\x04\x08\n\x0f\n\x07\x04\x0b\x04\0\x02\x01\
-    \x02\x12\x04\xc4\x03\x0b\x0c\n\x0e\n\x06\x04\x0b\x04\0\x02\x02\x12\x04\
-    \xc6\x03\x04\x15\n\x0f\n\x07\x04\x0b\x04\0\x02\x02\x01\x12\x04\xc6\x03\
-    \x04\x10\n\x0f\n\x07\x04\x0b\x04\0\x02\x02\x02\x12\x04\xc6\x03\x13\x14\n\
-    \xda\x02\n\x04\x04\x0b\x02\x01\x12\x04\xcd\x03\x02\x1b\x1a\xcb\x02\x20Th\
-    e\x20packed\x20option\x20can\x20be\x20enabled\x20for\x20repeated\x20prim\
-    itive\x20fields\x20to\x20enable\n\x20a\x20more\x20efficient\x20represent\
-    ation\x20on\x20the\x20wire.\x20Rather\x20than\x20repeatedly\n\x20writing\
-    \x20the\x20tag\x20and\x20type\x20for\x20each\x20element,\x20the\x20entir\
-    e\x20array\x20is\x20encoded\x20as\n\x20a\x20single\x20length-delimited\
-    \x20blob.\x20In\x20proto3,\x20only\x20explicit\x20setting\x20it\x20to\n\
-    \x20false\x20will\x20avoid\x20using\x20packed\x20encoding.\n\n\r\n\x05\
-    \x04\x0b\x02\x01\x04\x12\x04\xcd\x03\x02\n\n\r\n\x05\x04\x0b\x02\x01\x05\
-    \x12\x04\xcd\x03\x0b\x0f\n\r\n\x05\x04\x0b\x02\x01\x01\x12\x04\xcd\x03\
-    \x10\x16\n\r\n\x05\x04\x0b\x02\x01\x03\x12\x04\xcd\x03\x19\x1a\n\xe4\x04\
-    \n\x04\x04\x0b\x02\x02\x12\x04\xd8\x03\x023\x1a\xd5\x04\x20The\x20jstype\
-    \x20option\x20determines\x20the\x20JavaScript\x20type\x20used\x20for\x20\
-    values\x20of\x20the\n\x20field.\x20\x20The\x20option\x20is\x20permitted\
-    \x20only\x20for\x2064\x20bit\x20integral\x20and\x20fixed\x20types\n\x20(\
-    int64,\x20uint64,\x20sint64,\x20fixed64,\x20sfixed64).\x20\x20By\x20defa\
-    ult\x20these\x20types\x20are\n\x20represented\x20as\x20JavaScript\x20str\
-    ings.\x20\x20This\x20avoids\x20loss\x20of\x20precision\x20that\x20can\n\
-    \x20happen\x20when\x20a\x20large\x20value\x20is\x20converted\x20to\x20a\
-    \x20floating\x20point\x20JavaScript\n\x20numbers.\x20\x20Specifying\x20J\
-    S_NUMBER\x20for\x20the\x20jstype\x20causes\x20the\x20generated\n\x20Java\
-    Script\x20code\x20to\x20use\x20the\x20JavaScript\x20\"number\"\x20type\
-    \x20instead\x20of\x20strings.\n\x20This\x20option\x20is\x20an\x20enum\
-    \x20to\x20permit\x20additional\x20types\x20to\x20be\x20added,\n\x20e.g.\
-    \x20goog.math.Integer.\n\n\r\n\x05\x04\x0b\x02\x02\x04\x12\x04\xd8\x03\
-    \x02\n\n\r\n\x05\x04\x0b\x02\x02\x06\x12\x04\xd8\x03\x0b\x11\n\r\n\x05\
-    \x04\x0b\x02\x02\x01\x12\x04\xd8\x03\x12\x18\n\r\n\x05\x04\x0b\x02\x02\
-    \x03\x12\x04\xd8\x03\x1b\x1c\n\r\n\x05\x04\x0b\x02\x02\x08\x12\x04\xd8\
-    \x03\x1d2\n\r\n\x05\x04\x0b\x02\x02\x07\x12\x04\xd8\x03(1\n\x0e\n\x04\
-    \x04\x0b\x04\x01\x12\x06\xd9\x03\x02\xe2\x03\x03\n\r\n\x05\x04\x0b\x04\
-    \x01\x01\x12\x04\xd9\x03\x07\r\n'\n\x06\x04\x0b\x04\x01\x02\0\x12\x04\
-    \xdb\x03\x04\x12\x1a\x17\x20Use\x20the\x20default\x20type.\n\n\x0f\n\x07\
-    \x04\x0b\x04\x01\x02\0\x01\x12\x04\xdb\x03\x04\r\n\x0f\n\x07\x04\x0b\x04\
-    \x01\x02\0\x02\x12\x04\xdb\x03\x10\x11\n)\n\x06\x04\x0b\x04\x01\x02\x01\
-    \x12\x04\xde\x03\x04\x12\x1a\x19\x20Use\x20JavaScript\x20strings.\n\n\
-    \x0f\n\x07\x04\x0b\x04\x01\x02\x01\x01\x12\x04\xde\x03\x04\r\n\x0f\n\x07\
-    \x04\x0b\x04\x01\x02\x01\x02\x12\x04\xde\x03\x10\x11\n)\n\x06\x04\x0b\
-    \x04\x01\x02\x02\x12\x04\xe1\x03\x04\x12\x1a\x19\x20Use\x20JavaScript\
-    \x20numbers.\n\n\x0f\n\x07\x04\x0b\x04\x01\x02\x02\x01\x12\x04\xe1\x03\
-    \x04\r\n\x0f\n\x07\x04\x0b\x04\x01\x02\x02\x02\x12\x04\xe1\x03\x10\x11\n\
-    \xef\x0c\n\x04\x04\x0b\x02\x03\x12\x04\x80\x04\x02)\x1a\xe0\x0c\x20Shoul\
-    d\x20this\x20field\x20be\x20parsed\x20lazily?\x20\x20Lazy\x20applies\x20\
-    only\x20to\x20message-type\n\x20fields.\x20\x20It\x20means\x20that\x20wh\
-    en\x20the\x20outer\x20message\x20is\x20initially\x20parsed,\x20the\n\x20\
-    inner\x20message's\x20contents\x20will\x20not\x20be\x20parsed\x20but\x20\
-    instead\x20stored\x20in\x20encoded\n\x20form.\x20\x20The\x20inner\x20mes\
-    sage\x20will\x20actually\x20be\x20parsed\x20when\x20it\x20is\x20first\
-    \x20accessed.\n\n\x20This\x20is\x20only\x20a\x20hint.\x20\x20Implementat\
-    ions\x20are\x20free\x20to\x20choose\x20whether\x20to\x20use\n\x20eager\
-    \x20or\x20lazy\x20parsing\x20regardless\x20of\x20the\x20value\x20of\x20t\
-    his\x20option.\x20\x20However,\n\x20setting\x20this\x20option\x20true\
-    \x20suggests\x20that\x20the\x20protocol\x20author\x20believes\x20that\n\
-    \x20using\x20lazy\x20parsing\x20on\x20this\x20field\x20is\x20worth\x20th\
-    e\x20additional\x20bookkeeping\n\x20overhead\x20typically\x20needed\x20t\
-    o\x20implement\x20it.\n\n\x20This\x20option\x20does\x20not\x20affect\x20\
-    the\x20public\x20interface\x20of\x20any\x20generated\x20code;\n\x20all\
-    \x20method\x20signatures\x20remain\x20the\x20same.\x20\x20Furthermore,\
-    \x20thread-safety\x20of\x20the\n\x20interface\x20is\x20not\x20affected\
-    \x20by\x20this\x20option;\x20const\x20methods\x20remain\x20safe\x20to\n\
-    \x20call\x20from\x20multiple\x20threads\x20concurrently,\x20while\x20non\
-    -const\x20methods\x20continue\n\x20to\x20require\x20exclusive\x20access.\
-    \n\n\n\x20Note\x20that\x20implementations\x20may\x20choose\x20not\x20to\
-    \x20check\x20required\x20fields\x20within\n\x20a\x20lazy\x20sub-message.\
-    \x20\x20That\x20is,\x20calling\x20IsInitialized()\x20on\x20the\x20outer\
-    \x20message\n\x20may\x20return\x20true\x20even\x20if\x20the\x20inner\x20\
-    message\x20has\x20missing\x20required\x20fields.\n\x20This\x20is\x20nece\
-    ssary\x20because\x20otherwise\x20the\x20inner\x20message\x20would\x20hav\
-    e\x20to\x20be\n\x20parsed\x20in\x20order\x20to\x20perform\x20the\x20chec\
-    k,\x20defeating\x20the\x20purpose\x20of\x20lazy\n\x20parsing.\x20\x20An\
-    \x20implementation\x20which\x20chooses\x20not\x20to\x20check\x20required\
-    \x20fields\n\x20must\x20be\x20consistent\x20about\x20it.\x20\x20That\x20\
-    is,\x20for\x20any\x20particular\x20sub-message,\x20the\n\x20implementati\
-    on\x20must\x20either\x20*always*\x20check\x20its\x20required\x20fields,\
-    \x20or\x20*never*\n\x20check\x20its\x20required\x20fields,\x20regardless\
-    \x20of\x20whether\x20or\x20not\x20the\x20message\x20has\n\x20been\x20par\
-    sed.\n\n\r\n\x05\x04\x0b\x02\x03\x04\x12\x04\x80\x04\x02\n\n\r\n\x05\x04\
-    \x0b\x02\x03\x05\x12\x04\x80\x04\x0b\x0f\n\r\n\x05\x04\x0b\x02\x03\x01\
-    \x12\x04\x80\x04\x10\x14\n\r\n\x05\x04\x0b\x02\x03\x03\x12\x04\x80\x04\
-    \x17\x18\n\r\n\x05\x04\x0b\x02\x03\x08\x12\x04\x80\x04\x19(\n\r\n\x05\
-    \x04\x0b\x02\x03\x07\x12\x04\x80\x04\"'\n\xe8\x01\n\x04\x04\x0b\x02\x04\
-    \x12\x04\x86\x04\x02/\x1a\xd9\x01\x20Is\x20this\x20field\x20deprecated?\
-    \n\x20Depending\x20on\x20the\x20target\x20platform,\x20this\x20can\x20em\
-    it\x20Deprecated\x20annotations\n\x20for\x20accessors,\x20or\x20it\x20wi\
-    ll\x20be\x20completely\x20ignored;\x20in\x20the\x20very\x20least,\x20thi\
-    s\n\x20is\x20a\x20formalization\x20for\x20deprecating\x20fields.\n\n\r\n\
-    \x05\x04\x0b\x02\x04\x04\x12\x04\x86\x04\x02\n\n\r\n\x05\x04\x0b\x02\x04\
-    \x05\x12\x04\x86\x04\x0b\x0f\n\r\n\x05\x04\x0b\x02\x04\x01\x12\x04\x86\
-    \x04\x10\x1a\n\r\n\x05\x04\x0b\x02\x04\x03\x12\x04\x86\x04\x1d\x1e\n\r\n\
-    \x05\x04\x0b\x02\x04\x08\x12\x04\x86\x04\x1f.\n\r\n\x05\x04\x0b\x02\x04\
-    \x07\x12\x04\x86\x04(-\n?\n\x04\x04\x0b\x02\x05\x12\x04\x89\x04\x02*\x1a\
-    1\x20For\x20Google-internal\x20migration\x20only.\x20Do\x20not\x20use.\n\
-    \n\r\n\x05\x04\x0b\x02\x05\x04\x12\x04\x89\x04\x02\n\n\r\n\x05\x04\x0b\
-    \x02\x05\x05\x12\x04\x89\x04\x0b\x0f\n\r\n\x05\x04\x0b\x02\x05\x01\x12\
-    \x04\x89\x04\x10\x14\n\r\n\x05\x04\x0b\x02\x05\x03\x12\x04\x89\x04\x17\
-    \x19\n\r\n\x05\x04\x0b\x02\x05\x08\x12\x04\x89\x04\x1a)\n\r\n\x05\x04\
-    \x0b\x02\x05\x07\x12\x04\x89\x04#(\nO\n\x04\x04\x0b\x02\x06\x12\x04\x8d\
-    \x04\x02:\x1aA\x20The\x20parser\x20stores\x20options\x20it\x20doesn't\
-    \x20recognize\x20here.\x20See\x20above.\n\n\r\n\x05\x04\x0b\x02\x06\x04\
-    \x12\x04\x8d\x04\x02\n\n\r\n\x05\x04\x0b\x02\x06\x06\x12\x04\x8d\x04\x0b\
-    \x1e\n\r\n\x05\x04\x0b\x02\x06\x01\x12\x04\x8d\x04\x1f3\n\r\n\x05\x04\
-    \x0b\x02\x06\x03\x12\x04\x8d\x0469\nZ\n\x03\x04\x0b\x05\x12\x04\x90\x04\
-    \x02\x19\x1aM\x20Clients\x20can\x20define\x20custom\x20options\x20in\x20\
-    extensions\x20of\x20this\x20message.\x20See\x20above.\n\n\x0c\n\x04\x04\
-    \x0b\x05\0\x12\x04\x90\x04\r\x18\n\r\n\x05\x04\x0b\x05\0\x01\x12\x04\x90\
-    \x04\r\x11\n\r\n\x05\x04\x0b\x05\0\x02\x12\x04\x90\x04\x15\x18\n\x0c\n\
-    \x02\x04\x0c\x12\x06\x95\x04\0\x9b\x04\x01\n\x0b\n\x03\x04\x0c\x01\x12\
-    \x04\x95\x04\x08\x14\nO\n\x04\x04\x0c\x02\0\x12\x04\x97\x04\x02:\x1aA\
+    \x20See\x20above.\n\n\r\n\x05\x04\x0b\x02\x04\x04\x12\x04\x8e\x04\x02\n\
+    \n\r\n\x05\x04\x0b\x02\x04\x06\x12\x04\x8e\x04\x0b\x1e\n\r\n\x05\x04\x0b\
+    \x02\x04\x01\x12\x04\x8e\x04\x1f3\n\r\n\x05\x04\x0b\x02\x04\x03\x12\x04\
+    \x8e\x0469\nZ\n\x03\x04\x0b\x05\x12\x04\x91\x04\x02\x19\x1aM\x20Clients\
+    \x20can\x20define\x20custom\x20options\x20in\x20extensions\x20of\x20this\
+    \x20message.\x20See\x20above.\n\n\x0c\n\x04\x04\x0b\x05\0\x12\x04\x91\
+    \x04\r\x18\n\r\n\x05\x04\x0b\x05\0\x01\x12\x04\x91\x04\r\x11\n\r\n\x05\
+    \x04\x0b\x05\0\x02\x12\x04\x91\x04\x15\x18\n\x0c\n\x02\x04\x0c\x12\x06\
+    \x94\x04\0\xef\x04\x01\n\x0b\n\x03\x04\x0c\x01\x12\x04\x94\x04\x08\x14\n\
+    \xa3\x02\n\x04\x04\x0c\x02\0\x12\x04\x99\x04\x02.\x1a\x94\x02\x20The\x20\
+    ctype\x20option\x20instructs\x20the\x20C++\x20code\x20generator\x20to\
+    \x20use\x20a\x20different\n\x20representation\x20of\x20the\x20field\x20t\
+    han\x20it\x20normally\x20would.\x20\x20See\x20the\x20specific\n\x20optio\
+    ns\x20below.\x20\x20This\x20option\x20is\x20not\x20yet\x20implemented\
+    \x20in\x20the\x20open\x20source\n\x20release\x20--\x20sorry,\x20we'll\
+    \x20try\x20to\x20include\x20it\x20in\x20a\x20future\x20version!\n\n\r\n\
+    \x05\x04\x0c\x02\0\x04\x12\x04\x99\x04\x02\n\n\r\n\x05\x04\x0c\x02\0\x06\
+    \x12\x04\x99\x04\x0b\x10\n\r\n\x05\x04\x0c\x02\0\x01\x12\x04\x99\x04\x11\
+    \x16\n\r\n\x05\x04\x0c\x02\0\x03\x12\x04\x99\x04\x19\x1a\n\r\n\x05\x04\
+    \x0c\x02\0\x08\x12\x04\x99\x04\x1b-\n\r\n\x05\x04\x0c\x02\0\x07\x12\x04\
+    \x99\x04&,\n\x0e\n\x04\x04\x0c\x04\0\x12\x06\x9a\x04\x02\xa1\x04\x03\n\r\
+    \n\x05\x04\x0c\x04\0\x01\x12\x04\x9a\x04\x07\x0c\n\x1f\n\x06\x04\x0c\x04\
+    \0\x02\0\x12\x04\x9c\x04\x04\x0f\x1a\x0f\x20Default\x20mode.\n\n\x0f\n\
+    \x07\x04\x0c\x04\0\x02\0\x01\x12\x04\x9c\x04\x04\n\n\x0f\n\x07\x04\x0c\
+    \x04\0\x02\0\x02\x12\x04\x9c\x04\r\x0e\n\x0e\n\x06\x04\x0c\x04\0\x02\x01\
+    \x12\x04\x9e\x04\x04\r\n\x0f\n\x07\x04\x0c\x04\0\x02\x01\x01\x12\x04\x9e\
+    \x04\x04\x08\n\x0f\n\x07\x04\x0c\x04\0\x02\x01\x02\x12\x04\x9e\x04\x0b\
+    \x0c\n\x0e\n\x06\x04\x0c\x04\0\x02\x02\x12\x04\xa0\x04\x04\x15\n\x0f\n\
+    \x07\x04\x0c\x04\0\x02\x02\x01\x12\x04\xa0\x04\x04\x10\n\x0f\n\x07\x04\
+    \x0c\x04\0\x02\x02\x02\x12\x04\xa0\x04\x13\x14\n\xda\x02\n\x04\x04\x0c\
+    \x02\x01\x12\x04\xa7\x04\x02\x1b\x1a\xcb\x02\x20The\x20packed\x20option\
+    \x20can\x20be\x20enabled\x20for\x20repeated\x20primitive\x20fields\x20to\
+    \x20enable\n\x20a\x20more\x20efficient\x20representation\x20on\x20the\
+    \x20wire.\x20Rather\x20than\x20repeatedly\n\x20writing\x20the\x20tag\x20\
+    and\x20type\x20for\x20each\x20element,\x20the\x20entire\x20array\x20is\
+    \x20encoded\x20as\n\x20a\x20single\x20length-delimited\x20blob.\x20In\
+    \x20proto3,\x20only\x20explicit\x20setting\x20it\x20to\n\x20false\x20wil\
+    l\x20avoid\x20using\x20packed\x20encoding.\n\n\r\n\x05\x04\x0c\x02\x01\
+    \x04\x12\x04\xa7\x04\x02\n\n\r\n\x05\x04\x0c\x02\x01\x05\x12\x04\xa7\x04\
+    \x0b\x0f\n\r\n\x05\x04\x0c\x02\x01\x01\x12\x04\xa7\x04\x10\x16\n\r\n\x05\
+    \x04\x0c\x02\x01\x03\x12\x04\xa7\x04\x19\x1a\n\x9a\x05\n\x04\x04\x0c\x02\
+    \x02\x12\x04\xb4\x04\x023\x1a\x8b\x05\x20The\x20jstype\x20option\x20dete\
+    rmines\x20the\x20JavaScript\x20type\x20used\x20for\x20values\x20of\x20th\
+    e\n\x20field.\x20\x20The\x20option\x20is\x20permitted\x20only\x20for\x20\
+    64\x20bit\x20integral\x20and\x20fixed\x20types\n\x20(int64,\x20uint64,\
+    \x20sint64,\x20fixed64,\x20sfixed64).\x20\x20A\x20field\x20with\x20jstyp\
+    e\x20JS_STRING\n\x20is\x20represented\x20as\x20JavaScript\x20string,\x20\
+    which\x20avoids\x20loss\x20of\x20precision\x20that\n\x20can\x20happen\
+    \x20when\x20a\x20large\x20value\x20is\x20converted\x20to\x20a\x20floatin\
+    g\x20point\x20JavaScript.\n\x20Specifying\x20JS_NUMBER\x20for\x20the\x20\
+    jstype\x20causes\x20the\x20generated\x20JavaScript\x20code\x20to\n\x20us\
+    e\x20the\x20JavaScript\x20\"number\"\x20type.\x20\x20The\x20behavior\x20\
+    of\x20the\x20default\x20option\n\x20JS_NORMAL\x20is\x20implementation\
+    \x20dependent.\n\n\x20This\x20option\x20is\x20an\x20enum\x20to\x20permit\
+    \x20additional\x20types\x20to\x20be\x20added,\x20e.g.\n\x20goog.math.Int\
+    eger.\n\n\r\n\x05\x04\x0c\x02\x02\x04\x12\x04\xb4\x04\x02\n\n\r\n\x05\
+    \x04\x0c\x02\x02\x06\x12\x04\xb4\x04\x0b\x11\n\r\n\x05\x04\x0c\x02\x02\
+    \x01\x12\x04\xb4\x04\x12\x18\n\r\n\x05\x04\x0c\x02\x02\x03\x12\x04\xb4\
+    \x04\x1b\x1c\n\r\n\x05\x04\x0c\x02\x02\x08\x12\x04\xb4\x04\x1d2\n\r\n\
+    \x05\x04\x0c\x02\x02\x07\x12\x04\xb4\x04(1\n\x0e\n\x04\x04\x0c\x04\x01\
+    \x12\x06\xb5\x04\x02\xbe\x04\x03\n\r\n\x05\x04\x0c\x04\x01\x01\x12\x04\
+    \xb5\x04\x07\r\n'\n\x06\x04\x0c\x04\x01\x02\0\x12\x04\xb7\x04\x04\x12\
+    \x1a\x17\x20Use\x20the\x20default\x20type.\n\n\x0f\n\x07\x04\x0c\x04\x01\
+    \x02\0\x01\x12\x04\xb7\x04\x04\r\n\x0f\n\x07\x04\x0c\x04\x01\x02\0\x02\
+    \x12\x04\xb7\x04\x10\x11\n)\n\x06\x04\x0c\x04\x01\x02\x01\x12\x04\xba\
+    \x04\x04\x12\x1a\x19\x20Use\x20JavaScript\x20strings.\n\n\x0f\n\x07\x04\
+    \x0c\x04\x01\x02\x01\x01\x12\x04\xba\x04\x04\r\n\x0f\n\x07\x04\x0c\x04\
+    \x01\x02\x01\x02\x12\x04\xba\x04\x10\x11\n)\n\x06\x04\x0c\x04\x01\x02\
+    \x02\x12\x04\xbd\x04\x04\x12\x1a\x19\x20Use\x20JavaScript\x20numbers.\n\
+    \n\x0f\n\x07\x04\x0c\x04\x01\x02\x02\x01\x12\x04\xbd\x04\x04\r\n\x0f\n\
+    \x07\x04\x0c\x04\x01\x02\x02\x02\x12\x04\xbd\x04\x10\x11\n\xef\x0c\n\x04\
+    \x04\x0c\x02\x03\x12\x04\xdc\x04\x02+\x1a\xe0\x0c\x20Should\x20this\x20f\
+    ield\x20be\x20parsed\x20lazily?\x20\x20Lazy\x20applies\x20only\x20to\x20\
+    message-type\n\x20fields.\x20\x20It\x20means\x20that\x20when\x20the\x20o\
+    uter\x20message\x20is\x20initially\x20parsed,\x20the\n\x20inner\x20messa\
+    ge's\x20contents\x20will\x20not\x20be\x20parsed\x20but\x20instead\x20sto\
+    red\x20in\x20encoded\n\x20form.\x20\x20The\x20inner\x20message\x20will\
+    \x20actually\x20be\x20parsed\x20when\x20it\x20is\x20first\x20accessed.\n\
+    \n\x20This\x20is\x20only\x20a\x20hint.\x20\x20Implementations\x20are\x20\
+    free\x20to\x20choose\x20whether\x20to\x20use\n\x20eager\x20or\x20lazy\
+    \x20parsing\x20regardless\x20of\x20the\x20value\x20of\x20this\x20option.\
+    \x20\x20However,\n\x20setting\x20this\x20option\x20true\x20suggests\x20t\
+    hat\x20the\x20protocol\x20author\x20believes\x20that\n\x20using\x20lazy\
+    \x20parsing\x20on\x20this\x20field\x20is\x20worth\x20the\x20additional\
+    \x20bookkeeping\n\x20overhead\x20typically\x20needed\x20to\x20implement\
+    \x20it.\n\n\x20This\x20option\x20does\x20not\x20affect\x20the\x20public\
+    \x20interface\x20of\x20any\x20generated\x20code;\n\x20all\x20method\x20s\
+    ignatures\x20remain\x20the\x20same.\x20\x20Furthermore,\x20thread-safety\
+    \x20of\x20the\n\x20interface\x20is\x20not\x20affected\x20by\x20this\x20o\
+    ption;\x20const\x20methods\x20remain\x20safe\x20to\n\x20call\x20from\x20\
+    multiple\x20threads\x20concurrently,\x20while\x20non-const\x20methods\
+    \x20continue\n\x20to\x20require\x20exclusive\x20access.\n\n\n\x20Note\
+    \x20that\x20implementations\x20may\x20choose\x20not\x20to\x20check\x20re\
+    quired\x20fields\x20within\n\x20a\x20lazy\x20sub-message.\x20\x20That\
+    \x20is,\x20calling\x20IsInitialized()\x20on\x20the\x20outer\x20message\n\
+    \x20may\x20return\x20true\x20even\x20if\x20the\x20inner\x20message\x20ha\
+    s\x20missing\x20required\x20fields.\n\x20This\x20is\x20necessary\x20beca\
+    use\x20otherwise\x20the\x20inner\x20message\x20would\x20have\x20to\x20be\
+    \n\x20parsed\x20in\x20order\x20to\x20perform\x20the\x20check,\x20defeati\
+    ng\x20the\x20purpose\x20of\x20lazy\n\x20parsing.\x20\x20An\x20implementa\
+    tion\x20which\x20chooses\x20not\x20to\x20check\x20required\x20fields\n\
+    \x20must\x20be\x20consistent\x20about\x20it.\x20\x20That\x20is,\x20for\
+    \x20any\x20particular\x20sub-message,\x20the\n\x20implementation\x20must\
+    \x20either\x20*always*\x20check\x20its\x20required\x20fields,\x20or\x20*\
+    never*\n\x20check\x20its\x20required\x20fields,\x20regardless\x20of\x20w\
+    hether\x20or\x20not\x20the\x20message\x20has\n\x20been\x20parsed.\n\n\r\
+    \n\x05\x04\x0c\x02\x03\x04\x12\x04\xdc\x04\x02\n\n\r\n\x05\x04\x0c\x02\
+    \x03\x05\x12\x04\xdc\x04\x0b\x0f\n\r\n\x05\x04\x0c\x02\x03\x01\x12\x04\
+    \xdc\x04\x10\x14\n\r\n\x05\x04\x0c\x02\x03\x03\x12\x04\xdc\x04\x17\x18\n\
+    \r\n\x05\x04\x0c\x02\x03\x08\x12\x04\xdc\x04\x19*\n\r\n\x05\x04\x0c\x02\
+    \x03\x07\x12\x04\xdc\x04$)\n\xe8\x01\n\x04\x04\x0c\x02\x04\x12\x04\xe2\
+    \x04\x021\x1a\xd9\x01\x20Is\x20this\x20field\x20deprecated?\n\x20Dependi\
+    ng\x20on\x20the\x20target\x20platform,\x20this\x20can\x20emit\x20Depreca\
+    ted\x20annotations\n\x20for\x20accessors,\x20or\x20it\x20will\x20be\x20c\
+    ompletely\x20ignored;\x20in\x20the\x20very\x20least,\x20this\n\x20is\x20\
+    a\x20formalization\x20for\x20deprecating\x20fields.\n\n\r\n\x05\x04\x0c\
+    \x02\x04\x04\x12\x04\xe2\x04\x02\n\n\r\n\x05\x04\x0c\x02\x04\x05\x12\x04\
+    \xe2\x04\x0b\x0f\n\r\n\x05\x04\x0c\x02\x04\x01\x12\x04\xe2\x04\x10\x1a\n\
+    \r\n\x05\x04\x0c\x02\x04\x03\x12\x04\xe2\x04\x1d\x1e\n\r\n\x05\x04\x0c\
+    \x02\x04\x08\x12\x04\xe2\x04\x1f0\n\r\n\x05\x04\x0c\x02\x04\x07\x12\x04\
+    \xe2\x04*/\n?\n\x04\x04\x0c\x02\x05\x12\x04\xe5\x04\x02,\x1a1\x20For\x20\
+    Google-internal\x20migration\x20only.\x20Do\x20not\x20use.\n\n\r\n\x05\
+    \x04\x0c\x02\x05\x04\x12\x04\xe5\x04\x02\n\n\r\n\x05\x04\x0c\x02\x05\x05\
+    \x12\x04\xe5\x04\x0b\x0f\n\r\n\x05\x04\x0c\x02\x05\x01\x12\x04\xe5\x04\
+    \x10\x14\n\r\n\x05\x04\x0c\x02\x05\x03\x12\x04\xe5\x04\x17\x19\n\r\n\x05\
+    \x04\x0c\x02\x05\x08\x12\x04\xe5\x04\x1a+\n\r\n\x05\x04\x0c\x02\x05\x07\
+    \x12\x04\xe5\x04%*\nO\n\x04\x04\x0c\x02\x06\x12\x04\xe9\x04\x02:\x1aA\
     \x20The\x20parser\x20stores\x20options\x20it\x20doesn't\x20recognize\x20\
-    here.\x20See\x20above.\n\n\r\n\x05\x04\x0c\x02\0\x04\x12\x04\x97\x04\x02\
-    \n\n\r\n\x05\x04\x0c\x02\0\x06\x12\x04\x97\x04\x0b\x1e\n\r\n\x05\x04\x0c\
-    \x02\0\x01\x12\x04\x97\x04\x1f3\n\r\n\x05\x04\x0c\x02\0\x03\x12\x04\x97\
-    \x0469\nZ\n\x03\x04\x0c\x05\x12\x04\x9a\x04\x02\x19\x1aM\x20Clients\x20c\
-    an\x20define\x20custom\x20options\x20in\x20extensions\x20of\x20this\x20m\
-    essage.\x20See\x20above.\n\n\x0c\n\x04\x04\x0c\x05\0\x12\x04\x9a\x04\r\
-    \x18\n\r\n\x05\x04\x0c\x05\0\x01\x12\x04\x9a\x04\r\x11\n\r\n\x05\x04\x0c\
-    \x05\0\x02\x12\x04\x9a\x04\x15\x18\n\x0c\n\x02\x04\r\x12\x06\x9d\x04\0\
-    \xae\x04\x01\n\x0b\n\x03\x04\r\x01\x12\x04\x9d\x04\x08\x13\n`\n\x04\x04\
-    \r\x02\0\x12\x04\xa1\x04\x02\x20\x1aR\x20Set\x20this\x20option\x20to\x20\
-    true\x20to\x20allow\x20mapping\x20different\x20tag\x20names\x20to\x20the\
-    \x20same\n\x20value.\n\n\r\n\x05\x04\r\x02\0\x04\x12\x04\xa1\x04\x02\n\n\
-    \r\n\x05\x04\r\x02\0\x05\x12\x04\xa1\x04\x0b\x0f\n\r\n\x05\x04\r\x02\0\
-    \x01\x12\x04\xa1\x04\x10\x1b\n\r\n\x05\x04\r\x02\0\x03\x12\x04\xa1\x04\
-    \x1e\x1f\n\xe5\x01\n\x04\x04\r\x02\x01\x12\x04\xa7\x04\x02/\x1a\xd6\x01\
-    \x20Is\x20this\x20enum\x20deprecated?\n\x20Depending\x20on\x20the\x20tar\
-    get\x20platform,\x20this\x20can\x20emit\x20Deprecated\x20annotations\n\
-    \x20for\x20the\x20enum,\x20or\x20it\x20will\x20be\x20completely\x20ignor\
-    ed;\x20in\x20the\x20very\x20least,\x20this\n\x20is\x20a\x20formalization\
-    \x20for\x20deprecating\x20enums.\n\n\r\n\x05\x04\r\x02\x01\x04\x12\x04\
-    \xa7\x04\x02\n\n\r\n\x05\x04\r\x02\x01\x05\x12\x04\xa7\x04\x0b\x0f\n\r\n\
-    \x05\x04\r\x02\x01\x01\x12\x04\xa7\x04\x10\x1a\n\r\n\x05\x04\r\x02\x01\
-    \x03\x12\x04\xa7\x04\x1d\x1e\n\r\n\x05\x04\r\x02\x01\x08\x12\x04\xa7\x04\
-    \x1f.\n\r\n\x05\x04\r\x02\x01\x07\x12\x04\xa7\x04(-\nO\n\x04\x04\r\x02\
-    \x02\x12\x04\xaa\x04\x02:\x1aA\x20The\x20parser\x20stores\x20options\x20\
-    it\x20doesn't\x20recognize\x20here.\x20See\x20above.\n\n\r\n\x05\x04\r\
-    \x02\x02\x04\x12\x04\xaa\x04\x02\n\n\r\n\x05\x04\r\x02\x02\x06\x12\x04\
-    \xaa\x04\x0b\x1e\n\r\n\x05\x04\r\x02\x02\x01\x12\x04\xaa\x04\x1f3\n\r\n\
-    \x05\x04\r\x02\x02\x03\x12\x04\xaa\x0469\nZ\n\x03\x04\r\x05\x12\x04\xad\
-    \x04\x02\x19\x1aM\x20Clients\x20can\x20define\x20custom\x20options\x20in\
-    \x20extensions\x20of\x20this\x20message.\x20See\x20above.\n\n\x0c\n\x04\
-    \x04\r\x05\0\x12\x04\xad\x04\r\x18\n\r\n\x05\x04\r\x05\0\x01\x12\x04\xad\
-    \x04\r\x11\n\r\n\x05\x04\r\x05\0\x02\x12\x04\xad\x04\x15\x18\n\x0c\n\x02\
-    \x04\x0e\x12\x06\xb0\x04\0\xbc\x04\x01\n\x0b\n\x03\x04\x0e\x01\x12\x04\
-    \xb0\x04\x08\x18\n\xf7\x01\n\x04\x04\x0e\x02\0\x12\x04\xb5\x04\x02/\x1a\
-    \xe8\x01\x20Is\x20this\x20enum\x20value\x20deprecated?\n\x20Depending\
-    \x20on\x20the\x20target\x20platform,\x20this\x20can\x20emit\x20Deprecate\
-    d\x20annotations\n\x20for\x20the\x20enum\x20value,\x20or\x20it\x20will\
-    \x20be\x20completely\x20ignored;\x20in\x20the\x20very\x20least,\n\x20thi\
-    s\x20is\x20a\x20formalization\x20for\x20deprecating\x20enum\x20values.\n\
-    \n\r\n\x05\x04\x0e\x02\0\x04\x12\x04\xb5\x04\x02\n\n\r\n\x05\x04\x0e\x02\
-    \0\x05\x12\x04\xb5\x04\x0b\x0f\n\r\n\x05\x04\x0e\x02\0\x01\x12\x04\xb5\
-    \x04\x10\x1a\n\r\n\x05\x04\x0e\x02\0\x03\x12\x04\xb5\x04\x1d\x1e\n\r\n\
-    \x05\x04\x0e\x02\0\x08\x12\x04\xb5\x04\x1f.\n\r\n\x05\x04\x0e\x02\0\x07\
-    \x12\x04\xb5\x04(-\nO\n\x04\x04\x0e\x02\x01\x12\x04\xb8\x04\x02:\x1aA\
-    \x20The\x20parser\x20stores\x20options\x20it\x20doesn't\x20recognize\x20\
-    here.\x20See\x20above.\n\n\r\n\x05\x04\x0e\x02\x01\x04\x12\x04\xb8\x04\
-    \x02\n\n\r\n\x05\x04\x0e\x02\x01\x06\x12\x04\xb8\x04\x0b\x1e\n\r\n\x05\
-    \x04\x0e\x02\x01\x01\x12\x04\xb8\x04\x1f3\n\r\n\x05\x04\x0e\x02\x01\x03\
-    \x12\x04\xb8\x0469\nZ\n\x03\x04\x0e\x05\x12\x04\xbb\x04\x02\x19\x1aM\x20\
+    here.\x20See\x20above.\n\n\r\n\x05\x04\x0c\x02\x06\x04\x12\x04\xe9\x04\
+    \x02\n\n\r\n\x05\x04\x0c\x02\x06\x06\x12\x04\xe9\x04\x0b\x1e\n\r\n\x05\
+    \x04\x0c\x02\x06\x01\x12\x04\xe9\x04\x1f3\n\r\n\x05\x04\x0c\x02\x06\x03\
+    \x12\x04\xe9\x0469\nZ\n\x03\x04\x0c\x05\x12\x04\xec\x04\x02\x19\x1aM\x20\
     Clients\x20can\x20define\x20custom\x20options\x20in\x20extensions\x20of\
-    \x20this\x20message.\x20See\x20above.\n\n\x0c\n\x04\x04\x0e\x05\0\x12\
-    \x04\xbb\x04\r\x18\n\r\n\x05\x04\x0e\x05\0\x01\x12\x04\xbb\x04\r\x11\n\r\
-    \n\x05\x04\x0e\x05\0\x02\x12\x04\xbb\x04\x15\x18\n\x0c\n\x02\x04\x0f\x12\
-    \x06\xbe\x04\0\xd0\x04\x01\n\x0b\n\x03\x04\x0f\x01\x12\x04\xbe\x04\x08\
-    \x16\n\xd9\x03\n\x04\x04\x0f\x02\0\x12\x04\xc9\x04\x020\x1a\xdf\x01\x20I\
-    s\x20this\x20service\x20deprecated?\n\x20Depending\x20on\x20the\x20targe\
-    t\x20platform,\x20this\x20can\x20emit\x20Deprecated\x20annotations\n\x20\
-    for\x20the\x20service,\x20or\x20it\x20will\x20be\x20completely\x20ignore\
-    d;\x20in\x20the\x20very\x20least,\n\x20this\x20is\x20a\x20formalization\
-    \x20for\x20deprecating\x20services.\n2\xe8\x01\x20Note:\x20\x20Field\x20\
-    numbers\x201\x20through\x2032\x20are\x20reserved\x20for\x20Google's\x20i\
-    nternal\x20RPC\n\x20\x20\x20framework.\x20\x20We\x20apologize\x20for\x20\
-    hoarding\x20these\x20numbers\x20to\x20ourselves,\x20but\n\x20\x20\x20we\
-    \x20were\x20already\x20using\x20them\x20long\x20before\x20we\x20decided\
-    \x20to\x20release\x20Protocol\n\x20\x20\x20Buffers.\n\n\r\n\x05\x04\x0f\
-    \x02\0\x04\x12\x04\xc9\x04\x02\n\n\r\n\x05\x04\x0f\x02\0\x05\x12\x04\xc9\
-    \x04\x0b\x0f\n\r\n\x05\x04\x0f\x02\0\x01\x12\x04\xc9\x04\x10\x1a\n\r\n\
-    \x05\x04\x0f\x02\0\x03\x12\x04\xc9\x04\x1d\x1f\n\r\n\x05\x04\x0f\x02\0\
-    \x08\x12\x04\xc9\x04\x20/\n\r\n\x05\x04\x0f\x02\0\x07\x12\x04\xc9\x04).\
-    \nO\n\x04\x04\x0f\x02\x01\x12\x04\xcc\x04\x02:\x1aA\x20The\x20parser\x20\
+    \x20this\x20message.\x20See\x20above.\n\n\x0c\n\x04\x04\x0c\x05\0\x12\
+    \x04\xec\x04\r\x18\n\r\n\x05\x04\x0c\x05\0\x01\x12\x04\xec\x04\r\x11\n\r\
+    \n\x05\x04\x0c\x05\0\x02\x12\x04\xec\x04\x15\x18\n\x1c\n\x03\x04\x0c\t\
+    \x12\x04\xee\x04\x02\r\"\x0f\x20removed\x20jtype\n\n\x0c\n\x04\x04\x0c\t\
+    \0\x12\x04\xee\x04\x0b\x0c\n\r\n\x05\x04\x0c\t\0\x01\x12\x04\xee\x04\x0b\
+    \x0c\n\r\n\x05\x04\x0c\t\0\x02\x12\x04\xee\x04\x0b\x0c\n\x0c\n\x02\x04\r\
+    \x12\x06\xf1\x04\0\xf7\x04\x01\n\x0b\n\x03\x04\r\x01\x12\x04\xf1\x04\x08\
+    \x14\nO\n\x04\x04\r\x02\0\x12\x04\xf3\x04\x02:\x1aA\x20The\x20parser\x20\
     stores\x20options\x20it\x20doesn't\x20recognize\x20here.\x20See\x20above\
-    .\n\n\r\n\x05\x04\x0f\x02\x01\x04\x12\x04\xcc\x04\x02\n\n\r\n\x05\x04\
-    \x0f\x02\x01\x06\x12\x04\xcc\x04\x0b\x1e\n\r\n\x05\x04\x0f\x02\x01\x01\
-    \x12\x04\xcc\x04\x1f3\n\r\n\x05\x04\x0f\x02\x01\x03\x12\x04\xcc\x0469\nZ\
-    \n\x03\x04\x0f\x05\x12\x04\xcf\x04\x02\x19\x1aM\x20Clients\x20can\x20def\
-    ine\x20custom\x20options\x20in\x20extensions\x20of\x20this\x20message.\
-    \x20See\x20above.\n\n\x0c\n\x04\x04\x0f\x05\0\x12\x04\xcf\x04\r\x18\n\r\
-    \n\x05\x04\x0f\x05\0\x01\x12\x04\xcf\x04\r\x11\n\r\n\x05\x04\x0f\x05\0\
-    \x02\x12\x04\xcf\x04\x15\x18\n\x0c\n\x02\x04\x10\x12\x06\xd2\x04\0\xe4\
-    \x04\x01\n\x0b\n\x03\x04\x10\x01\x12\x04\xd2\x04\x08\x15\n\xd6\x03\n\x04\
-    \x04\x10\x02\0\x12\x04\xdd\x04\x020\x1a\xdc\x01\x20Is\x20this\x20method\
-    \x20deprecated?\n\x20Depending\x20on\x20the\x20target\x20platform,\x20th\
-    is\x20can\x20emit\x20Deprecated\x20annotations\n\x20for\x20the\x20method\
-    ,\x20or\x20it\x20will\x20be\x20completely\x20ignored;\x20in\x20the\x20ve\
-    ry\x20least,\n\x20this\x20is\x20a\x20formalization\x20for\x20deprecating\
-    \x20methods.\n2\xe8\x01\x20Note:\x20\x20Field\x20numbers\x201\x20through\
-    \x2032\x20are\x20reserved\x20for\x20Google's\x20internal\x20RPC\n\x20\
-    \x20\x20framework.\x20\x20We\x20apologize\x20for\x20hoarding\x20these\
-    \x20numbers\x20to\x20ourselves,\x20but\n\x20\x20\x20we\x20were\x20alread\
-    y\x20using\x20them\x20long\x20before\x20we\x20decided\x20to\x20release\
-    \x20Protocol\n\x20\x20\x20Buffers.\n\n\r\n\x05\x04\x10\x02\0\x04\x12\x04\
-    \xdd\x04\x02\n\n\r\n\x05\x04\x10\x02\0\x05\x12\x04\xdd\x04\x0b\x0f\n\r\n\
-    \x05\x04\x10\x02\0\x01\x12\x04\xdd\x04\x10\x1a\n\r\n\x05\x04\x10\x02\0\
-    \x03\x12\x04\xdd\x04\x1d\x1f\n\r\n\x05\x04\x10\x02\0\x08\x12\x04\xdd\x04\
-    \x20/\n\r\n\x05\x04\x10\x02\0\x07\x12\x04\xdd\x04).\nO\n\x04\x04\x10\x02\
-    \x01\x12\x04\xe0\x04\x02:\x1aA\x20The\x20parser\x20stores\x20options\x20\
-    it\x20doesn't\x20recognize\x20here.\x20See\x20above.\n\n\r\n\x05\x04\x10\
-    \x02\x01\x04\x12\x04\xe0\x04\x02\n\n\r\n\x05\x04\x10\x02\x01\x06\x12\x04\
-    \xe0\x04\x0b\x1e\n\r\n\x05\x04\x10\x02\x01\x01\x12\x04\xe0\x04\x1f3\n\r\
-    \n\x05\x04\x10\x02\x01\x03\x12\x04\xe0\x0469\nZ\n\x03\x04\x10\x05\x12\
-    \x04\xe3\x04\x02\x19\x1aM\x20Clients\x20can\x20define\x20custom\x20optio\
+    .\n\n\r\n\x05\x04\r\x02\0\x04\x12\x04\xf3\x04\x02\n\n\r\n\x05\x04\r\x02\
+    \0\x06\x12\x04\xf3\x04\x0b\x1e\n\r\n\x05\x04\r\x02\0\x01\x12\x04\xf3\x04\
+    \x1f3\n\r\n\x05\x04\r\x02\0\x03\x12\x04\xf3\x0469\nZ\n\x03\x04\r\x05\x12\
+    \x04\xf6\x04\x02\x19\x1aM\x20Clients\x20can\x20define\x20custom\x20optio\
     ns\x20in\x20extensions\x20of\x20this\x20message.\x20See\x20above.\n\n\
-    \x0c\n\x04\x04\x10\x05\0\x12\x04\xe3\x04\r\x18\n\r\n\x05\x04\x10\x05\0\
-    \x01\x12\x04\xe3\x04\r\x11\n\r\n\x05\x04\x10\x05\0\x02\x12\x04\xe3\x04\
-    \x15\x18\n\x8b\x03\n\x02\x04\x11\x12\x06\xed\x04\0\x81\x05\x01\x1a\xfc\
-    \x02\x20A\x20message\x20representing\x20a\x20option\x20the\x20parser\x20\
-    does\x20not\x20recognize.\x20This\x20only\n\x20appears\x20in\x20options\
-    \x20protos\x20created\x20by\x20the\x20compiler::Parser\x20class.\n\x20De\
-    scriptorPool\x20resolves\x20these\x20when\x20building\x20Descriptor\x20o\
-    bjects.\x20Therefore,\n\x20options\x20protos\x20in\x20descriptor\x20obje\
-    cts\x20(e.g.\x20returned\x20by\x20Descriptor::options(),\n\x20or\x20prod\
-    uced\x20by\x20Descriptor::CopyTo())\x20will\x20never\x20have\x20Uninterp\
-    retedOptions\n\x20in\x20them.\n\n\x0b\n\x03\x04\x11\x01\x12\x04\xed\x04\
-    \x08\x1b\n\xcb\x02\n\x04\x04\x11\x03\0\x12\x06\xf3\x04\x02\xf6\x04\x03\
-    \x1a\xba\x02\x20The\x20name\x20of\x20the\x20uninterpreted\x20option.\x20\
-    \x20Each\x20string\x20represents\x20a\x20segment\x20in\n\x20a\x20dot-sep\
-    arated\x20name.\x20\x20is_extension\x20is\x20true\x20iff\x20a\x20segment\
-    \x20represents\x20an\n\x20extension\x20(denoted\x20with\x20parentheses\
-    \x20in\x20options\x20specs\x20in\x20.proto\x20files).\n\x20E.g.,{\x20[\"\
-    foo\",\x20false],\x20[\"bar.baz\",\x20true],\x20[\"qux\",\x20false]\x20}\
-    \x20represents\n\x20\"foo.(bar.baz).qux\".\n\n\r\n\x05\x04\x11\x03\0\x01\
-    \x12\x04\xf3\x04\n\x12\n\x0e\n\x06\x04\x11\x03\0\x02\0\x12\x04\xf4\x04\
-    \x04\"\n\x0f\n\x07\x04\x11\x03\0\x02\0\x04\x12\x04\xf4\x04\x04\x0c\n\x0f\
-    \n\x07\x04\x11\x03\0\x02\0\x05\x12\x04\xf4\x04\r\x13\n\x0f\n\x07\x04\x11\
-    \x03\0\x02\0\x01\x12\x04\xf4\x04\x14\x1d\n\x0f\n\x07\x04\x11\x03\0\x02\0\
-    \x03\x12\x04\xf4\x04\x20!\n\x0e\n\x06\x04\x11\x03\0\x02\x01\x12\x04\xf5\
-    \x04\x04#\n\x0f\n\x07\x04\x11\x03\0\x02\x01\x04\x12\x04\xf5\x04\x04\x0c\
-    \n\x0f\n\x07\x04\x11\x03\0\x02\x01\x05\x12\x04\xf5\x04\r\x11\n\x0f\n\x07\
-    \x04\x11\x03\0\x02\x01\x01\x12\x04\xf5\x04\x12\x1e\n\x0f\n\x07\x04\x11\
-    \x03\0\x02\x01\x03\x12\x04\xf5\x04!\"\n\x0c\n\x04\x04\x11\x02\0\x12\x04\
-    \xf7\x04\x02\x1d\n\r\n\x05\x04\x11\x02\0\x04\x12\x04\xf7\x04\x02\n\n\r\n\
-    \x05\x04\x11\x02\0\x06\x12\x04\xf7\x04\x0b\x13\n\r\n\x05\x04\x11\x02\0\
-    \x01\x12\x04\xf7\x04\x14\x18\n\r\n\x05\x04\x11\x02\0\x03\x12\x04\xf7\x04\
-    \x1b\x1c\n\x9c\x01\n\x04\x04\x11\x02\x01\x12\x04\xfb\x04\x02'\x1a\x8d\
-    \x01\x20The\x20value\x20of\x20the\x20uninterpreted\x20option,\x20in\x20w\
-    hatever\x20type\x20the\x20tokenizer\n\x20identified\x20it\x20as\x20durin\
-    g\x20parsing.\x20Exactly\x20one\x20of\x20these\x20should\x20be\x20set.\n\
-    \n\r\n\x05\x04\x11\x02\x01\x04\x12\x04\xfb\x04\x02\n\n\r\n\x05\x04\x11\
-    \x02\x01\x05\x12\x04\xfb\x04\x0b\x11\n\r\n\x05\x04\x11\x02\x01\x01\x12\
-    \x04\xfb\x04\x12\"\n\r\n\x05\x04\x11\x02\x01\x03\x12\x04\xfb\x04%&\n\x0c\
-    \n\x04\x04\x11\x02\x02\x12\x04\xfc\x04\x02)\n\r\n\x05\x04\x11\x02\x02\
-    \x04\x12\x04\xfc\x04\x02\n\n\r\n\x05\x04\x11\x02\x02\x05\x12\x04\xfc\x04\
-    \x0b\x11\n\r\n\x05\x04\x11\x02\x02\x01\x12\x04\xfc\x04\x12$\n\r\n\x05\
-    \x04\x11\x02\x02\x03\x12\x04\xfc\x04'(\n\x0c\n\x04\x04\x11\x02\x03\x12\
-    \x04\xfd\x04\x02(\n\r\n\x05\x04\x11\x02\x03\x04\x12\x04\xfd\x04\x02\n\n\
-    \r\n\x05\x04\x11\x02\x03\x05\x12\x04\xfd\x04\x0b\x10\n\r\n\x05\x04\x11\
-    \x02\x03\x01\x12\x04\xfd\x04\x11#\n\r\n\x05\x04\x11\x02\x03\x03\x12\x04\
-    \xfd\x04&'\n\x0c\n\x04\x04\x11\x02\x04\x12\x04\xfe\x04\x02#\n\r\n\x05\
-    \x04\x11\x02\x04\x04\x12\x04\xfe\x04\x02\n\n\r\n\x05\x04\x11\x02\x04\x05\
-    \x12\x04\xfe\x04\x0b\x11\n\r\n\x05\x04\x11\x02\x04\x01\x12\x04\xfe\x04\
-    \x12\x1e\n\r\n\x05\x04\x11\x02\x04\x03\x12\x04\xfe\x04!\"\n\x0c\n\x04\
-    \x04\x11\x02\x05\x12\x04\xff\x04\x02\"\n\r\n\x05\x04\x11\x02\x05\x04\x12\
-    \x04\xff\x04\x02\n\n\r\n\x05\x04\x11\x02\x05\x05\x12\x04\xff\x04\x0b\x10\
-    \n\r\n\x05\x04\x11\x02\x05\x01\x12\x04\xff\x04\x11\x1d\n\r\n\x05\x04\x11\
-    \x02\x05\x03\x12\x04\xff\x04\x20!\n\x0c\n\x04\x04\x11\x02\x06\x12\x04\
-    \x80\x05\x02&\n\r\n\x05\x04\x11\x02\x06\x04\x12\x04\x80\x05\x02\n\n\r\n\
-    \x05\x04\x11\x02\x06\x05\x12\x04\x80\x05\x0b\x11\n\r\n\x05\x04\x11\x02\
-    \x06\x01\x12\x04\x80\x05\x12!\n\r\n\x05\x04\x11\x02\x06\x03\x12\x04\x80\
-    \x05$%\n\xda\x01\n\x02\x04\x12\x12\x06\x88\x05\0\x89\x06\x01\x1aj\x20Enc\
-    apsulates\x20information\x20about\x20the\x20original\x20source\x20file\
-    \x20from\x20which\x20a\n\x20FileDescriptorProto\x20was\x20generated.\n2`\
-    \x20===================================================================\
-    \n\x20Optional\x20source\x20code\x20info\n\n\x0b\n\x03\x04\x12\x01\x12\
-    \x04\x88\x05\x08\x16\n\x82\x11\n\x04\x04\x12\x02\0\x12\x04\xb4\x05\x02!\
-    \x1a\xf3\x10\x20A\x20Location\x20identifies\x20a\x20piece\x20of\x20sourc\
-    e\x20code\x20in\x20a\x20.proto\x20file\x20which\n\x20corresponds\x20to\
-    \x20a\x20particular\x20definition.\x20\x20This\x20information\x20is\x20i\
-    ntended\n\x20to\x20be\x20useful\x20to\x20IDEs,\x20code\x20indexers,\x20d\
-    ocumentation\x20generators,\x20and\x20similar\n\x20tools.\n\n\x20For\x20\
-    example,\x20say\x20we\x20have\x20a\x20file\x20like:\n\x20\x20\x20message\
-    \x20Foo\x20{\n\x20\x20\x20\x20\x20optional\x20string\x20foo\x20=\x201;\n\
-    \x20\x20\x20}\n\x20Let's\x20look\x20at\x20just\x20the\x20field\x20defini\
-    tion:\n\x20\x20\x20optional\x20string\x20foo\x20=\x201;\n\x20\x20\x20^\
-    \x20\x20\x20\x20\x20\x20\x20^^\x20\x20\x20\x20\x20^^\x20\x20^\x20\x20^^^\
-    \n\x20\x20\x20a\x20\x20\x20\x20\x20\x20\x20bc\x20\x20\x20\x20\x20de\x20\
-    \x20f\x20\x20ghi\n\x20We\x20have\x20the\x20following\x20locations:\n\x20\
-    \x20\x20span\x20\x20\x20path\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
-    \x20\x20\x20\x20represents\n\x20\x20\x20[a,i)\x20\x20[\x204,\x200,\x202,\
-    \x200\x20]\x20\x20\x20\x20\x20The\x20whole\x20field\x20definition.\n\x20\
-    \x20\x20[a,b)\x20\x20[\x204,\x200,\x202,\x200,\x204\x20]\x20\x20The\x20l\
-    abel\x20(optional).\n\x20\x20\x20[c,d)\x20\x20[\x204,\x200,\x202,\x200,\
-    \x205\x20]\x20\x20The\x20type\x20(string).\n\x20\x20\x20[e,f)\x20\x20[\
-    \x204,\x200,\x202,\x200,\x201\x20]\x20\x20The\x20name\x20(foo).\n\x20\
-    \x20\x20[g,h)\x20\x20[\x204,\x200,\x202,\x200,\x203\x20]\x20\x20The\x20n\
-    umber\x20(1).\n\n\x20Notes:\n\x20-\x20A\x20location\x20may\x20refer\x20t\
-    o\x20a\x20repeated\x20field\x20itself\x20(i.e.\x20not\x20to\x20any\n\x20\
-    \x20\x20particular\x20index\x20within\x20it).\x20\x20This\x20is\x20used\
-    \x20whenever\x20a\x20set\x20of\x20elements\x20are\n\x20\x20\x20logically\
-    \x20enclosed\x20in\x20a\x20single\x20code\x20segment.\x20\x20For\x20exam\
-    ple,\x20an\x20entire\n\x20\x20\x20extend\x20block\x20(possibly\x20contai\
-    ning\x20multiple\x20extension\x20definitions)\x20will\n\x20\x20\x20have\
-    \x20an\x20outer\x20location\x20whose\x20path\x20refers\x20to\x20the\x20\
-    \"extensions\"\x20repeated\n\x20\x20\x20field\x20without\x20an\x20index.\
-    \n\x20-\x20Multiple\x20locations\x20may\x20have\x20the\x20same\x20path.\
-    \x20\x20This\x20happens\x20when\x20a\x20single\n\x20\x20\x20logical\x20d\
-    eclaration\x20is\x20spread\x20out\x20across\x20multiple\x20places.\x20\
-    \x20The\x20most\n\x20\x20\x20obvious\x20example\x20is\x20the\x20\"extend\
-    \"\x20block\x20again\x20--\x20there\x20may\x20be\x20multiple\n\x20\x20\
-    \x20extend\x20blocks\x20in\x20the\x20same\x20scope,\x20each\x20of\x20whi\
-    ch\x20will\x20have\x20the\x20same\x20path.\n\x20-\x20A\x20location's\x20\
-    span\x20is\x20not\x20always\x20a\x20subset\x20of\x20its\x20parent's\x20s\
-    pan.\x20\x20For\n\x20\x20\x20example,\x20the\x20\"extendee\"\x20of\x20an\
-    \x20extension\x20declaration\x20appears\x20at\x20the\n\x20\x20\x20beginn\
-    ing\x20of\x20the\x20\"extend\"\x20block\x20and\x20is\x20shared\x20by\x20\
-    all\x20extensions\x20within\n\x20\x20\x20the\x20block.\n\x20-\x20Just\
-    \x20because\x20a\x20location's\x20span\x20is\x20a\x20subset\x20of\x20som\
-    e\x20other\x20location's\x20span\n\x20\x20\x20does\x20not\x20mean\x20tha\
-    t\x20it\x20is\x20a\x20descendent.\x20\x20For\x20example,\x20a\x20\"group\
-    \"\x20defines\n\x20\x20\x20both\x20a\x20type\x20and\x20a\x20field\x20in\
-    \x20a\x20single\x20declaration.\x20\x20Thus,\x20the\x20locations\n\x20\
-    \x20\x20corresponding\x20to\x20the\x20type\x20and\x20field\x20and\x20the\
-    ir\x20components\x20will\x20overlap.\n\x20-\x20Code\x20which\x20tries\
-    \x20to\x20interpret\x20locations\x20should\x20probably\x20be\x20designed\
-    \x20to\n\x20\x20\x20ignore\x20those\x20that\x20it\x20doesn't\x20understa\
-    nd,\x20as\x20more\x20types\x20of\x20locations\x20could\n\x20\x20\x20be\
-    \x20recorded\x20in\x20the\x20future.\n\n\r\n\x05\x04\x12\x02\0\x04\x12\
-    \x04\xb4\x05\x02\n\n\r\n\x05\x04\x12\x02\0\x06\x12\x04\xb4\x05\x0b\x13\n\
-    \r\n\x05\x04\x12\x02\0\x01\x12\x04\xb4\x05\x14\x1c\n\r\n\x05\x04\x12\x02\
-    \0\x03\x12\x04\xb4\x05\x1f\x20\n\x0e\n\x04\x04\x12\x03\0\x12\x06\xb5\x05\
-    \x02\x88\x06\x03\n\r\n\x05\x04\x12\x03\0\x01\x12\x04\xb5\x05\n\x12\n\x83\
-    \x07\n\x06\x04\x12\x03\0\x02\0\x12\x04\xcd\x05\x04*\x1a\xf2\x06\x20Ident\
+    \x0c\n\x04\x04\r\x05\0\x12\x04\xf6\x04\r\x18\n\r\n\x05\x04\r\x05\0\x01\
+    \x12\x04\xf6\x04\r\x11\n\r\n\x05\x04\r\x05\0\x02\x12\x04\xf6\x04\x15\x18\
+    \n\x0c\n\x02\x04\x0e\x12\x06\xf9\x04\0\x8c\x05\x01\n\x0b\n\x03\x04\x0e\
+    \x01\x12\x04\xf9\x04\x08\x13\n`\n\x04\x04\x0e\x02\0\x12\x04\xfd\x04\x02\
+    \x20\x1aR\x20Set\x20this\x20option\x20to\x20true\x20to\x20allow\x20mappi\
+    ng\x20different\x20tag\x20names\x20to\x20the\x20same\n\x20value.\n\n\r\n\
+    \x05\x04\x0e\x02\0\x04\x12\x04\xfd\x04\x02\n\n\r\n\x05\x04\x0e\x02\0\x05\
+    \x12\x04\xfd\x04\x0b\x0f\n\r\n\x05\x04\x0e\x02\0\x01\x12\x04\xfd\x04\x10\
+    \x1b\n\r\n\x05\x04\x0e\x02\0\x03\x12\x04\xfd\x04\x1e\x1f\n\xe5\x01\n\x04\
+    \x04\x0e\x02\x01\x12\x04\x83\x05\x021\x1a\xd6\x01\x20Is\x20this\x20enum\
+    \x20deprecated?\n\x20Depending\x20on\x20the\x20target\x20platform,\x20th\
+    is\x20can\x20emit\x20Deprecated\x20annotations\n\x20for\x20the\x20enum,\
+    \x20or\x20it\x20will\x20be\x20completely\x20ignored;\x20in\x20the\x20ver\
+    y\x20least,\x20this\n\x20is\x20a\x20formalization\x20for\x20deprecating\
+    \x20enums.\n\n\r\n\x05\x04\x0e\x02\x01\x04\x12\x04\x83\x05\x02\n\n\r\n\
+    \x05\x04\x0e\x02\x01\x05\x12\x04\x83\x05\x0b\x0f\n\r\n\x05\x04\x0e\x02\
+    \x01\x01\x12\x04\x83\x05\x10\x1a\n\r\n\x05\x04\x0e\x02\x01\x03\x12\x04\
+    \x83\x05\x1d\x1e\n\r\n\x05\x04\x0e\x02\x01\x08\x12\x04\x83\x05\x1f0\n\r\
+    \n\x05\x04\x0e\x02\x01\x07\x12\x04\x83\x05*/\n\x1f\n\x03\x04\x0e\t\x12\
+    \x04\x85\x05\x02\r\"\x12\x20javanano_as_lite\n\n\x0c\n\x04\x04\x0e\t\0\
+    \x12\x04\x85\x05\x0b\x0c\n\r\n\x05\x04\x0e\t\0\x01\x12\x04\x85\x05\x0b\
+    \x0c\n\r\n\x05\x04\x0e\t\0\x02\x12\x04\x85\x05\x0b\x0c\nO\n\x04\x04\x0e\
+    \x02\x02\x12\x04\x88\x05\x02:\x1aA\x20The\x20parser\x20stores\x20options\
+    \x20it\x20doesn't\x20recognize\x20here.\x20See\x20above.\n\n\r\n\x05\x04\
+    \x0e\x02\x02\x04\x12\x04\x88\x05\x02\n\n\r\n\x05\x04\x0e\x02\x02\x06\x12\
+    \x04\x88\x05\x0b\x1e\n\r\n\x05\x04\x0e\x02\x02\x01\x12\x04\x88\x05\x1f3\
+    \n\r\n\x05\x04\x0e\x02\x02\x03\x12\x04\x88\x0569\nZ\n\x03\x04\x0e\x05\
+    \x12\x04\x8b\x05\x02\x19\x1aM\x20Clients\x20can\x20define\x20custom\x20o\
+    ptions\x20in\x20extensions\x20of\x20this\x20message.\x20See\x20above.\n\
+    \n\x0c\n\x04\x04\x0e\x05\0\x12\x04\x8b\x05\r\x18\n\r\n\x05\x04\x0e\x05\0\
+    \x01\x12\x04\x8b\x05\r\x11\n\r\n\x05\x04\x0e\x05\0\x02\x12\x04\x8b\x05\
+    \x15\x18\n\x0c\n\x02\x04\x0f\x12\x06\x8e\x05\0\x9a\x05\x01\n\x0b\n\x03\
+    \x04\x0f\x01\x12\x04\x8e\x05\x08\x18\n\xf7\x01\n\x04\x04\x0f\x02\0\x12\
+    \x04\x93\x05\x021\x1a\xe8\x01\x20Is\x20this\x20enum\x20value\x20deprecat\
+    ed?\n\x20Depending\x20on\x20the\x20target\x20platform,\x20this\x20can\
+    \x20emit\x20Deprecated\x20annotations\n\x20for\x20the\x20enum\x20value,\
+    \x20or\x20it\x20will\x20be\x20completely\x20ignored;\x20in\x20the\x20ver\
+    y\x20least,\n\x20this\x20is\x20a\x20formalization\x20for\x20deprecating\
+    \x20enum\x20values.\n\n\r\n\x05\x04\x0f\x02\0\x04\x12\x04\x93\x05\x02\n\
+    \n\r\n\x05\x04\x0f\x02\0\x05\x12\x04\x93\x05\x0b\x0f\n\r\n\x05\x04\x0f\
+    \x02\0\x01\x12\x04\x93\x05\x10\x1a\n\r\n\x05\x04\x0f\x02\0\x03\x12\x04\
+    \x93\x05\x1d\x1e\n\r\n\x05\x04\x0f\x02\0\x08\x12\x04\x93\x05\x1f0\n\r\n\
+    \x05\x04\x0f\x02\0\x07\x12\x04\x93\x05*/\nO\n\x04\x04\x0f\x02\x01\x12\
+    \x04\x96\x05\x02:\x1aA\x20The\x20parser\x20stores\x20options\x20it\x20do\
+    esn't\x20recognize\x20here.\x20See\x20above.\n\n\r\n\x05\x04\x0f\x02\x01\
+    \x04\x12\x04\x96\x05\x02\n\n\r\n\x05\x04\x0f\x02\x01\x06\x12\x04\x96\x05\
+    \x0b\x1e\n\r\n\x05\x04\x0f\x02\x01\x01\x12\x04\x96\x05\x1f3\n\r\n\x05\
+    \x04\x0f\x02\x01\x03\x12\x04\x96\x0569\nZ\n\x03\x04\x0f\x05\x12\x04\x99\
+    \x05\x02\x19\x1aM\x20Clients\x20can\x20define\x20custom\x20options\x20in\
+    \x20extensions\x20of\x20this\x20message.\x20See\x20above.\n\n\x0c\n\x04\
+    \x04\x0f\x05\0\x12\x04\x99\x05\r\x18\n\r\n\x05\x04\x0f\x05\0\x01\x12\x04\
+    \x99\x05\r\x11\n\r\n\x05\x04\x0f\x05\0\x02\x12\x04\x99\x05\x15\x18\n\x0c\
+    \n\x02\x04\x10\x12\x06\x9c\x05\0\xae\x05\x01\n\x0b\n\x03\x04\x10\x01\x12\
+    \x04\x9c\x05\x08\x16\n\xd9\x03\n\x04\x04\x10\x02\0\x12\x04\xa7\x05\x022\
+    \x1a\xdf\x01\x20Is\x20this\x20service\x20deprecated?\n\x20Depending\x20o\
+    n\x20the\x20target\x20platform,\x20this\x20can\x20emit\x20Deprecated\x20\
+    annotations\n\x20for\x20the\x20service,\x20or\x20it\x20will\x20be\x20com\
+    pletely\x20ignored;\x20in\x20the\x20very\x20least,\n\x20this\x20is\x20a\
+    \x20formalization\x20for\x20deprecating\x20services.\n2\xe8\x01\x20Note:\
+    \x20\x20Field\x20numbers\x201\x20through\x2032\x20are\x20reserved\x20for\
+    \x20Google's\x20internal\x20RPC\n\x20\x20\x20framework.\x20\x20We\x20apo\
+    logize\x20for\x20hoarding\x20these\x20numbers\x20to\x20ourselves,\x20but\
+    \n\x20\x20\x20we\x20were\x20already\x20using\x20them\x20long\x20before\
+    \x20we\x20decided\x20to\x20release\x20Protocol\n\x20\x20\x20Buffers.\n\n\
+    \r\n\x05\x04\x10\x02\0\x04\x12\x04\xa7\x05\x02\n\n\r\n\x05\x04\x10\x02\0\
+    \x05\x12\x04\xa7\x05\x0b\x0f\n\r\n\x05\x04\x10\x02\0\x01\x12\x04\xa7\x05\
+    \x10\x1a\n\r\n\x05\x04\x10\x02\0\x03\x12\x04\xa7\x05\x1d\x1f\n\r\n\x05\
+    \x04\x10\x02\0\x08\x12\x04\xa7\x05\x201\n\r\n\x05\x04\x10\x02\0\x07\x12\
+    \x04\xa7\x05+0\nO\n\x04\x04\x10\x02\x01\x12\x04\xaa\x05\x02:\x1aA\x20The\
+    \x20parser\x20stores\x20options\x20it\x20doesn't\x20recognize\x20here.\
+    \x20See\x20above.\n\n\r\n\x05\x04\x10\x02\x01\x04\x12\x04\xaa\x05\x02\n\
+    \n\r\n\x05\x04\x10\x02\x01\x06\x12\x04\xaa\x05\x0b\x1e\n\r\n\x05\x04\x10\
+    \x02\x01\x01\x12\x04\xaa\x05\x1f3\n\r\n\x05\x04\x10\x02\x01\x03\x12\x04\
+    \xaa\x0569\nZ\n\x03\x04\x10\x05\x12\x04\xad\x05\x02\x19\x1aM\x20Clients\
+    \x20can\x20define\x20custom\x20options\x20in\x20extensions\x20of\x20this\
+    \x20message.\x20See\x20above.\n\n\x0c\n\x04\x04\x10\x05\0\x12\x04\xad\
+    \x05\r\x18\n\r\n\x05\x04\x10\x05\0\x01\x12\x04\xad\x05\r\x11\n\r\n\x05\
+    \x04\x10\x05\0\x02\x12\x04\xad\x05\x15\x18\n\x0c\n\x02\x04\x11\x12\x06\
+    \xb0\x05\0\xcd\x05\x01\n\x0b\n\x03\x04\x11\x01\x12\x04\xb0\x05\x08\x15\n\
+    \xd6\x03\n\x04\x04\x11\x02\0\x12\x04\xbb\x05\x022\x1a\xdc\x01\x20Is\x20t\
+    his\x20method\x20deprecated?\n\x20Depending\x20on\x20the\x20target\x20pl\
+    atform,\x20this\x20can\x20emit\x20Deprecated\x20annotations\n\x20for\x20\
+    the\x20method,\x20or\x20it\x20will\x20be\x20completely\x20ignored;\x20in\
+    \x20the\x20very\x20least,\n\x20this\x20is\x20a\x20formalization\x20for\
+    \x20deprecating\x20methods.\n2\xe8\x01\x20Note:\x20\x20Field\x20numbers\
+    \x201\x20through\x2032\x20are\x20reserved\x20for\x20Google's\x20internal\
+    \x20RPC\n\x20\x20\x20framework.\x20\x20We\x20apologize\x20for\x20hoardin\
+    g\x20these\x20numbers\x20to\x20ourselves,\x20but\n\x20\x20\x20we\x20were\
+    \x20already\x20using\x20them\x20long\x20before\x20we\x20decided\x20to\
+    \x20release\x20Protocol\n\x20\x20\x20Buffers.\n\n\r\n\x05\x04\x11\x02\0\
+    \x04\x12\x04\xbb\x05\x02\n\n\r\n\x05\x04\x11\x02\0\x05\x12\x04\xbb\x05\
+    \x0b\x0f\n\r\n\x05\x04\x11\x02\0\x01\x12\x04\xbb\x05\x10\x1a\n\r\n\x05\
+    \x04\x11\x02\0\x03\x12\x04\xbb\x05\x1d\x1f\n\r\n\x05\x04\x11\x02\0\x08\
+    \x12\x04\xbb\x05\x201\n\r\n\x05\x04\x11\x02\0\x07\x12\x04\xbb\x05+0\n\
+    \xf0\x01\n\x04\x04\x11\x04\0\x12\x06\xc0\x05\x02\xc4\x05\x03\x1a\xdf\x01\
+    \x20Is\x20this\x20method\x20side-effect-free\x20(or\x20safe\x20in\x20HTT\
+    P\x20parlance),\x20or\x20idempotent,\n\x20or\x20neither?\x20HTTP\x20base\
+    d\x20RPC\x20implementation\x20may\x20choose\x20GET\x20verb\x20for\x20saf\
+    e\n\x20methods,\x20and\x20PUT\x20verb\x20for\x20idempotent\x20methods\
+    \x20instead\x20of\x20the\x20default\x20POST.\n\n\r\n\x05\x04\x11\x04\0\
+    \x01\x12\x04\xc0\x05\x07\x17\n\x0e\n\x06\x04\x11\x04\0\x02\0\x12\x04\xc1\
+    \x05\x04\x1c\n\x0f\n\x07\x04\x11\x04\0\x02\0\x01\x12\x04\xc1\x05\x04\x17\
+    \n\x0f\n\x07\x04\x11\x04\0\x02\0\x02\x12\x04\xc1\x05\x1a\x1b\n$\n\x06\
+    \x04\x11\x04\0\x02\x01\x12\x04\xc2\x05\x04\x18\"\x14\x20implies\x20idemp\
+    otent\n\n\x0f\n\x07\x04\x11\x04\0\x02\x01\x01\x12\x04\xc2\x05\x04\x13\n\
+    \x0f\n\x07\x04\x11\x04\0\x02\x01\x02\x12\x04\xc2\x05\x16\x17\n7\n\x06\
+    \x04\x11\x04\0\x02\x02\x12\x04\xc3\x05\x04\x13\"'\x20idempotent,\x20but\
+    \x20may\x20have\x20side\x20effects\n\n\x0f\n\x07\x04\x11\x04\0\x02\x02\
+    \x01\x12\x04\xc3\x05\x04\x0e\n\x0f\n\x07\x04\x11\x04\0\x02\x02\x02\x12\
+    \x04\xc3\x05\x11\x12\n\x0e\n\x04\x04\x11\x02\x01\x12\x06\xc5\x05\x02\xc6\
+    \x05&\n\r\n\x05\x04\x11\x02\x01\x04\x12\x04\xc5\x05\x02\n\n\r\n\x05\x04\
+    \x11\x02\x01\x06\x12\x04\xc5\x05\x0b\x1b\n\r\n\x05\x04\x11\x02\x01\x01\
+    \x12\x04\xc5\x05\x1c-\n\r\n\x05\x04\x11\x02\x01\x03\x12\x04\xc5\x0502\n\
+    \r\n\x05\x04\x11\x02\x01\x08\x12\x04\xc6\x05\x06%\n\r\n\x05\x04\x11\x02\
+    \x01\x07\x12\x04\xc6\x05\x11$\nO\n\x04\x04\x11\x02\x02\x12\x04\xc9\x05\
+    \x02:\x1aA\x20The\x20parser\x20stores\x20options\x20it\x20doesn't\x20rec\
+    ognize\x20here.\x20See\x20above.\n\n\r\n\x05\x04\x11\x02\x02\x04\x12\x04\
+    \xc9\x05\x02\n\n\r\n\x05\x04\x11\x02\x02\x06\x12\x04\xc9\x05\x0b\x1e\n\r\
+    \n\x05\x04\x11\x02\x02\x01\x12\x04\xc9\x05\x1f3\n\r\n\x05\x04\x11\x02\
+    \x02\x03\x12\x04\xc9\x0569\nZ\n\x03\x04\x11\x05\x12\x04\xcc\x05\x02\x19\
+    \x1aM\x20Clients\x20can\x20define\x20custom\x20options\x20in\x20extensio\
+    ns\x20of\x20this\x20message.\x20See\x20above.\n\n\x0c\n\x04\x04\x11\x05\
+    \0\x12\x04\xcc\x05\r\x18\n\r\n\x05\x04\x11\x05\0\x01\x12\x04\xcc\x05\r\
+    \x11\n\r\n\x05\x04\x11\x05\0\x02\x12\x04\xcc\x05\x15\x18\n\x8b\x03\n\x02\
+    \x04\x12\x12\x06\xd6\x05\0\xea\x05\x01\x1a\xfc\x02\x20A\x20message\x20re\
+    presenting\x20a\x20option\x20the\x20parser\x20does\x20not\x20recognize.\
+    \x20This\x20only\n\x20appears\x20in\x20options\x20protos\x20created\x20b\
+    y\x20the\x20compiler::Parser\x20class.\n\x20DescriptorPool\x20resolves\
+    \x20these\x20when\x20building\x20Descriptor\x20objects.\x20Therefore,\n\
+    \x20options\x20protos\x20in\x20descriptor\x20objects\x20(e.g.\x20returne\
+    d\x20by\x20Descriptor::options(),\n\x20or\x20produced\x20by\x20Descripto\
+    r::CopyTo())\x20will\x20never\x20have\x20UninterpretedOptions\n\x20in\
+    \x20them.\n\n\x0b\n\x03\x04\x12\x01\x12\x04\xd6\x05\x08\x1b\n\xcb\x02\n\
+    \x04\x04\x12\x03\0\x12\x06\xdc\x05\x02\xdf\x05\x03\x1a\xba\x02\x20The\
+    \x20name\x20of\x20the\x20uninterpreted\x20option.\x20\x20Each\x20string\
+    \x20represents\x20a\x20segment\x20in\n\x20a\x20dot-separated\x20name.\
+    \x20\x20is_extension\x20is\x20true\x20iff\x20a\x20segment\x20represents\
+    \x20an\n\x20extension\x20(denoted\x20with\x20parentheses\x20in\x20option\
+    s\x20specs\x20in\x20.proto\x20files).\n\x20E.g.,{\x20[\"foo\",\x20false]\
+    ,\x20[\"bar.baz\",\x20true],\x20[\"qux\",\x20false]\x20}\x20represents\n\
+    \x20\"foo.(bar.baz).qux\".\n\n\r\n\x05\x04\x12\x03\0\x01\x12\x04\xdc\x05\
+    \n\x12\n\x0e\n\x06\x04\x12\x03\0\x02\0\x12\x04\xdd\x05\x04\"\n\x0f\n\x07\
+    \x04\x12\x03\0\x02\0\x04\x12\x04\xdd\x05\x04\x0c\n\x0f\n\x07\x04\x12\x03\
+    \0\x02\0\x05\x12\x04\xdd\x05\r\x13\n\x0f\n\x07\x04\x12\x03\0\x02\0\x01\
+    \x12\x04\xdd\x05\x14\x1d\n\x0f\n\x07\x04\x12\x03\0\x02\0\x03\x12\x04\xdd\
+    \x05\x20!\n\x0e\n\x06\x04\x12\x03\0\x02\x01\x12\x04\xde\x05\x04#\n\x0f\n\
+    \x07\x04\x12\x03\0\x02\x01\x04\x12\x04\xde\x05\x04\x0c\n\x0f\n\x07\x04\
+    \x12\x03\0\x02\x01\x05\x12\x04\xde\x05\r\x11\n\x0f\n\x07\x04\x12\x03\0\
+    \x02\x01\x01\x12\x04\xde\x05\x12\x1e\n\x0f\n\x07\x04\x12\x03\0\x02\x01\
+    \x03\x12\x04\xde\x05!\"\n\x0c\n\x04\x04\x12\x02\0\x12\x04\xe0\x05\x02\
+    \x1d\n\r\n\x05\x04\x12\x02\0\x04\x12\x04\xe0\x05\x02\n\n\r\n\x05\x04\x12\
+    \x02\0\x06\x12\x04\xe0\x05\x0b\x13\n\r\n\x05\x04\x12\x02\0\x01\x12\x04\
+    \xe0\x05\x14\x18\n\r\n\x05\x04\x12\x02\0\x03\x12\x04\xe0\x05\x1b\x1c\n\
+    \x9c\x01\n\x04\x04\x12\x02\x01\x12\x04\xe4\x05\x02'\x1a\x8d\x01\x20The\
+    \x20value\x20of\x20the\x20uninterpreted\x20option,\x20in\x20whatever\x20\
+    type\x20the\x20tokenizer\n\x20identified\x20it\x20as\x20during\x20parsin\
+    g.\x20Exactly\x20one\x20of\x20these\x20should\x20be\x20set.\n\n\r\n\x05\
+    \x04\x12\x02\x01\x04\x12\x04\xe4\x05\x02\n\n\r\n\x05\x04\x12\x02\x01\x05\
+    \x12\x04\xe4\x05\x0b\x11\n\r\n\x05\x04\x12\x02\x01\x01\x12\x04\xe4\x05\
+    \x12\"\n\r\n\x05\x04\x12\x02\x01\x03\x12\x04\xe4\x05%&\n\x0c\n\x04\x04\
+    \x12\x02\x02\x12\x04\xe5\x05\x02)\n\r\n\x05\x04\x12\x02\x02\x04\x12\x04\
+    \xe5\x05\x02\n\n\r\n\x05\x04\x12\x02\x02\x05\x12\x04\xe5\x05\x0b\x11\n\r\
+    \n\x05\x04\x12\x02\x02\x01\x12\x04\xe5\x05\x12$\n\r\n\x05\x04\x12\x02\
+    \x02\x03\x12\x04\xe5\x05'(\n\x0c\n\x04\x04\x12\x02\x03\x12\x04\xe6\x05\
+    \x02(\n\r\n\x05\x04\x12\x02\x03\x04\x12\x04\xe6\x05\x02\n\n\r\n\x05\x04\
+    \x12\x02\x03\x05\x12\x04\xe6\x05\x0b\x10\n\r\n\x05\x04\x12\x02\x03\x01\
+    \x12\x04\xe6\x05\x11#\n\r\n\x05\x04\x12\x02\x03\x03\x12\x04\xe6\x05&'\n\
+    \x0c\n\x04\x04\x12\x02\x04\x12\x04\xe7\x05\x02#\n\r\n\x05\x04\x12\x02\
+    \x04\x04\x12\x04\xe7\x05\x02\n\n\r\n\x05\x04\x12\x02\x04\x05\x12\x04\xe7\
+    \x05\x0b\x11\n\r\n\x05\x04\x12\x02\x04\x01\x12\x04\xe7\x05\x12\x1e\n\r\n\
+    \x05\x04\x12\x02\x04\x03\x12\x04\xe7\x05!\"\n\x0c\n\x04\x04\x12\x02\x05\
+    \x12\x04\xe8\x05\x02\"\n\r\n\x05\x04\x12\x02\x05\x04\x12\x04\xe8\x05\x02\
+    \n\n\r\n\x05\x04\x12\x02\x05\x05\x12\x04\xe8\x05\x0b\x10\n\r\n\x05\x04\
+    \x12\x02\x05\x01\x12\x04\xe8\x05\x11\x1d\n\r\n\x05\x04\x12\x02\x05\x03\
+    \x12\x04\xe8\x05\x20!\n\x0c\n\x04\x04\x12\x02\x06\x12\x04\xe9\x05\x02&\n\
+    \r\n\x05\x04\x12\x02\x06\x04\x12\x04\xe9\x05\x02\n\n\r\n\x05\x04\x12\x02\
+    \x06\x05\x12\x04\xe9\x05\x0b\x11\n\r\n\x05\x04\x12\x02\x06\x01\x12\x04\
+    \xe9\x05\x12!\n\r\n\x05\x04\x12\x02\x06\x03\x12\x04\xe9\x05$%\n\xda\x01\
+    \n\x02\x04\x13\x12\x06\xf1\x05\0\xf2\x06\x01\x1aj\x20Encapsulates\x20inf\
+    ormation\x20about\x20the\x20original\x20source\x20file\x20from\x20which\
+    \x20a\n\x20FileDescriptorProto\x20was\x20generated.\n2`\x20=============\
+    ======================================================\n\x20Optional\x20\
+    source\x20code\x20info\n\n\x0b\n\x03\x04\x13\x01\x12\x04\xf1\x05\x08\x16\
+    \n\x82\x11\n\x04\x04\x13\x02\0\x12\x04\x9d\x06\x02!\x1a\xf3\x10\x20A\x20\
+    Location\x20identifies\x20a\x20piece\x20of\x20source\x20code\x20in\x20a\
+    \x20.proto\x20file\x20which\n\x20corresponds\x20to\x20a\x20particular\
+    \x20definition.\x20\x20This\x20information\x20is\x20intended\n\x20to\x20\
+    be\x20useful\x20to\x20IDEs,\x20code\x20indexers,\x20documentation\x20gen\
+    erators,\x20and\x20similar\n\x20tools.\n\n\x20For\x20example,\x20say\x20\
+    we\x20have\x20a\x20file\x20like:\n\x20\x20\x20message\x20Foo\x20{\n\x20\
+    \x20\x20\x20\x20optional\x20string\x20foo\x20=\x201;\n\x20\x20\x20}\n\
+    \x20Let's\x20look\x20at\x20just\x20the\x20field\x20definition:\n\x20\x20\
+    \x20optional\x20string\x20foo\x20=\x201;\n\x20\x20\x20^\x20\x20\x20\x20\
+    \x20\x20\x20^^\x20\x20\x20\x20\x20^^\x20\x20^\x20\x20^^^\n\x20\x20\x20a\
+    \x20\x20\x20\x20\x20\x20\x20bc\x20\x20\x20\x20\x20de\x20\x20f\x20\x20ghi\
+    \n\x20We\x20have\x20the\x20following\x20locations:\n\x20\x20\x20span\x20\
+    \x20\x20path\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
+    represents\n\x20\x20\x20[a,i)\x20\x20[\x204,\x200,\x202,\x200\x20]\x20\
+    \x20\x20\x20\x20The\x20whole\x20field\x20definition.\n\x20\x20\x20[a,b)\
+    \x20\x20[\x204,\x200,\x202,\x200,\x204\x20]\x20\x20The\x20label\x20(opti\
+    onal).\n\x20\x20\x20[c,d)\x20\x20[\x204,\x200,\x202,\x200,\x205\x20]\x20\
+    \x20The\x20type\x20(string).\n\x20\x20\x20[e,f)\x20\x20[\x204,\x200,\x20\
+    2,\x200,\x201\x20]\x20\x20The\x20name\x20(foo).\n\x20\x20\x20[g,h)\x20\
+    \x20[\x204,\x200,\x202,\x200,\x203\x20]\x20\x20The\x20number\x20(1).\n\n\
+    \x20Notes:\n\x20-\x20A\x20location\x20may\x20refer\x20to\x20a\x20repeate\
+    d\x20field\x20itself\x20(i.e.\x20not\x20to\x20any\n\x20\x20\x20particula\
+    r\x20index\x20within\x20it).\x20\x20This\x20is\x20used\x20whenever\x20a\
+    \x20set\x20of\x20elements\x20are\n\x20\x20\x20logically\x20enclosed\x20i\
+    n\x20a\x20single\x20code\x20segment.\x20\x20For\x20example,\x20an\x20ent\
+    ire\n\x20\x20\x20extend\x20block\x20(possibly\x20containing\x20multiple\
+    \x20extension\x20definitions)\x20will\n\x20\x20\x20have\x20an\x20outer\
+    \x20location\x20whose\x20path\x20refers\x20to\x20the\x20\"extensions\"\
+    \x20repeated\n\x20\x20\x20field\x20without\x20an\x20index.\n\x20-\x20Mul\
+    tiple\x20locations\x20may\x20have\x20the\x20same\x20path.\x20\x20This\
+    \x20happens\x20when\x20a\x20single\n\x20\x20\x20logical\x20declaration\
+    \x20is\x20spread\x20out\x20across\x20multiple\x20places.\x20\x20The\x20m\
+    ost\n\x20\x20\x20obvious\x20example\x20is\x20the\x20\"extend\"\x20block\
+    \x20again\x20--\x20there\x20may\x20be\x20multiple\n\x20\x20\x20extend\
+    \x20blocks\x20in\x20the\x20same\x20scope,\x20each\x20of\x20which\x20will\
+    \x20have\x20the\x20same\x20path.\n\x20-\x20A\x20location's\x20span\x20is\
+    \x20not\x20always\x20a\x20subset\x20of\x20its\x20parent's\x20span.\x20\
+    \x20For\n\x20\x20\x20example,\x20the\x20\"extendee\"\x20of\x20an\x20exte\
+    nsion\x20declaration\x20appears\x20at\x20the\n\x20\x20\x20beginning\x20o\
+    f\x20the\x20\"extend\"\x20block\x20and\x20is\x20shared\x20by\x20all\x20e\
+    xtensions\x20within\n\x20\x20\x20the\x20block.\n\x20-\x20Just\x20because\
+    \x20a\x20location's\x20span\x20is\x20a\x20subset\x20of\x20some\x20other\
+    \x20location's\x20span\n\x20\x20\x20does\x20not\x20mean\x20that\x20it\
+    \x20is\x20a\x20descendant.\x20\x20For\x20example,\x20a\x20\"group\"\x20d\
+    efines\n\x20\x20\x20both\x20a\x20type\x20and\x20a\x20field\x20in\x20a\
+    \x20single\x20declaration.\x20\x20Thus,\x20the\x20locations\n\x20\x20\
+    \x20corresponding\x20to\x20the\x20type\x20and\x20field\x20and\x20their\
+    \x20components\x20will\x20overlap.\n\x20-\x20Code\x20which\x20tries\x20t\
+    o\x20interpret\x20locations\x20should\x20probably\x20be\x20designed\x20t\
+    o\n\x20\x20\x20ignore\x20those\x20that\x20it\x20doesn't\x20understand,\
+    \x20as\x20more\x20types\x20of\x20locations\x20could\n\x20\x20\x20be\x20r\
+    ecorded\x20in\x20the\x20future.\n\n\r\n\x05\x04\x13\x02\0\x04\x12\x04\
+    \x9d\x06\x02\n\n\r\n\x05\x04\x13\x02\0\x06\x12\x04\x9d\x06\x0b\x13\n\r\n\
+    \x05\x04\x13\x02\0\x01\x12\x04\x9d\x06\x14\x1c\n\r\n\x05\x04\x13\x02\0\
+    \x03\x12\x04\x9d\x06\x1f\x20\n\x0e\n\x04\x04\x13\x03\0\x12\x06\x9e\x06\
+    \x02\xf1\x06\x03\n\r\n\x05\x04\x13\x03\0\x01\x12\x04\x9e\x06\n\x12\n\x83\
+    \x07\n\x06\x04\x13\x03\0\x02\0\x12\x04\xb6\x06\x04,\x1a\xf2\x06\x20Ident\
     ifies\x20which\x20part\x20of\x20the\x20FileDescriptorProto\x20was\x20def\
     ined\x20at\x20this\n\x20location.\n\n\x20Each\x20element\x20is\x20a\x20f\
     ield\x20number\x20or\x20an\x20index.\x20\x20They\x20form\x20a\x20path\
@@ -8369,12 +9691,12 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     lement:\n\x20\x20\x20[\x204,\x203,\x202,\x207\x20]\n\x20this\x20path\x20\
     refers\x20to\x20the\x20whole\x20field\x20declaration\x20(from\x20the\x20\
     beginning\n\x20of\x20the\x20label\x20to\x20the\x20terminating\x20semicol\
-    on).\n\n\x0f\n\x07\x04\x12\x03\0\x02\0\x04\x12\x04\xcd\x05\x04\x0c\n\x0f\
-    \n\x07\x04\x12\x03\0\x02\0\x05\x12\x04\xcd\x05\r\x12\n\x0f\n\x07\x04\x12\
-    \x03\0\x02\0\x01\x12\x04\xcd\x05\x13\x17\n\x0f\n\x07\x04\x12\x03\0\x02\0\
-    \x03\x12\x04\xcd\x05\x1a\x1b\n\x0f\n\x07\x04\x12\x03\0\x02\0\x08\x12\x04\
-    \xcd\x05\x1c)\n\x10\n\x08\x04\x12\x03\0\x02\0\x08\x02\x12\x04\xcd\x05\
-    \x1d(\n\xd2\x02\n\x06\x04\x12\x03\0\x02\x01\x12\x04\xd4\x05\x04*\x1a\xc1\
+    on).\n\n\x0f\n\x07\x04\x13\x03\0\x02\0\x04\x12\x04\xb6\x06\x04\x0c\n\x0f\
+    \n\x07\x04\x13\x03\0\x02\0\x05\x12\x04\xb6\x06\r\x12\n\x0f\n\x07\x04\x13\
+    \x03\0\x02\0\x01\x12\x04\xb6\x06\x13\x17\n\x0f\n\x07\x04\x13\x03\0\x02\0\
+    \x03\x12\x04\xb6\x06\x1a\x1b\n\x0f\n\x07\x04\x13\x03\0\x02\0\x08\x12\x04\
+    \xb6\x06\x1c+\n\x10\n\x08\x04\x13\x03\0\x02\0\x08\x02\x12\x04\xb6\x06\
+    \x1d*\n\xd2\x02\n\x06\x04\x13\x03\0\x02\x01\x12\x04\xbd\x06\x04,\x1a\xc1\
     \x02\x20Always\x20has\x20exactly\x20three\x20or\x20four\x20elements:\x20\
     start\x20line,\x20start\x20column,\n\x20end\x20line\x20(optional,\x20oth\
     erwise\x20assumed\x20same\x20as\x20start\x20line),\x20end\x20column.\n\
@@ -8382,12 +9704,12 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     iciency.\x20\x20Note\x20that\x20line\n\x20and\x20column\x20numbers\x20ar\
     e\x20zero-based\x20--\x20typically\x20you\x20will\x20want\x20to\x20add\n\
     \x201\x20to\x20each\x20before\x20displaying\x20to\x20a\x20user.\n\n\x0f\
-    \n\x07\x04\x12\x03\0\x02\x01\x04\x12\x04\xd4\x05\x04\x0c\n\x0f\n\x07\x04\
-    \x12\x03\0\x02\x01\x05\x12\x04\xd4\x05\r\x12\n\x0f\n\x07\x04\x12\x03\0\
-    \x02\x01\x01\x12\x04\xd4\x05\x13\x17\n\x0f\n\x07\x04\x12\x03\0\x02\x01\
-    \x03\x12\x04\xd4\x05\x1a\x1b\n\x0f\n\x07\x04\x12\x03\0\x02\x01\x08\x12\
-    \x04\xd4\x05\x1c)\n\x10\n\x08\x04\x12\x03\0\x02\x01\x08\x02\x12\x04\xd4\
-    \x05\x1d(\n\xa5\x0c\n\x06\x04\x12\x03\0\x02\x02\x12\x04\x85\x06\x04)\x1a\
+    \n\x07\x04\x13\x03\0\x02\x01\x04\x12\x04\xbd\x06\x04\x0c\n\x0f\n\x07\x04\
+    \x13\x03\0\x02\x01\x05\x12\x04\xbd\x06\r\x12\n\x0f\n\x07\x04\x13\x03\0\
+    \x02\x01\x01\x12\x04\xbd\x06\x13\x17\n\x0f\n\x07\x04\x13\x03\0\x02\x01\
+    \x03\x12\x04\xbd\x06\x1a\x1b\n\x0f\n\x07\x04\x13\x03\0\x02\x01\x08\x12\
+    \x04\xbd\x06\x1c+\n\x10\n\x08\x04\x13\x03\0\x02\x01\x08\x02\x12\x04\xbd\
+    \x06\x1d*\n\xa5\x0c\n\x06\x04\x13\x03\0\x02\x02\x12\x04\xee\x06\x04)\x1a\
     \x94\x0c\x20If\x20this\x20SourceCodeInfo\x20represents\x20a\x20complete\
     \x20declaration,\x20these\x20are\x20any\n\x20comments\x20appearing\x20be\
     fore\x20and\x20after\x20the\x20declaration\x20which\x20appear\x20to\x20b\
@@ -8423,72 +9745,117 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x20removed.\x20*/\n\x20\x20\x20/*\x20Block\x20comment\x20attached\x20to\
     \n\x20\x20\x20\x20*\x20grault.\x20*/\n\x20\x20\x20optional\x20int32\x20g\
     rault\x20=\x206;\n\n\x20\x20\x20//\x20ignored\x20detached\x20comments.\n\
-    \n\x0f\n\x07\x04\x12\x03\0\x02\x02\x04\x12\x04\x85\x06\x04\x0c\n\x0f\n\
-    \x07\x04\x12\x03\0\x02\x02\x05\x12\x04\x85\x06\r\x13\n\x0f\n\x07\x04\x12\
-    \x03\0\x02\x02\x01\x12\x04\x85\x06\x14$\n\x0f\n\x07\x04\x12\x03\0\x02\
-    \x02\x03\x12\x04\x85\x06'(\n\x0e\n\x06\x04\x12\x03\0\x02\x03\x12\x04\x86\
-    \x06\x04*\n\x0f\n\x07\x04\x12\x03\0\x02\x03\x04\x12\x04\x86\x06\x04\x0c\
-    \n\x0f\n\x07\x04\x12\x03\0\x02\x03\x05\x12\x04\x86\x06\r\x13\n\x0f\n\x07\
-    \x04\x12\x03\0\x02\x03\x01\x12\x04\x86\x06\x14%\n\x0f\n\x07\x04\x12\x03\
-    \0\x02\x03\x03\x12\x04\x86\x06()\n\x0e\n\x06\x04\x12\x03\0\x02\x04\x12\
-    \x04\x87\x06\x042\n\x0f\n\x07\x04\x12\x03\0\x02\x04\x04\x12\x04\x87\x06\
-    \x04\x0c\n\x0f\n\x07\x04\x12\x03\0\x02\x04\x05\x12\x04\x87\x06\r\x13\n\
-    \x0f\n\x07\x04\x12\x03\0\x02\x04\x01\x12\x04\x87\x06\x14-\n\x0f\n\x07\
-    \x04\x12\x03\0\x02\x04\x03\x12\x04\x87\x0601\n\xee\x01\n\x02\x04\x13\x12\
-    \x06\x8e\x06\0\xa3\x06\x01\x1a\xdf\x01\x20Describes\x20the\x20relationsh\
+    \n\x0f\n\x07\x04\x13\x03\0\x02\x02\x04\x12\x04\xee\x06\x04\x0c\n\x0f\n\
+    \x07\x04\x13\x03\0\x02\x02\x05\x12\x04\xee\x06\r\x13\n\x0f\n\x07\x04\x13\
+    \x03\0\x02\x02\x01\x12\x04\xee\x06\x14$\n\x0f\n\x07\x04\x13\x03\0\x02\
+    \x02\x03\x12\x04\xee\x06'(\n\x0e\n\x06\x04\x13\x03\0\x02\x03\x12\x04\xef\
+    \x06\x04*\n\x0f\n\x07\x04\x13\x03\0\x02\x03\x04\x12\x04\xef\x06\x04\x0c\
+    \n\x0f\n\x07\x04\x13\x03\0\x02\x03\x05\x12\x04\xef\x06\r\x13\n\x0f\n\x07\
+    \x04\x13\x03\0\x02\x03\x01\x12\x04\xef\x06\x14%\n\x0f\n\x07\x04\x13\x03\
+    \0\x02\x03\x03\x12\x04\xef\x06()\n\x0e\n\x06\x04\x13\x03\0\x02\x04\x12\
+    \x04\xf0\x06\x042\n\x0f\n\x07\x04\x13\x03\0\x02\x04\x04\x12\x04\xf0\x06\
+    \x04\x0c\n\x0f\n\x07\x04\x13\x03\0\x02\x04\x05\x12\x04\xf0\x06\r\x13\n\
+    \x0f\n\x07\x04\x13\x03\0\x02\x04\x01\x12\x04\xf0\x06\x14-\n\x0f\n\x07\
+    \x04\x13\x03\0\x02\x04\x03\x12\x04\xf0\x0601\n\xee\x01\n\x02\x04\x14\x12\
+    \x06\xf7\x06\0\x8c\x07\x01\x1a\xdf\x01\x20Describes\x20the\x20relationsh\
     ip\x20between\x20generated\x20code\x20and\x20its\x20original\x20source\n\
     \x20file.\x20A\x20GeneratedCodeInfo\x20message\x20is\x20associated\x20wi\
     th\x20only\x20one\x20generated\n\x20source\x20file,\x20but\x20may\x20con\
     tain\x20references\x20to\x20different\x20source\x20.proto\x20files.\n\n\
-    \x0b\n\x03\x04\x13\x01\x12\x04\x8e\x06\x08\x19\nx\n\x04\x04\x13\x02\0\
-    \x12\x04\x91\x06\x02%\x1aj\x20An\x20Annotation\x20connects\x20some\x20sp\
+    \x0b\n\x03\x04\x14\x01\x12\x04\xf7\x06\x08\x19\nx\n\x04\x04\x14\x02\0\
+    \x12\x04\xfa\x06\x02%\x1aj\x20An\x20Annotation\x20connects\x20some\x20sp\
     an\x20of\x20text\x20in\x20generated\x20code\x20to\x20an\x20element\n\x20\
-    of\x20its\x20generating\x20.proto\x20file.\n\n\r\n\x05\x04\x13\x02\0\x04\
-    \x12\x04\x91\x06\x02\n\n\r\n\x05\x04\x13\x02\0\x06\x12\x04\x91\x06\x0b\
-    \x15\n\r\n\x05\x04\x13\x02\0\x01\x12\x04\x91\x06\x16\x20\n\r\n\x05\x04\
-    \x13\x02\0\x03\x12\x04\x91\x06#$\n\x0e\n\x04\x04\x13\x03\0\x12\x06\x92\
-    \x06\x02\xa2\x06\x03\n\r\n\x05\x04\x13\x03\0\x01\x12\x04\x92\x06\n\x14\n\
-    \x8f\x01\n\x06\x04\x13\x03\0\x02\0\x12\x04\x95\x06\x04*\x1a\x7f\x20Ident\
+    of\x20its\x20generating\x20.proto\x20file.\n\n\r\n\x05\x04\x14\x02\0\x04\
+    \x12\x04\xfa\x06\x02\n\n\r\n\x05\x04\x14\x02\0\x06\x12\x04\xfa\x06\x0b\
+    \x15\n\r\n\x05\x04\x14\x02\0\x01\x12\x04\xfa\x06\x16\x20\n\r\n\x05\x04\
+    \x14\x02\0\x03\x12\x04\xfa\x06#$\n\x0e\n\x04\x04\x14\x03\0\x12\x06\xfb\
+    \x06\x02\x8b\x07\x03\n\r\n\x05\x04\x14\x03\0\x01\x12\x04\xfb\x06\n\x14\n\
+    \x8f\x01\n\x06\x04\x14\x03\0\x02\0\x12\x04\xfe\x06\x04,\x1a\x7f\x20Ident\
     ifies\x20the\x20element\x20in\x20the\x20original\x20source\x20.proto\x20\
     file.\x20This\x20field\n\x20is\x20formatted\x20the\x20same\x20as\x20Sour\
-    ceCodeInfo.Location.path.\n\n\x0f\n\x07\x04\x13\x03\0\x02\0\x04\x12\x04\
-    \x95\x06\x04\x0c\n\x0f\n\x07\x04\x13\x03\0\x02\0\x05\x12\x04\x95\x06\r\
-    \x12\n\x0f\n\x07\x04\x13\x03\0\x02\0\x01\x12\x04\x95\x06\x13\x17\n\x0f\n\
-    \x07\x04\x13\x03\0\x02\0\x03\x12\x04\x95\x06\x1a\x1b\n\x0f\n\x07\x04\x13\
-    \x03\0\x02\0\x08\x12\x04\x95\x06\x1c)\n\x10\n\x08\x04\x13\x03\0\x02\0\
-    \x08\x02\x12\x04\x95\x06\x1d(\nO\n\x06\x04\x13\x03\0\x02\x01\x12\x04\x98\
-    \x06\x04$\x1a?\x20Identifies\x20the\x20filesystem\x20path\x20to\x20the\
-    \x20original\x20source\x20.proto.\n\n\x0f\n\x07\x04\x13\x03\0\x02\x01\
-    \x04\x12\x04\x98\x06\x04\x0c\n\x0f\n\x07\x04\x13\x03\0\x02\x01\x05\x12\
-    \x04\x98\x06\r\x13\n\x0f\n\x07\x04\x13\x03\0\x02\x01\x01\x12\x04\x98\x06\
-    \x14\x1f\n\x0f\n\x07\x04\x13\x03\0\x02\x01\x03\x12\x04\x98\x06\"#\nw\n\
-    \x06\x04\x13\x03\0\x02\x02\x12\x04\x9c\x06\x04\x1d\x1ag\x20Identifies\
+    ceCodeInfo.Location.path.\n\n\x0f\n\x07\x04\x14\x03\0\x02\0\x04\x12\x04\
+    \xfe\x06\x04\x0c\n\x0f\n\x07\x04\x14\x03\0\x02\0\x05\x12\x04\xfe\x06\r\
+    \x12\n\x0f\n\x07\x04\x14\x03\0\x02\0\x01\x12\x04\xfe\x06\x13\x17\n\x0f\n\
+    \x07\x04\x14\x03\0\x02\0\x03\x12\x04\xfe\x06\x1a\x1b\n\x0f\n\x07\x04\x14\
+    \x03\0\x02\0\x08\x12\x04\xfe\x06\x1c+\n\x10\n\x08\x04\x14\x03\0\x02\0\
+    \x08\x02\x12\x04\xfe\x06\x1d*\nO\n\x06\x04\x14\x03\0\x02\x01\x12\x04\x81\
+    \x07\x04$\x1a?\x20Identifies\x20the\x20filesystem\x20path\x20to\x20the\
+    \x20original\x20source\x20.proto.\n\n\x0f\n\x07\x04\x14\x03\0\x02\x01\
+    \x04\x12\x04\x81\x07\x04\x0c\n\x0f\n\x07\x04\x14\x03\0\x02\x01\x05\x12\
+    \x04\x81\x07\r\x13\n\x0f\n\x07\x04\x14\x03\0\x02\x01\x01\x12\x04\x81\x07\
+    \x14\x1f\n\x0f\n\x07\x04\x14\x03\0\x02\x01\x03\x12\x04\x81\x07\"#\nw\n\
+    \x06\x04\x14\x03\0\x02\x02\x12\x04\x85\x07\x04\x1d\x1ag\x20Identifies\
     \x20the\x20starting\x20offset\x20in\x20bytes\x20in\x20the\x20generated\
     \x20code\n\x20that\x20relates\x20to\x20the\x20identified\x20object.\n\n\
-    \x0f\n\x07\x04\x13\x03\0\x02\x02\x04\x12\x04\x9c\x06\x04\x0c\n\x0f\n\x07\
-    \x04\x13\x03\0\x02\x02\x05\x12\x04\x9c\x06\r\x12\n\x0f\n\x07\x04\x13\x03\
-    \0\x02\x02\x01\x12\x04\x9c\x06\x13\x18\n\x0f\n\x07\x04\x13\x03\0\x02\x02\
-    \x03\x12\x04\x9c\x06\x1b\x1c\n\xdb\x01\n\x06\x04\x13\x03\0\x02\x03\x12\
-    \x04\xa1\x06\x04\x1b\x1a\xca\x01\x20Identifies\x20the\x20ending\x20offse\
+    \x0f\n\x07\x04\x14\x03\0\x02\x02\x04\x12\x04\x85\x07\x04\x0c\n\x0f\n\x07\
+    \x04\x14\x03\0\x02\x02\x05\x12\x04\x85\x07\r\x12\n\x0f\n\x07\x04\x14\x03\
+    \0\x02\x02\x01\x12\x04\x85\x07\x13\x18\n\x0f\n\x07\x04\x14\x03\0\x02\x02\
+    \x03\x12\x04\x85\x07\x1b\x1c\n\xdb\x01\n\x06\x04\x14\x03\0\x02\x03\x12\
+    \x04\x8a\x07\x04\x1b\x1a\xca\x01\x20Identifies\x20the\x20ending\x20offse\
     t\x20in\x20bytes\x20in\x20the\x20generated\x20code\x20that\n\x20relates\
     \x20to\x20the\x20identified\x20offset.\x20The\x20end\x20offset\x20should\
     \x20be\x20one\x20past\n\x20the\x20last\x20relevant\x20byte\x20(so\x20the\
     \x20length\x20of\x20the\x20text\x20=\x20end\x20-\x20begin).\n\n\x0f\n\
-    \x07\x04\x13\x03\0\x02\x03\x04\x12\x04\xa1\x06\x04\x0c\n\x0f\n\x07\x04\
-    \x13\x03\0\x02\x03\x05\x12\x04\xa1\x06\r\x12\n\x0f\n\x07\x04\x13\x03\0\
-    \x02\x03\x01\x12\x04\xa1\x06\x13\x16\n\x0f\n\x07\x04\x13\x03\0\x02\x03\
-    \x03\x12\x04\xa1\x06\x19\x1a\
+    \x07\x04\x14\x03\0\x02\x03\x04\x12\x04\x8a\x07\x04\x0c\n\x0f\n\x07\x04\
+    \x14\x03\0\x02\x03\x05\x12\x04\x8a\x07\r\x12\n\x0f\n\x07\x04\x14\x03\0\
+    \x02\x03\x01\x12\x04\x8a\x07\x13\x16\n\x0f\n\x07\x04\x14\x03\0\x02\x03\
+    \x03\x12\x04\x8a\x07\x19\x1a\
 ";
-
-static file_descriptor_proto_lazy: crate::rt::Lazy<crate::descriptor::FileDescriptorProto> = crate::rt::Lazy::INIT;
-
-fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
-    crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
-}
 
 /// `FileDescriptorProto` object which was a source for this generated file
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
+    static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
     file_descriptor_proto_lazy.get(|| {
-        parse_descriptor_proto()
+        crate::Message::parse_from_bytes(file_descriptor_proto_data).unwrap()
     })
+}
+
+/// `FileDescriptor` object which allows dynamic access to files
+pub fn file_descriptor() -> crate::reflect::FileDescriptor {
+    static file_descriptor_lazy: crate::rt::LazyV2<crate::reflect::GeneratedFileDescriptor> = crate::rt::LazyV2::INIT;
+    let file_descriptor = file_descriptor_lazy.get(|| {
+        let mut deps = ::std::vec::Vec::new();
+        let mut messages = ::std::vec::Vec::new();
+        messages.push(FileDescriptorSet::generated_message_descriptor_data());
+        messages.push(FileDescriptorProto::generated_message_descriptor_data());
+        messages.push(DescriptorProto::generated_message_descriptor_data());
+        messages.push(ExtensionRangeOptions::generated_message_descriptor_data());
+        messages.push(FieldDescriptorProto::generated_message_descriptor_data());
+        messages.push(OneofDescriptorProto::generated_message_descriptor_data());
+        messages.push(EnumDescriptorProto::generated_message_descriptor_data());
+        messages.push(EnumValueDescriptorProto::generated_message_descriptor_data());
+        messages.push(ServiceDescriptorProto::generated_message_descriptor_data());
+        messages.push(MethodDescriptorProto::generated_message_descriptor_data());
+        messages.push(FileOptions::generated_message_descriptor_data());
+        messages.push(MessageOptions::generated_message_descriptor_data());
+        messages.push(FieldOptions::generated_message_descriptor_data());
+        messages.push(OneofOptions::generated_message_descriptor_data());
+        messages.push(EnumOptions::generated_message_descriptor_data());
+        messages.push(EnumValueOptions::generated_message_descriptor_data());
+        messages.push(ServiceOptions::generated_message_descriptor_data());
+        messages.push(MethodOptions::generated_message_descriptor_data());
+        messages.push(UninterpretedOption::generated_message_descriptor_data());
+        messages.push(SourceCodeInfo::generated_message_descriptor_data());
+        messages.push(GeneratedCodeInfo::generated_message_descriptor_data());
+        messages.push(descriptor_proto::ExtensionRange::generated_message_descriptor_data());
+        messages.push(descriptor_proto::ReservedRange::generated_message_descriptor_data());
+        messages.push(enum_descriptor_proto::EnumReservedRange::generated_message_descriptor_data());
+        messages.push(uninterpreted_option::NamePart::generated_message_descriptor_data());
+        messages.push(source_code_info::Location::generated_message_descriptor_data());
+        messages.push(generated_code_info::Annotation::generated_message_descriptor_data());
+        let mut enums = ::std::vec::Vec::new();
+        enums.push(field_descriptor_proto::Type::generated_enum_descriptor_data());
+        enums.push(field_descriptor_proto::Label::generated_enum_descriptor_data());
+        enums.push(file_options::OptimizeMode::generated_enum_descriptor_data());
+        enums.push(field_options::CType::generated_enum_descriptor_data());
+        enums.push(field_options::JSType::generated_enum_descriptor_data());
+        enums.push(method_options::IdempotencyLevel::generated_enum_descriptor_data());
+        crate::reflect::GeneratedFileDescriptor::new_generated(
+            file_descriptor_proto(),
+            deps,
+            messages,
+            enums,
+        )
+    });
+    crate::reflect::FileDescriptor::new_generated_2(file_descriptor)
 }

@@ -7,6 +7,7 @@ use super::interop_pb::*;
 use protobuf::json;
 use protobuf::Message;
 
+use protobuf::reflect::ReflectEqMode;
 use protobuf_test_common::*;
 
 fn test_parse_message(m: &InteropMessageList) {
@@ -43,7 +44,7 @@ fn test_parse_message(m: &InteropMessageList) {
     json::merge_from_str(&mut mm, &json).expect("parse json");
 
     assert!(
-        Message::reflect_eq(m, &mm),
+        Message::reflect_eq(m, &mm, &ReflectEqMode::nan_equal()),
         "{:?} != {:?}; json: {}",
         m,
         mm,
@@ -89,7 +90,12 @@ fn test_print_message(m: &InteropMessageList) {
 
     mm.merge_from_bytes(&bytes).expect("parse bytes");
 
-    assert!(Message::reflect_eq(m, &mm), "{:?} != {:?}", m, mm);
+    assert!(
+        Message::reflect_eq(m, &mm, &ReflectEqMode::nan_equal()),
+        "{:?} != {:?}",
+        m,
+        mm
+    );
 }
 
 #[test]

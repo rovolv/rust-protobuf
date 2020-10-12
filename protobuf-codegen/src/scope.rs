@@ -2,10 +2,11 @@ use crate::customize::Customize;
 use crate::field::rust_field_name_for_protobuf_field_name;
 use crate::file::proto_path_to_rust_mod;
 use crate::file_and_mod::FileAndMod;
+use crate::map::map_entry;
 use crate::message::message_name_to_nested_mod_name;
-use crate::protobuf_name::ProtobufAbsolutePath;
-use crate::protobuf_name::ProtobufIdent;
-use crate::protobuf_name::ProtobufRelativePath;
+use crate::protobuf_abs_path::ProtobufAbsolutePath;
+use crate::protobuf_ident::ProtobufIdent;
+use crate::protobuf_rel_path::ProtobufRelativePath;
 use crate::rust;
 use crate::rust::is_rust_keyword;
 use crate::rust_name::RustIdent;
@@ -13,15 +14,16 @@ use crate::rust_name::RustIdentWithPath;
 use crate::rust_name::RustRelativePath;
 use crate::strx::capitalize;
 use crate::syntax::Syntax;
-use protobuf::descriptor::DescriptorProto;
-use protobuf::descriptor::EnumDescriptorProto;
-use protobuf::descriptor::EnumValueDescriptorProto;
-use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::descriptor::FileDescriptorProto;
-use protobuf::descriptor::OneofDescriptorProto;
+use protobuf::reflect::EnumDescriptor;
+use protobuf::reflect::EnumValueDescriptor;
+use protobuf::reflect::FieldDescriptor;
+use protobuf::reflect::FileDescriptor;
+use protobuf::reflect::MessageDescriptor;
+use protobuf::reflect::OneofDescriptor;
 
 pub(crate) struct RootScope<'a> {
-    pub file_descriptors: &'a [FileDescriptorProto],
+    pub file_descriptors: &'a [FileDescriptor],
 }
 
 impl<'a> RootScope<'a> {
@@ -66,16 +68,16 @@ impl<'a> RootScope<'a> {
 
 #[derive(Clone, Debug)]
 pub(crate) struct FileScope<'a> {
-    pub file_descriptor: &'a FileDescriptorProto,
+    pub file_descriptor: &'a FileDescriptor,
 }
 
 impl<'a> FileScope<'a> {
     fn get_package(&self) -> ProtobufAbsolutePath {
-        ProtobufRelativePath::from(self.file_descriptor.get_package()).into_absolute()
+        ProtobufRelativePath::from(self.file_descriptor.proto().get_package()).into_absolute()
     }
 
     pub fn syntax(&self) -> Syntax {
-        Syntax::parse(self.file_descriptor.get_syntax())
+        Syntax::parse(self.file_descriptor.proto().get_syntax())
     }
 
     pub fn to_scope(&self) -> Scope<'a> {
@@ -106,7 +108,7 @@ impl<'a> FileScope<'a> {
     }
 
     // find all enums in given file descriptor
-    pub fn _find_enums(&self) -> Vec<EnumWithScope<'a>> {
+    pub fn find_enums(&self) -> Vec<EnumWithScope<'a>> {
         let mut r = Vec::new();
 
         self.to_scope().walk_scopes(|scope| {
@@ -116,8 +118,8 @@ impl<'a> FileScope<'a> {
         r
     }
 
-    // find all messages in given file descriptor
-    pub fn _find_messages(&self) -> Vec<MessageWithScope<'a>> {
+    /// Find all messages in given file descriptor
+    pub fn find_messages(&self) -> Vec<MessageWithScope<'a>> {
         let mut r = Vec::new();
 
         self.to_scope().walk_scopes(|scope| {
@@ -127,7 +129,15 @@ impl<'a> FileScope<'a> {
         r
     }
 
-    // find all messages and enums in given file descriptor
+    /// Find all messages in given file descriptor, except map messages
+    pub fn find_messages_except_map(&self) -> Vec<MessageWithScope<'a>> {
+        self.find_messages()
+            .into_iter()
+            .filter(|m| !m.is_map())
+            .collect()
+    }
+
+    /// find all messages and enums in given file descriptor
     pub fn find_messages_and_enums(&self) -> Vec<MessageOrEnumWithScope<'a>> {
         let mut r = Vec::new();
 
@@ -142,39 +152,39 @@ impl<'a> FileScope<'a> {
 #[derive(Clone, Debug)]
 pub(crate) struct Scope<'a> {
     pub file_scope: FileScope<'a>,
-    pub path: Vec<&'a DescriptorProto>,
+    pub path: Vec<MessageDescriptor>,
 }
 
 impl<'a> Scope<'a> {
     pub fn get_file_descriptor(&self) -> &'a FileDescriptorProto {
-        self.file_scope.file_descriptor
+        self.file_scope.file_descriptor.proto()
     }
 
     // get message descriptors in this scope
-    fn get_message_descriptors(&self) -> &'a [DescriptorProto] {
+    fn get_message_descriptors(&self) -> Vec<MessageDescriptor> {
         if self.path.is_empty() {
-            &self.file_scope.file_descriptor.message_type
+            self.file_scope.file_descriptor.messages()
         } else {
-            &self.path.last().unwrap().nested_type
+            self.path.last().unwrap().get_nested_messages()
         }
     }
 
     // get enum descriptors in this scope
-    fn get_enum_descriptors(&self) -> &'a [EnumDescriptorProto] {
+    fn get_enum_descriptors(&self) -> Vec<EnumDescriptor> {
         if self.path.is_empty() {
-            &self.file_scope.file_descriptor.enum_type
+            self.file_scope.file_descriptor.enums()
         } else {
-            &self.path.last().unwrap().enum_type
+            self.path.last().unwrap().get_enums()
         }
     }
 
     // get messages with attached scopes in this scope
     pub fn get_messages(&self) -> Vec<MessageWithScope<'a>> {
         self.get_message_descriptors()
-            .iter()
-            .map(|m| MessageWithScope {
+            .into_iter()
+            .map(|message| MessageWithScope {
                 scope: self.clone(),
-                message: m,
+                message,
             })
             .collect()
     }
@@ -182,10 +192,10 @@ impl<'a> Scope<'a> {
     // get enums with attached scopes in this scope
     pub fn get_enums(&self) -> Vec<EnumWithScope<'a>> {
         self.get_enum_descriptors()
-            .iter()
-            .map(|e| EnumWithScope {
+            .into_iter()
+            .map(|en| EnumWithScope {
                 scope: self.clone(),
-                en: e,
+                en,
             })
             .collect()
     }
@@ -206,7 +216,7 @@ impl<'a> Scope<'a> {
     // nested scopes, i. e. scopes of nested messages
     fn nested_scopes(&self) -> Vec<Scope<'a>> {
         self.get_message_descriptors()
-            .iter()
+            .into_iter()
             .map(|m| {
                 let mut nested = self.clone();
                 nested.path.push(m);
@@ -267,7 +277,12 @@ impl<'a> Scope<'a> {
 
     pub fn get_file_and_mod(&self, customize: Customize) -> FileAndMod {
         FileAndMod {
-            file: self.file_scope.file_descriptor.get_name().to_owned(),
+            file: self
+                .file_scope
+                .file_descriptor
+                .proto()
+                .get_name()
+                .to_owned(),
             relative_mod: self.rust_path_to_file(),
             customize,
         }
@@ -335,7 +350,7 @@ pub(crate) trait WithScope<'a> {
 #[derive(Clone, Debug)]
 pub(crate) struct MessageWithScope<'a> {
     pub scope: Scope<'a>,
-    pub message: &'a DescriptorProto,
+    pub message: MessageDescriptor,
 }
 
 impl<'a> WithScope<'a> for MessageWithScope<'a> {
@@ -364,10 +379,10 @@ impl<'a> MessageWithScope<'a> {
 
     pub fn fields(&self) -> Vec<FieldWithContext<'a>> {
         self.message
-            .field
-            .iter()
-            .map(|f| FieldWithContext {
-                field: f,
+            .fields()
+            .into_iter()
+            .map(|field| FieldWithContext {
+                field,
                 message: self.clone(),
             })
             .collect()
@@ -375,13 +390,11 @@ impl<'a> MessageWithScope<'a> {
 
     pub fn oneofs(&self) -> Vec<OneofWithContext<'a>> {
         self.message
-            .oneof_decl
-            .iter()
-            .enumerate()
-            .map(|(index, oneof)| OneofWithContext {
+            .oneofs()
+            .into_iter()
+            .map(|oneof| OneofWithContext {
                 message: self.clone(),
-                oneof: oneof,
-                index: index as u32,
+                oneof,
             })
             .collect()
     }
@@ -393,19 +406,41 @@ impl<'a> MessageWithScope<'a> {
     pub fn mod_name(&self) -> RustIdent {
         message_name_to_nested_mod_name(self.message.get_name())
     }
+
+    /** Need to generate a mod for message nested objects. */
+    pub fn need_mod(&self) -> bool {
+        for nested in self.to_scope().get_messages() {
+            if nested.is_map() {
+                continue;
+            }
+            return true;
+        }
+        if !self.to_scope().get_enums().is_empty() {
+            return true;
+        }
+        if self.message.oneofs().len() != 0 {
+            return true;
+        }
+        false
+    }
+
+    /// This message is a special message which is a map.
+    pub fn is_map(&self) -> bool {
+        map_entry(self).is_some()
+    }
 }
 
 #[derive(Clone, Debug)]
 pub(crate) struct EnumWithScope<'a> {
     pub scope: Scope<'a>,
-    pub en: &'a EnumDescriptorProto,
+    pub en: EnumDescriptor,
 }
 
 impl<'a> EnumWithScope<'a> {
     pub fn values(&self) -> Vec<EnumValueWithContext<'a>> {
         self.en
-            .value
-            .iter()
+            .values()
+            .into_iter()
             .map(|v| EnumValueWithContext {
                 en: self.clone(),
                 proto: v,
@@ -417,7 +452,7 @@ impl<'a> EnumWithScope<'a> {
     pub fn value_by_name(&self, name: &str) -> EnumValueWithContext<'a> {
         self.values()
             .into_iter()
-            .find(|v| v.proto.get_name() == name)
+            .find(|v| v.proto.get_proto().get_name() == name)
             .unwrap()
     }
 }
@@ -425,13 +460,13 @@ impl<'a> EnumWithScope<'a> {
 #[derive(Clone, Debug)]
 pub(crate) struct EnumValueWithContext<'a> {
     pub en: EnumWithScope<'a>,
-    pub proto: &'a EnumValueDescriptorProto,
+    pub proto: EnumValueDescriptor,
 }
 
 impl<'a> EnumValueWithContext<'a> {
     pub fn rust_name(&self) -> RustIdent {
         let mut r = String::new();
-        if rust::is_rust_keyword(self.proto.get_name()) {
+        if rust::is_rust_keyword(self.proto.get_proto().get_name()) {
             r.push_str("value_");
         }
         r.push_str(self.proto.get_name());
@@ -483,20 +518,20 @@ impl<'a> WithScope<'a> for MessageOrEnumWithScope<'a> {
 
 #[derive(Clone)]
 pub(crate) struct FieldWithContext<'a> {
-    pub field: &'a FieldDescriptorProto,
+    pub field: FieldDescriptor,
     pub message: MessageWithScope<'a>,
 }
 
 impl<'a> FieldWithContext<'a> {
     pub fn is_oneof(&self) -> bool {
-        self.field.has_oneof_index()
+        self.field.get_proto().has_oneof_index()
     }
 
     pub fn oneof(&self) -> Option<OneofWithContext<'a>> {
         if self.is_oneof() {
             Some(
                 self.message
-                    .oneof_by_index(self.field.get_oneof_index() as u32),
+                    .oneof_by_index(self.field.get_proto().get_oneof_index() as u32),
             )
         } else {
             None
@@ -504,7 +539,7 @@ impl<'a> FieldWithContext<'a> {
     }
 
     pub fn number(&self) -> u32 {
-        self.field.get_number() as u32
+        self.field.get_proto().get_number() as u32
     }
 
     pub fn rust_name(&self) -> RustIdent {
@@ -515,26 +550,17 @@ impl<'a> FieldWithContext<'a> {
     pub fn name(&self) -> &str {
         self.field.get_name()
     }
-
-    // From field to file root
-    pub fn _containing_messages(&self) -> Vec<&'a DescriptorProto> {
-        let mut r = Vec::new();
-        r.push(self.message.message);
-        r.extend(self.message.scope.path.iter().rev());
-        r
-    }
 }
 
 #[derive(Clone)]
 pub(crate) struct OneofVariantWithContext<'a> {
     pub oneof: &'a OneofWithContext<'a>,
-    pub field: &'a FieldDescriptorProto,
+    pub field: FieldDescriptor,
 }
 
 #[derive(Clone)]
 pub(crate) struct OneofWithContext<'a> {
-    pub oneof: &'a OneofDescriptorProto,
-    pub index: u32,
+    pub oneof: OneofDescriptor,
     pub message: MessageWithScope<'a>,
 }
 
@@ -557,11 +583,11 @@ impl<'a> OneofWithContext<'a> {
     pub fn variants(&'a self) -> Vec<OneofVariantWithContext<'a>> {
         self.message
             .fields()
-            .iter()
-            .filter(|f| f.field.has_oneof_index() && f.field.get_oneof_index() == self.index as i32)
+            .into_iter()
+            .filter(|f| f.field.containing_oneof().as_ref() == Some(&self.oneof))
             .map(|f| OneofVariantWithContext {
                 oneof: self,
-                field: &f.field,
+                field: f.field,
             })
             .collect()
     }

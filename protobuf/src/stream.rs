@@ -9,11 +9,11 @@ use crate::bytes::Bytes;
 use crate::chars::Chars;
 
 use crate::buf_read_iter::BufReadIter;
-use crate::core::Message;
 use crate::enums::ProtobufEnum;
 use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
 use crate::error::WireError;
+use crate::message::Message;
 use crate::misc::remaining_capacity_as_slice_mut;
 use crate::misc::remove_lifetime_mut;
 use crate::unknown::UnknownFields;
@@ -27,7 +27,6 @@ use crate::zigzag::encode_zig_zag_32;
 use crate::zigzag::encode_zig_zag_64;
 
 use crate::enums::ProtobufEnumOrUnknown;
-use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::types::ProtobufType;
 use crate::reflect::types::ProtobufTypeBool;
 use crate::reflect::types::ProtobufTypeDouble;
@@ -44,6 +43,7 @@ use crate::reflect::types::ProtobufTypeSint32;
 use crate::reflect::types::ProtobufTypeSint64;
 use crate::reflect::types::ProtobufTypeUint32;
 use crate::reflect::types::ProtobufTypeUint64;
+use crate::reflect::ProtobufValue;
 
 // Equal to the default buffer size of `BufWriter`, so when
 // `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
@@ -386,7 +386,7 @@ impl<'a> CodedInputStream<'a> {
 
     fn read_repeated_packed_fixed_into<T: ProtobufTypeFixed>(
         &mut self,
-        target: &mut Vec<<T::RuntimeType as RuntimeType>::Value>,
+        target: &mut Vec<T::ProtobufValue>,
     ) -> ProtobufResult<()> {
         let len_bytes = self.read_raw_varint64()?;
 
@@ -410,7 +410,7 @@ impl<'a> CodedInputStream<'a> {
 
     fn read_repeated_packed_into<T: ProtobufType>(
         &mut self,
-        target: &mut Vec<<T::RuntimeType as RuntimeType>::Value>,
+        target: &mut Vec<T::ProtobufValue>,
     ) -> ProtobufResult<()> {
         let len_bytes = self.read_raw_varint64()?;
 
@@ -525,7 +525,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Read repeated packed `enum` into `ProtobufEnum`
-    pub fn read_repeated_packed_enum_into<E: ProtobufEnum>(
+    pub fn read_repeated_packed_enum_into<E: ProtobufEnum + ProtobufValue>(
         &mut self,
         target: &mut Vec<E>,
     ) -> ProtobufResult<()> {
@@ -688,61 +688,6 @@ impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
         let mut os = CodedOutputStream::vec(&mut self);
         let r = cb(&mut os)?;
         os.flush()?;
-        Ok(r)
-    }
-}
-
-pub trait WithCodedInputStream {
-    fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
-    where
-        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>;
-}
-
-impl<'a> WithCodedInputStream for &'a mut (dyn Read + 'a) {
-    fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
-    where
-        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
-    {
-        let mut is = CodedInputStream::new(self);
-        let r = cb(&mut is)?;
-        is.check_eof()?;
-        Ok(r)
-    }
-}
-
-impl<'a> WithCodedInputStream for &'a mut (dyn BufRead + 'a) {
-    fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
-    where
-        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
-    {
-        let mut is = CodedInputStream::from_buffered_reader(self);
-        let r = cb(&mut is)?;
-        is.check_eof()?;
-        Ok(r)
-    }
-}
-
-impl<'a> WithCodedInputStream for &'a [u8] {
-    fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
-    where
-        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
-    {
-        let mut is = CodedInputStream::from_bytes(self);
-        let r = cb(&mut is)?;
-        is.check_eof()?;
-        Ok(r)
-    }
-}
-
-#[cfg(feature = "bytes")]
-impl<'a> WithCodedInputStream for &'a Bytes {
-    fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
-    where
-        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
-    {
-        let mut is = CodedInputStream::from_carllerche_bytes(self);
-        let r = cb(&mut is)?;
-        is.check_eof()?;
         Ok(r)
     }
 }

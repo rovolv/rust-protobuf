@@ -9,15 +9,17 @@ use tempfile;
 use protobuf::descriptor;
 use protobuf::descriptor::FileDescriptorSet;
 use protobuf::reflect::MessageDescriptor;
+use protobuf::reflect::ReflectEqMode;
 use protobuf::rustproto;
 use protobuf::text_format::merge_from_str;
 use protobuf::text_format::print_to_string;
 use protobuf::Message;
+use protobuf::MessageDyn;
 
 pub fn parse_using_rust_protobuf(
     text: &str,
     message_descriptor: &MessageDescriptor,
-) -> Result<Box<dyn Message>, Box<dyn Error>> {
+) -> Result<Box<dyn MessageDyn>, Box<dyn Error>> {
     let mut message = message_descriptor.new_instance();
 
     merge_from_str(&mut *message, text)?;
@@ -25,7 +27,7 @@ pub fn parse_using_rust_protobuf(
     Ok(message)
 }
 
-fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box<dyn Message> {
+fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box<dyn MessageDyn> {
     let temp_dir = tempfile::Builder::new()
         .prefix(message_descriptor.name())
         .tempdir()
@@ -82,14 +84,14 @@ fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box
 
     let mut expected = message_descriptor.new_instance();
     expected
-        .merge_from_bytes(&encoded)
+        .merge_from_bytes_dyn(&encoded)
         .expect("merge_from_bytes");
 
     expected
 }
 
-fn print_using_protoc(message: &dyn Message) -> String {
-    let message_descriptor = message.descriptor();
+fn print_using_protoc(message: &dyn MessageDyn) -> String {
+    let message_descriptor = message.descriptor_dyn();
 
     // TODO: copy-paste of parse_using_protoc
 
@@ -129,7 +131,7 @@ fn print_using_protoc(message: &dyn Message) -> String {
 
     let mut stdin = protoc.stdin.take().expect("stdin");
     stdin
-        .write_all(&message.write_to_bytes().expect("serialize"))
+        .write_all(&message.write_to_bytes_dyn().expect("serialize"))
         .expect("write to stdin");
     drop(stdin);
 
@@ -177,30 +179,30 @@ pub fn test_text_format_str_descriptor(text: &str, message_descriptor: &MessageD
     );
 }
 
-pub fn test_text_format_str_message(expected: &str, message: &dyn Message) {
+pub fn test_text_format_str_message(expected: &str, message: &dyn MessageDyn) {
     assert_eq!(expected, &*print_to_string(message));
 
-    test_text_format_str_descriptor(expected, message.descriptor());
+    test_text_format_str_descriptor(expected, &message.descriptor_dyn());
 }
 
-pub fn test_text_format_message(message: &dyn Message) {
-    let descriptor = message.descriptor();
+pub fn test_text_format_message(message: &dyn MessageDyn) {
+    let descriptor = message.descriptor_dyn();
 
     let printed_with_rust_protobuf = print_to_string(message);
     let printed_with_protoc = print_using_protoc(message);
 
-    let from_protoc = parse_using_rust_protobuf(&printed_with_protoc, descriptor)
+    let from_protoc = parse_using_rust_protobuf(&printed_with_protoc, &descriptor)
         .expect(format!("parse_using_rust_protobuf: {:?}", &printed_with_protoc).as_str());
-    let from_protobuf = parse_using_protoc(&printed_with_rust_protobuf, descriptor);
+    let from_protobuf = parse_using_protoc(&printed_with_rust_protobuf, &descriptor);
 
     assert!(
-        message.reflect_eq(&*from_protoc),
+        message.reflect_eq_dyn(&*from_protoc, &ReflectEqMode::nan_equal()),
         "{:?} != {:?}",
         message,
         from_protoc
     );
     assert!(
-        message.reflect_eq(&*from_protobuf),
+        message.reflect_eq_dyn(&*from_protobuf, &ReflectEqMode::nan_equal()),
         "{:?} != {:?}",
         message,
         from_protobuf

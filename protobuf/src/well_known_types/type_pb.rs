@@ -16,8 +16,8 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
-#![allow(unused_imports)]
 #![allow(unused_results)]
+#![allow(unused_mut)]
 
 //! Generated file from `google/protobuf/type.proto`
 
@@ -29,13 +29,13 @@ pub struct Type {
     ///  The fully qualified message name.
     pub name: ::std::string::String,
     ///  The list of fields.
-    pub fields: crate::RepeatedField<Field>,
+    pub fields: ::std::vec::Vec<Field>,
     ///  The list of types appearing in `oneof` definitions in this type.
-    pub oneofs: crate::RepeatedField<::std::string::String>,
+    pub oneofs: ::std::vec::Vec<::std::string::String>,
     ///  The protocol buffer options.
-    pub options: crate::RepeatedField<Option>,
+    pub options: ::std::vec::Vec<Option>,
     ///  The source context.
-    pub source_context: crate::SingularPtrField<crate::well_known_types::SourceContext>,
+    pub source_context: crate::MessageField<crate::well_known_types::SourceContext>,
     ///  The source syntax.
     pub syntax: crate::ProtobufEnumOrUnknown<Syntax>,
     // special fields
@@ -54,6 +54,45 @@ impl<'a> ::std::default::Default for &'a Type {
 impl Type {
     pub fn new() -> Type {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "name",
+            |m: &Type| { &m.name },
+            |m: &mut Type| { &mut m.name },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "fields",
+            |m: &Type| { &m.fields },
+            |m: &mut Type| { &mut m.fields },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "oneofs",
+            |m: &Type| { &m.oneofs },
+            |m: &mut Type| { &mut m.oneofs },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "options",
+            |m: &Type| { &m.options },
+            |m: &mut Type| { &mut m.options },
+        ));
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::SourceContext>(
+            "source_context",
+            |m: &Type| { &m.source_context },
+            |m: &mut Type| { &mut m.source_context },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "syntax",
+            |m: &Type| { &m.syntax },
+            |m: &mut Type| { &mut m.syntax },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<Type>(
+            "Type",
+            0,
+            fields,
+        )
     }
 }
 
@@ -82,19 +121,22 @@ impl crate::Message for Type {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = is.read_string()?;
                 },
                 2 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.fields)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.fields)?;
                 },
                 3 => {
                     crate::rt::read_repeated_string_into(wire_type, is, &mut self.oneofs)?;
                 },
                 4 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
                 },
                 5 => {
-                    crate::rt::read_singular_message_into::<crate::well_known_types::SourceContext, _>(wire_type, is, &mut self.source_context)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.source_context)?;
                 },
                 6 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -175,59 +217,26 @@ impl crate::Message for Type {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> Type {
         Type::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                "name",
-                |m: &Type| { &m.name },
-                |m: &mut Type| { &mut m.name },
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Field>>(
-                "fields",
-                |m: &Type| { &m.fields },
-                |m: &mut Type| { &mut m.fields },
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                "oneofs",
-                |m: &Type| { &m.oneofs },
-                |m: &mut Type| { &mut m.oneofs },
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
-                "options",
-                |m: &Type| { &m.options },
-                |m: &mut Type| { &mut m.options },
-            ));
-            fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>, _>(
-                "source_context",
-                |m: &Type| { &m.source_context },
-                |m: &mut Type| { &mut m.source_context },
-            ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnumOrUnknown<Syntax>>(
-                "syntax",
-                |m: &Type| { &m.syntax },
-                |m: &mut Type| { &mut m.syntax },
-            ));
-            crate::reflect::MessageDescriptor::new::<Type>(
-                "Type",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
     }
 
     fn default_instance() -> &'static Type {
-        static instance: crate::rt::Lazy<Type> = crate::rt::Lazy::INIT;
-        instance.get(Type::new)
+        static instance: Type = Type {
+            name: ::std::string::String::new(),
+            fields: ::std::vec::Vec::new(),
+            oneofs: ::std::vec::Vec::new(),
+            options: ::std::vec::Vec::new(),
+            source_context: crate::MessageField::none(),
+            syntax: crate::ProtobufEnumOrUnknown::from_i32(0),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -250,6 +259,7 @@ impl ::std::fmt::Debug for Type {
 }
 
 impl crate::reflect::ProtobufValue for Type {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  A single field of a message type.
@@ -274,7 +284,7 @@ pub struct Field {
     ///  Whether to use alternative packed wire representation.
     pub packed: bool,
     ///  The protocol buffer options.
-    pub options: crate::RepeatedField<Option>,
+    pub options: ::std::vec::Vec<Option>,
     ///  The field JSON name.
     pub json_name: ::std::string::String,
     ///  The string value of the default value of this field. Proto2 syntax only.
@@ -295,6 +305,65 @@ impl<'a> ::std::default::Default for &'a Field {
 impl Field {
     pub fn new() -> Field {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "kind",
+            |m: &Field| { &m.kind },
+            |m: &mut Field| { &mut m.kind },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "cardinality",
+            |m: &Field| { &m.cardinality },
+            |m: &mut Field| { &mut m.cardinality },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "number",
+            |m: &Field| { &m.number },
+            |m: &mut Field| { &mut m.number },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "name",
+            |m: &Field| { &m.name },
+            |m: &mut Field| { &mut m.name },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "type_url",
+            |m: &Field| { &m.type_url },
+            |m: &mut Field| { &mut m.type_url },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "oneof_index",
+            |m: &Field| { &m.oneof_index },
+            |m: &mut Field| { &mut m.oneof_index },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "packed",
+            |m: &Field| { &m.packed },
+            |m: &mut Field| { &mut m.packed },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "options",
+            |m: &Field| { &m.options },
+            |m: &mut Field| { &mut m.options },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "json_name",
+            |m: &Field| { &m.json_name },
+            |m: &mut Field| { &mut m.json_name },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "default_value",
+            |m: &Field| { &m.default_value },
+            |m: &mut Field| { &mut m.default_value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<Field>(
+            "Field",
+            1,
+            fields,
+        )
     }
 }
 
@@ -331,10 +400,16 @@ impl crate::Message for Field {
                     self.number = is.read_int32()?;
                 },
                 4 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = is.read_string()?;
                 },
                 6 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.type_url)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.type_url = is.read_string()?;
                 },
                 7 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -349,13 +424,19 @@ impl crate::Message for Field {
                     self.packed = is.read_bool()?;
                 },
                 9 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
                 },
                 10 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.json_name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.json_name = is.read_string()?;
                 },
                 11 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.default_value)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.default_value = is.read_string()?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -452,79 +533,30 @@ impl crate::Message for Field {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> Field {
         Field::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnumOrUnknown<field::Kind>>(
-                "kind",
-                |m: &Field| { &m.kind },
-                |m: &mut Field| { &mut m.kind },
-            ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnumOrUnknown<field::Cardinality>>(
-                "cardinality",
-                |m: &Field| { &m.cardinality },
-                |m: &mut Field| { &mut m.cardinality },
-            ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
-                "number",
-                |m: &Field| { &m.number },
-                |m: &mut Field| { &mut m.number },
-            ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                "name",
-                |m: &Field| { &m.name },
-                |m: &mut Field| { &mut m.name },
-            ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                "type_url",
-                |m: &Field| { &m.type_url },
-                |m: &mut Field| { &mut m.type_url },
-            ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
-                "oneof_index",
-                |m: &Field| { &m.oneof_index },
-                |m: &mut Field| { &mut m.oneof_index },
-            ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
-                "packed",
-                |m: &Field| { &m.packed },
-                |m: &mut Field| { &mut m.packed },
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
-                "options",
-                |m: &Field| { &m.options },
-                |m: &mut Field| { &mut m.options },
-            ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                "json_name",
-                |m: &Field| { &m.json_name },
-                |m: &mut Field| { &mut m.json_name },
-            ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                "default_value",
-                |m: &Field| { &m.default_value },
-                |m: &mut Field| { &mut m.default_value },
-            ));
-            crate::reflect::MessageDescriptor::new::<Field>(
-                "Field",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 1)
     }
 
     fn default_instance() -> &'static Field {
-        static instance: crate::rt::Lazy<Field> = crate::rt::Lazy::INIT;
-        instance.get(Field::new)
+        static instance: Field = Field {
+            kind: crate::ProtobufEnumOrUnknown::from_i32(0),
+            cardinality: crate::ProtobufEnumOrUnknown::from_i32(0),
+            number: 0,
+            name: ::std::string::String::new(),
+            type_url: ::std::string::String::new(),
+            oneof_index: 0,
+            packed: false,
+            options: ::std::vec::Vec::new(),
+            json_name: ::std::string::String::new(),
+            default_value: ::std::string::String::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -551,6 +583,7 @@ impl ::std::fmt::Debug for Field {
 }
 
 impl crate::reflect::ProtobufValue for Field {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `Field`
@@ -635,11 +668,8 @@ pub mod field {
             values
         }
 
-        fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
-            static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::INIT;
-            descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new::<Kind>("Field.Kind", super::file_descriptor_proto())
-            })
+        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 1)
         }
     }
 
@@ -650,6 +680,13 @@ pub mod field {
     }
 
     impl crate::reflect::ProtobufValue for Kind {
+        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
+    }
+
+    impl Kind {
+        pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
+            crate::reflect::GeneratedEnumDescriptorData::new_2::<Kind>("Field.Kind", 1)
+        }
     }
 
     ///  Whether a field is optional, required, or repeated.
@@ -687,11 +724,8 @@ pub mod field {
             values
         }
 
-        fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
-            static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::INIT;
-            descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new::<Cardinality>("Field.Cardinality", super::file_descriptor_proto())
-            })
+        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 2)
         }
     }
 
@@ -702,6 +736,13 @@ pub mod field {
     }
 
     impl crate::reflect::ProtobufValue for Cardinality {
+        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
+    }
+
+    impl Cardinality {
+        pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
+            crate::reflect::GeneratedEnumDescriptorData::new_2::<Cardinality>("Field.Cardinality", 2)
+        }
     }
 }
 
@@ -713,11 +754,11 @@ pub struct Enum {
     ///  Enum type name.
     pub name: ::std::string::String,
     ///  Enum value definitions.
-    pub enumvalue: crate::RepeatedField<EnumValue>,
+    pub enumvalue: ::std::vec::Vec<EnumValue>,
     ///  Protocol buffer options.
-    pub options: crate::RepeatedField<Option>,
+    pub options: ::std::vec::Vec<Option>,
     ///  The source context.
-    pub source_context: crate::SingularPtrField<crate::well_known_types::SourceContext>,
+    pub source_context: crate::MessageField<crate::well_known_types::SourceContext>,
     ///  The source syntax.
     pub syntax: crate::ProtobufEnumOrUnknown<Syntax>,
     // special fields
@@ -736,6 +777,40 @@ impl<'a> ::std::default::Default for &'a Enum {
 impl Enum {
     pub fn new() -> Enum {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "name",
+            |m: &Enum| { &m.name },
+            |m: &mut Enum| { &mut m.name },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "enumvalue",
+            |m: &Enum| { &m.enumvalue },
+            |m: &mut Enum| { &mut m.enumvalue },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "options",
+            |m: &Enum| { &m.options },
+            |m: &mut Enum| { &mut m.options },
+        ));
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::SourceContext>(
+            "source_context",
+            |m: &Enum| { &m.source_context },
+            |m: &mut Enum| { &mut m.source_context },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "syntax",
+            |m: &Enum| { &m.syntax },
+            |m: &mut Enum| { &mut m.syntax },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<Enum>(
+            "Enum",
+            2,
+            fields,
+        )
     }
 }
 
@@ -764,16 +839,19 @@ impl crate::Message for Enum {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = is.read_string()?;
                 },
                 2 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.enumvalue)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.enumvalue)?;
                 },
                 3 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
                 },
                 4 => {
-                    crate::rt::read_singular_message_into::<crate::well_known_types::SourceContext, _>(wire_type, is, &mut self.source_context)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.source_context)?;
                 },
                 5 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -848,54 +926,25 @@ impl crate::Message for Enum {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> Enum {
         Enum::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                "name",
-                |m: &Enum| { &m.name },
-                |m: &mut Enum| { &mut m.name },
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumValue>>(
-                "enumvalue",
-                |m: &Enum| { &m.enumvalue },
-                |m: &mut Enum| { &mut m.enumvalue },
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
-                "options",
-                |m: &Enum| { &m.options },
-                |m: &mut Enum| { &mut m.options },
-            ));
-            fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>, _>(
-                "source_context",
-                |m: &Enum| { &m.source_context },
-                |m: &mut Enum| { &mut m.source_context },
-            ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnumOrUnknown<Syntax>>(
-                "syntax",
-                |m: &Enum| { &m.syntax },
-                |m: &mut Enum| { &mut m.syntax },
-            ));
-            crate::reflect::MessageDescriptor::new::<Enum>(
-                "Enum",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
     }
 
     fn default_instance() -> &'static Enum {
-        static instance: crate::rt::Lazy<Enum> = crate::rt::Lazy::INIT;
-        instance.get(Enum::new)
+        static instance: Enum = Enum {
+            name: ::std::string::String::new(),
+            enumvalue: ::std::vec::Vec::new(),
+            options: ::std::vec::Vec::new(),
+            source_context: crate::MessageField::none(),
+            syntax: crate::ProtobufEnumOrUnknown::from_i32(0),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -917,6 +966,7 @@ impl ::std::fmt::Debug for Enum {
 }
 
 impl crate::reflect::ProtobufValue for Enum {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  Enum value definition.
@@ -929,7 +979,7 @@ pub struct EnumValue {
     ///  Enum value number.
     pub number: i32,
     ///  Protocol buffer options.
-    pub options: crate::RepeatedField<Option>,
+    pub options: ::std::vec::Vec<Option>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -946,6 +996,30 @@ impl<'a> ::std::default::Default for &'a EnumValue {
 impl EnumValue {
     pub fn new() -> EnumValue {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "name",
+            |m: &EnumValue| { &m.name },
+            |m: &mut EnumValue| { &mut m.name },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "number",
+            |m: &EnumValue| { &m.number },
+            |m: &mut EnumValue| { &mut m.number },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "options",
+            |m: &EnumValue| { &m.options },
+            |m: &mut EnumValue| { &mut m.options },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<EnumValue>(
+            "EnumValue",
+            3,
+            fields,
+        )
     }
 }
 
@@ -964,7 +1038,10 @@ impl crate::Message for EnumValue {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = is.read_string()?;
                 },
                 2 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -973,7 +1050,7 @@ impl crate::Message for EnumValue {
                     self.number = is.read_int32()?;
                 },
                 3 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -1028,44 +1105,23 @@ impl crate::Message for EnumValue {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> EnumValue {
         EnumValue::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                "name",
-                |m: &EnumValue| { &m.name },
-                |m: &mut EnumValue| { &mut m.name },
-            ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
-                "number",
-                |m: &EnumValue| { &m.number },
-                |m: &mut EnumValue| { &mut m.number },
-            ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
-                "options",
-                |m: &EnumValue| { &m.options },
-                |m: &mut EnumValue| { &mut m.options },
-            ));
-            crate::reflect::MessageDescriptor::new::<EnumValue>(
-                "EnumValue",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 3)
     }
 
     fn default_instance() -> &'static EnumValue {
-        static instance: crate::rt::Lazy<EnumValue> = crate::rt::Lazy::INIT;
-        instance.get(EnumValue::new)
+        static instance: EnumValue = EnumValue {
+            name: ::std::string::String::new(),
+            number: 0,
+            options: ::std::vec::Vec::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -1085,6 +1141,7 @@ impl ::std::fmt::Debug for EnumValue {
 }
 
 impl crate::reflect::ProtobufValue for EnumValue {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  A protocol buffer option, which can be attached to a message, field,
@@ -1093,10 +1150,16 @@ impl crate::reflect::ProtobufValue for EnumValue {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Option {
     // message fields
-    ///  The option's name. For example, `"java_package"`.
+    ///  The option's name. For protobuf built-in options (options defined in
+    ///  descriptor.proto), this is the short name. For example, `"map_entry"`.
+    ///  For custom options, it should be the fully-qualified name. For example,
+    ///  `"google.api.http"`.
     pub name: ::std::string::String,
-    ///  The option's value. For example, `"com.google.protobuf"`.
-    pub value: crate::SingularPtrField<crate::well_known_types::Any>,
+    ///  The option's value packed in an Any message. If the value is a primitive,
+    ///  the corresponding wrapper type defined in google/protobuf/wrappers.proto
+    ///  should be used. If the value is an enum, it should be stored as an int32
+    ///  value using the google.protobuf.Int32Value type.
+    pub value: crate::MessageField<crate::well_known_types::Any>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -1113,6 +1176,25 @@ impl<'a> ::std::default::Default for &'a Option {
 impl Option {
     pub fn new() -> Option {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "name",
+            |m: &Option| { &m.name },
+            |m: &mut Option| { &mut m.name },
+        ));
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::Any>(
+            "value",
+            |m: &Option| { &m.value },
+            |m: &mut Option| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<Option>(
+            "Option",
+            4,
+            fields,
+        )
     }
 }
 
@@ -1131,10 +1213,13 @@ impl crate::Message for Option {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = is.read_string()?;
                 },
                 2 => {
-                    crate::rt::read_singular_message_into::<crate::well_known_types::Any, _>(wire_type, is, &mut self.value)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.value)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -1183,39 +1268,22 @@ impl crate::Message for Option {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> Option {
         Option::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                "name",
-                |m: &Option| { &m.name },
-                |m: &mut Option| { &mut m.name },
-            ));
-            fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Any>, _>(
-                "value",
-                |m: &Option| { &m.value },
-                |m: &mut Option| { &mut m.value },
-            ));
-            crate::reflect::MessageDescriptor::new::<Option>(
-                "Option",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 4)
     }
 
     fn default_instance() -> &'static Option {
-        static instance: crate::rt::Lazy<Option> = crate::rt::Lazy::INIT;
-        instance.get(Option::new)
+        static instance: Option = Option {
+            name: ::std::string::String::new(),
+            value: crate::MessageField::none(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -1234,6 +1302,7 @@ impl ::std::fmt::Debug for Option {
 }
 
 impl crate::reflect::ProtobufValue for Option {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  The syntax in which a protocol buffer element is defined.
@@ -1265,11 +1334,8 @@ impl crate::ProtobufEnum for Syntax {
         values
     }
 
-    fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::INIT;
-        descriptor.get(|| {
-            crate::reflect::EnumDescriptor::new::<Syntax>("Syntax", file_descriptor_proto())
-        })
+    fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+        crate::reflect::EnumDescriptor::new_generated_2(file_descriptor(), 0)
     }
 }
 
@@ -1280,6 +1346,13 @@ impl ::std::default::Default for Syntax {
 }
 
 impl crate::reflect::ProtobufValue for Syntax {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
+}
+
+impl Syntax {
+    fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
+        crate::reflect::GeneratedEnumDescriptorData::new_2::<Syntax>("Syntax", 0)
+    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
@@ -1322,250 +1395,282 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x03(\x0b2\x17.google.protobuf.OptionR\x07options\"H\n\x06Option\x12\x12\
     \n\x04name\x18\x01\x20\x01(\tR\x04name\x12*\n\x05value\x18\x02\x20\x01(\
     \x0b2\x14.google.protobuf.AnyR\x05value*.\n\x06Syntax\x12\x11\n\rSYNTAX_\
-    PROTO2\x10\0\x12\x11\n\rSYNTAX_PROTO3\x10\x01BL\n\x13com.google.protobuf\
-    B\tTypeProtoP\x01\xf8\x01\x01\xa2\x02\x03GPB\xaa\x02\x1eGoogle.Protobuf.\
-    WellKnownTypesJ\x9a5\n\x07\x12\x05\x1e\0\xb3\x01\x01\n\xcc\x0c\n\x01\x0c\
-    \x12\x03\x1e\0\x122\xc1\x0c\x20Protocol\x20Buffers\x20-\x20Google's\x20d\
-    ata\x20interchange\x20format\n\x20Copyright\x202008\x20Google\x20Inc.\
-    \x20\x20All\x20rights\x20reserved.\n\x20https://developers.google.com/pr\
-    otocol-buffers/\n\n\x20Redistribution\x20and\x20use\x20in\x20source\x20a\
-    nd\x20binary\x20forms,\x20with\x20or\x20without\n\x20modification,\x20ar\
-    e\x20permitted\x20provided\x20that\x20the\x20following\x20conditions\x20\
-    are\n\x20met:\n\n\x20\x20\x20\x20\x20*\x20Redistributions\x20of\x20sourc\
-    e\x20code\x20must\x20retain\x20the\x20above\x20copyright\n\x20notice,\
-    \x20this\x20list\x20of\x20conditions\x20and\x20the\x20following\x20discl\
-    aimer.\n\x20\x20\x20\x20\x20*\x20Redistributions\x20in\x20binary\x20form\
-    \x20must\x20reproduce\x20the\x20above\n\x20copyright\x20notice,\x20this\
-    \x20list\x20of\x20conditions\x20and\x20the\x20following\x20disclaimer\n\
-    \x20in\x20the\x20documentation\x20and/or\x20other\x20materials\x20provid\
-    ed\x20with\x20the\n\x20distribution.\n\x20\x20\x20\x20\x20*\x20Neither\
-    \x20the\x20name\x20of\x20Google\x20Inc.\x20nor\x20the\x20names\x20of\x20\
-    its\n\x20contributors\x20may\x20be\x20used\x20to\x20endorse\x20or\x20pro\
-    mote\x20products\x20derived\x20from\n\x20this\x20software\x20without\x20\
-    specific\x20prior\x20written\x20permission.\n\n\x20THIS\x20SOFTWARE\x20I\
-    S\x20PROVIDED\x20BY\x20THE\x20COPYRIGHT\x20HOLDERS\x20AND\x20CONTRIBUTOR\
-    S\n\x20\"AS\x20IS\"\x20AND\x20ANY\x20EXPRESS\x20OR\x20IMPLIED\x20WARRANT\
-    IES,\x20INCLUDING,\x20BUT\x20NOT\n\x20LIMITED\x20TO,\x20THE\x20IMPLIED\
-    \x20WARRANTIES\x20OF\x20MERCHANTABILITY\x20AND\x20FITNESS\x20FOR\n\x20A\
-    \x20PARTICULAR\x20PURPOSE\x20ARE\x20DISCLAIMED.\x20IN\x20NO\x20EVENT\x20\
-    SHALL\x20THE\x20COPYRIGHT\n\x20OWNER\x20OR\x20CONTRIBUTORS\x20BE\x20LIAB\
-    LE\x20FOR\x20ANY\x20DIRECT,\x20INDIRECT,\x20INCIDENTAL,\n\x20SPECIAL,\
-    \x20EXEMPLARY,\x20OR\x20CONSEQUENTIAL\x20DAMAGES\x20(INCLUDING,\x20BUT\
-    \x20NOT\n\x20LIMITED\x20TO,\x20PROCUREMENT\x20OF\x20SUBSTITUTE\x20GOODS\
-    \x20OR\x20SERVICES;\x20LOSS\x20OF\x20USE,\n\x20DATA,\x20OR\x20PROFITS;\
-    \x20OR\x20BUSINESS\x20INTERRUPTION)\x20HOWEVER\x20CAUSED\x20AND\x20ON\
-    \x20ANY\n\x20THEORY\x20OF\x20LIABILITY,\x20WHETHER\x20IN\x20CONTRACT,\
-    \x20STRICT\x20LIABILITY,\x20OR\x20TORT\n\x20(INCLUDING\x20NEGLIGENCE\x20\
-    OR\x20OTHERWISE)\x20ARISING\x20IN\x20ANY\x20WAY\x20OUT\x20OF\x20THE\x20U\
-    SE\n\x20OF\x20THIS\x20SOFTWARE,\x20EVEN\x20IF\x20ADVISED\x20OF\x20THE\
-    \x20POSSIBILITY\x20OF\x20SUCH\x20DAMAGE.\n\n\x08\n\x01\x02\x12\x03\x20\0\
-    \x18\n\t\n\x02\x03\0\x12\x03\"\0#\n\t\n\x02\x03\x01\x12\x03#\0.\n\x08\n\
-    \x01\x08\x12\x03%\0;\n\t\n\x02\x08%\x12\x03%\0;\n\x08\n\x01\x08\x12\x03&\
-    \0\x1f\n\t\n\x02\x08\x1f\x12\x03&\0\x1f\n\x08\n\x01\x08\x12\x03'\0,\n\t\
-    \n\x02\x08\x01\x12\x03'\0,\n\x08\n\x01\x08\x12\x03(\0*\n\t\n\x02\x08\x08\
-    \x12\x03(\0*\n\x08\n\x01\x08\x12\x03)\0\"\n\t\n\x02\x08\n\x12\x03)\0\"\n\
-    \x08\n\x01\x08\x12\x03*\0!\n\t\n\x02\x08$\x12\x03*\0!\n-\n\x02\x04\0\x12\
-    \x04-\0:\x01\x1a!\x20A\x20protocol\x20buffer\x20message\x20type.\n\n\n\n\
-    \x03\x04\0\x01\x12\x03-\x08\x0c\n0\n\x04\x04\0\x02\0\x12\x03/\x02\x12\
-    \x1a#\x20The\x20fully\x20qualified\x20message\x20name.\n\n\x0c\n\x05\x04\
-    \0\x02\0\x05\x12\x03/\x02\x08\n\x0c\n\x05\x04\0\x02\0\x01\x12\x03/\t\r\n\
-    \x0c\n\x05\x04\0\x02\0\x03\x12\x03/\x10\x11\n\"\n\x04\x04\0\x02\x01\x12\
-    \x031\x02\x1c\x1a\x15\x20The\x20list\x20of\x20fields.\n\n\x0c\n\x05\x04\
-    \0\x02\x01\x04\x12\x031\x02\n\n\x0c\n\x05\x04\0\x02\x01\x06\x12\x031\x0b\
-    \x10\n\x0c\n\x05\x04\0\x02\x01\x01\x12\x031\x11\x17\n\x0c\n\x05\x04\0\
-    \x02\x01\x03\x12\x031\x1a\x1b\nO\n\x04\x04\0\x02\x02\x12\x033\x02\x1d\
-    \x1aB\x20The\x20list\x20of\x20types\x20appearing\x20in\x20`oneof`\x20def\
-    initions\x20in\x20this\x20type.\n\n\x0c\n\x05\x04\0\x02\x02\x04\x12\x033\
-    \x02\n\n\x0c\n\x05\x04\0\x02\x02\x05\x12\x033\x0b\x11\n\x0c\n\x05\x04\0\
-    \x02\x02\x01\x12\x033\x12\x18\n\x0c\n\x05\x04\0\x02\x02\x03\x12\x033\x1b\
-    \x1c\n+\n\x04\x04\0\x02\x03\x12\x035\x02\x1e\x1a\x1e\x20The\x20protocol\
-    \x20buffer\x20options.\n\n\x0c\n\x05\x04\0\x02\x03\x04\x12\x035\x02\n\n\
-    \x0c\n\x05\x04\0\x02\x03\x06\x12\x035\x0b\x11\n\x0c\n\x05\x04\0\x02\x03\
-    \x01\x12\x035\x12\x19\n\x0c\n\x05\x04\0\x02\x03\x03\x12\x035\x1c\x1d\n\"\
-    \n\x04\x04\0\x02\x04\x12\x037\x02#\x1a\x15\x20The\x20source\x20context.\
-    \n\n\x0c\n\x05\x04\0\x02\x04\x06\x12\x037\x02\x0f\n\x0c\n\x05\x04\0\x02\
-    \x04\x01\x12\x037\x10\x1e\n\x0c\n\x05\x04\0\x02\x04\x03\x12\x037!\"\n!\n\
-    \x04\x04\0\x02\x05\x12\x039\x02\x14\x1a\x14\x20The\x20source\x20syntax.\
-    \n\n\x0c\n\x05\x04\0\x02\x05\x06\x12\x039\x02\x08\n\x0c\n\x05\x04\0\x02\
-    \x05\x01\x12\x039\t\x0f\n\x0c\n\x05\x04\0\x02\x05\x03\x12\x039\x12\x13\n\
-    0\n\x02\x04\x01\x12\x05=\0\x8a\x01\x01\x1a#\x20A\x20single\x20field\x20o\
-    f\x20a\x20message\x20type.\n\n\n\n\x03\x04\x01\x01\x12\x03=\x08\r\n\"\n\
-    \x04\x04\x01\x04\0\x12\x04?\x02f\x03\x1a\x14\x20Basic\x20field\x20types.\
-    \n\n\x0c\n\x05\x04\x01\x04\0\x01\x12\x03?\x07\x0b\n$\n\x06\x04\x01\x04\0\
-    \x02\0\x12\x03A\x04\x1c\x1a\x15\x20Field\x20type\x20unknown.\n\n\x0e\n\
-    \x07\x04\x01\x04\0\x02\0\x01\x12\x03A\x04\x10\n\x0e\n\x07\x04\x01\x04\0\
-    \x02\0\x02\x12\x03A\x1a\x1b\n#\n\x06\x04\x01\x04\0\x02\x01\x12\x03C\x04\
-    \x1c\x1a\x14\x20Field\x20type\x20double.\n\n\x0e\n\x07\x04\x01\x04\0\x02\
-    \x01\x01\x12\x03C\x04\x0f\n\x0e\n\x07\x04\x01\x04\0\x02\x01\x02\x12\x03C\
-    \x1a\x1b\n\"\n\x06\x04\x01\x04\0\x02\x02\x12\x03E\x04\x1c\x1a\x13\x20Fie\
-    ld\x20type\x20float.\n\n\x0e\n\x07\x04\x01\x04\0\x02\x02\x01\x12\x03E\
-    \x04\x0e\n\x0e\n\x07\x04\x01\x04\0\x02\x02\x02\x12\x03E\x1a\x1b\n\"\n\
-    \x06\x04\x01\x04\0\x02\x03\x12\x03G\x04\x1c\x1a\x13\x20Field\x20type\x20\
-    int64.\n\n\x0e\n\x07\x04\x01\x04\0\x02\x03\x01\x12\x03G\x04\x0e\n\x0e\n\
-    \x07\x04\x01\x04\0\x02\x03\x02\x12\x03G\x1a\x1b\n#\n\x06\x04\x01\x04\0\
-    \x02\x04\x12\x03I\x04\x1c\x1a\x14\x20Field\x20type\x20uint64.\n\n\x0e\n\
-    \x07\x04\x01\x04\0\x02\x04\x01\x12\x03I\x04\x0f\n\x0e\n\x07\x04\x01\x04\
-    \0\x02\x04\x02\x12\x03I\x1a\x1b\n\"\n\x06\x04\x01\x04\0\x02\x05\x12\x03K\
-    \x04\x1c\x1a\x13\x20Field\x20type\x20int32.\n\n\x0e\n\x07\x04\x01\x04\0\
-    \x02\x05\x01\x12\x03K\x04\x0e\n\x0e\n\x07\x04\x01\x04\0\x02\x05\x02\x12\
-    \x03K\x1a\x1b\n$\n\x06\x04\x01\x04\0\x02\x06\x12\x03M\x04\x1c\x1a\x15\
-    \x20Field\x20type\x20fixed64.\n\n\x0e\n\x07\x04\x01\x04\0\x02\x06\x01\
-    \x12\x03M\x04\x10\n\x0e\n\x07\x04\x01\x04\0\x02\x06\x02\x12\x03M\x1a\x1b\
-    \n$\n\x06\x04\x01\x04\0\x02\x07\x12\x03O\x04\x1c\x1a\x15\x20Field\x20typ\
-    e\x20fixed32.\n\n\x0e\n\x07\x04\x01\x04\0\x02\x07\x01\x12\x03O\x04\x10\n\
-    \x0e\n\x07\x04\x01\x04\0\x02\x07\x02\x12\x03O\x1a\x1b\n!\n\x06\x04\x01\
-    \x04\0\x02\x08\x12\x03Q\x04\x1c\x1a\x12\x20Field\x20type\x20bool.\n\n\
-    \x0e\n\x07\x04\x01\x04\0\x02\x08\x01\x12\x03Q\x04\r\n\x0e\n\x07\x04\x01\
-    \x04\0\x02\x08\x02\x12\x03Q\x1a\x1b\n#\n\x06\x04\x01\x04\0\x02\t\x12\x03\
-    S\x04\x1c\x1a\x14\x20Field\x20type\x20string.\n\n\x0e\n\x07\x04\x01\x04\
-    \0\x02\t\x01\x12\x03S\x04\x0f\n\x0e\n\x07\x04\x01\x04\0\x02\t\x02\x12\
-    \x03S\x1a\x1b\nF\n\x06\x04\x01\x04\0\x02\n\x12\x03U\x04\x1d\x1a7\x20Fiel\
-    d\x20type\x20group.\x20Proto2\x20syntax\x20only,\x20and\x20deprecated.\n\
-    \n\x0e\n\x07\x04\x01\x04\0\x02\n\x01\x12\x03U\x04\x0e\n\x0e\n\x07\x04\
-    \x01\x04\0\x02\n\x02\x12\x03U\x1a\x1c\n$\n\x06\x04\x01\x04\0\x02\x0b\x12\
-    \x03W\x04\x1d\x1a\x15\x20Field\x20type\x20message.\n\n\x0e\n\x07\x04\x01\
-    \x04\0\x02\x0b\x01\x12\x03W\x04\x10\n\x0e\n\x07\x04\x01\x04\0\x02\x0b\
-    \x02\x12\x03W\x1a\x1c\n\"\n\x06\x04\x01\x04\0\x02\x0c\x12\x03Y\x04\x1d\
-    \x1a\x13\x20Field\x20type\x20bytes.\n\n\x0e\n\x07\x04\x01\x04\0\x02\x0c\
-    \x01\x12\x03Y\x04\x0e\n\x0e\n\x07\x04\x01\x04\0\x02\x0c\x02\x12\x03Y\x1a\
-    \x1c\n#\n\x06\x04\x01\x04\0\x02\r\x12\x03[\x04\x1d\x1a\x14\x20Field\x20t\
-    ype\x20uint32.\n\n\x0e\n\x07\x04\x01\x04\0\x02\r\x01\x12\x03[\x04\x0f\n\
-    \x0e\n\x07\x04\x01\x04\0\x02\r\x02\x12\x03[\x1a\x1c\n!\n\x06\x04\x01\x04\
-    \0\x02\x0e\x12\x03]\x04\x1d\x1a\x12\x20Field\x20type\x20enum.\n\n\x0e\n\
-    \x07\x04\x01\x04\0\x02\x0e\x01\x12\x03]\x04\r\n\x0e\n\x07\x04\x01\x04\0\
-    \x02\x0e\x02\x12\x03]\x1a\x1c\n%\n\x06\x04\x01\x04\0\x02\x0f\x12\x03_\
-    \x04\x1d\x1a\x16\x20Field\x20type\x20sfixed32.\n\n\x0e\n\x07\x04\x01\x04\
-    \0\x02\x0f\x01\x12\x03_\x04\x11\n\x0e\n\x07\x04\x01\x04\0\x02\x0f\x02\
-    \x12\x03_\x1a\x1c\n%\n\x06\x04\x01\x04\0\x02\x10\x12\x03a\x04\x1d\x1a\
-    \x16\x20Field\x20type\x20sfixed64.\n\n\x0e\n\x07\x04\x01\x04\0\x02\x10\
-    \x01\x12\x03a\x04\x11\n\x0e\n\x07\x04\x01\x04\0\x02\x10\x02\x12\x03a\x1a\
-    \x1c\n#\n\x06\x04\x01\x04\0\x02\x11\x12\x03c\x04\x1d\x1a\x14\x20Field\
-    \x20type\x20sint32.\n\n\x0e\n\x07\x04\x01\x04\0\x02\x11\x01\x12\x03c\x04\
-    \x0f\n\x0e\n\x07\x04\x01\x04\0\x02\x11\x02\x12\x03c\x1a\x1c\n#\n\x06\x04\
-    \x01\x04\0\x02\x12\x12\x03e\x04\x1d\x1a\x14\x20Field\x20type\x20sint64.\
-    \n\n\x0e\n\x07\x04\x01\x04\0\x02\x12\x01\x12\x03e\x04\x0f\n\x0e\n\x07\
-    \x04\x01\x04\0\x02\x12\x02\x12\x03e\x1a\x1c\nC\n\x04\x04\x01\x04\x01\x12\
-    \x04i\x02r\x03\x1a5\x20Whether\x20a\x20field\x20is\x20optional,\x20requi\
-    red,\x20or\x20repeated.\n\n\x0c\n\x05\x04\x01\x04\x01\x01\x12\x03i\x07\
-    \x12\n5\n\x06\x04\x01\x04\x01\x02\0\x12\x03k\x04\x1c\x1a&\x20For\x20fiel\
-    ds\x20with\x20unknown\x20cardinality.\n\n\x0e\n\x07\x04\x01\x04\x01\x02\
-    \0\x01\x12\x03k\x04\x17\n\x0e\n\x07\x04\x01\x04\x01\x02\0\x02\x12\x03k\
-    \x1a\x1b\n%\n\x06\x04\x01\x04\x01\x02\x01\x12\x03m\x04\x1d\x1a\x16\x20Fo\
-    r\x20optional\x20fields.\n\n\x0e\n\x07\x04\x01\x04\x01\x02\x01\x01\x12\
-    \x03m\x04\x18\n\x0e\n\x07\x04\x01\x04\x01\x02\x01\x02\x12\x03m\x1b\x1c\n\
-    9\n\x06\x04\x01\x04\x01\x02\x02\x12\x03o\x04\x1d\x1a*\x20For\x20required\
-    \x20fields.\x20Proto2\x20syntax\x20only.\n\n\x0e\n\x07\x04\x01\x04\x01\
-    \x02\x02\x01\x12\x03o\x04\x18\n\x0e\n\x07\x04\x01\x04\x01\x02\x02\x02\
-    \x12\x03o\x1b\x1c\n%\n\x06\x04\x01\x04\x01\x02\x03\x12\x03q\x04\x1d\x1a\
-    \x16\x20For\x20repeated\x20fields.\n\n\x0e\n\x07\x04\x01\x04\x01\x02\x03\
-    \x01\x12\x03q\x04\x18\n\x0e\n\x07\x04\x01\x04\x01\x02\x03\x02\x12\x03q\
-    \x1b\x1c\n\x1e\n\x04\x04\x01\x02\0\x12\x03u\x02\x10\x1a\x11\x20The\x20fi\
-    eld\x20type.\n\n\x0c\n\x05\x04\x01\x02\0\x06\x12\x03u\x02\x06\n\x0c\n\
-    \x05\x04\x01\x02\0\x01\x12\x03u\x07\x0b\n\x0c\n\x05\x04\x01\x02\0\x03\
-    \x12\x03u\x0e\x0f\n%\n\x04\x04\x01\x02\x01\x12\x03w\x02\x1e\x1a\x18\x20T\
-    he\x20field\x20cardinality.\n\n\x0c\n\x05\x04\x01\x02\x01\x06\x12\x03w\
-    \x02\r\n\x0c\n\x05\x04\x01\x02\x01\x01\x12\x03w\x0e\x19\n\x0c\n\x05\x04\
-    \x01\x02\x01\x03\x12\x03w\x1c\x1d\n\x20\n\x04\x04\x01\x02\x02\x12\x03y\
-    \x02\x13\x1a\x13\x20The\x20field\x20number.\n\n\x0c\n\x05\x04\x01\x02\
-    \x02\x05\x12\x03y\x02\x07\n\x0c\n\x05\x04\x01\x02\x02\x01\x12\x03y\x08\
-    \x0e\n\x0c\n\x05\x04\x01\x02\x02\x03\x12\x03y\x11\x12\n\x1e\n\x04\x04\
-    \x01\x02\x03\x12\x03{\x02\x12\x1a\x11\x20The\x20field\x20name.\n\n\x0c\n\
-    \x05\x04\x01\x02\x03\x05\x12\x03{\x02\x08\n\x0c\n\x05\x04\x01\x02\x03\
-    \x01\x12\x03{\t\r\n\x0c\n\x05\x04\x01\x02\x03\x03\x12\x03{\x10\x11\n\x96\
-    \x01\n\x04\x04\x01\x02\x04\x12\x03~\x02\x16\x1a\x88\x01\x20The\x20field\
-    \x20type\x20URL,\x20without\x20the\x20scheme,\x20for\x20message\x20or\
-    \x20enumeration\n\x20types.\x20Example:\x20`\"type.googleapis.com/google\
-    .protobuf.Timestamp\"`.\n\n\x0c\n\x05\x04\x01\x02\x04\x05\x12\x03~\x02\
-    \x08\n\x0c\n\x05\x04\x01\x02\x04\x01\x12\x03~\t\x11\n\x0c\n\x05\x04\x01\
-    \x02\x04\x03\x12\x03~\x14\x15\n\xa5\x01\n\x04\x04\x01\x02\x05\x12\x04\
-    \x81\x01\x02\x18\x1a\x96\x01\x20The\x20index\x20of\x20the\x20field\x20ty\
-    pe\x20in\x20`Type.oneofs`,\x20for\x20message\x20or\x20enumeration\n\x20t\
-    ypes.\x20The\x20first\x20type\x20has\x20index\x201;\x20zero\x20means\x20\
-    the\x20type\x20is\x20not\x20in\x20the\x20list.\n\n\r\n\x05\x04\x01\x02\
-    \x05\x05\x12\x04\x81\x01\x02\x07\n\r\n\x05\x04\x01\x02\x05\x01\x12\x04\
-    \x81\x01\x08\x13\n\r\n\x05\x04\x01\x02\x05\x03\x12\x04\x81\x01\x16\x17\n\
-    F\n\x04\x04\x01\x02\x06\x12\x04\x83\x01\x02\x12\x1a8\x20Whether\x20to\
-    \x20use\x20alternative\x20packed\x20wire\x20representation.\n\n\r\n\x05\
-    \x04\x01\x02\x06\x05\x12\x04\x83\x01\x02\x06\n\r\n\x05\x04\x01\x02\x06\
-    \x01\x12\x04\x83\x01\x07\r\n\r\n\x05\x04\x01\x02\x06\x03\x12\x04\x83\x01\
-    \x10\x11\n,\n\x04\x04\x01\x02\x07\x12\x04\x85\x01\x02\x1e\x1a\x1e\x20The\
-    \x20protocol\x20buffer\x20options.\n\n\r\n\x05\x04\x01\x02\x07\x04\x12\
-    \x04\x85\x01\x02\n\n\r\n\x05\x04\x01\x02\x07\x06\x12\x04\x85\x01\x0b\x11\
-    \n\r\n\x05\x04\x01\x02\x07\x01\x12\x04\x85\x01\x12\x19\n\r\n\x05\x04\x01\
-    \x02\x07\x03\x12\x04\x85\x01\x1c\x1d\n$\n\x04\x04\x01\x02\x08\x12\x04\
-    \x87\x01\x02\x18\x1a\x16\x20The\x20field\x20JSON\x20name.\n\n\r\n\x05\
-    \x04\x01\x02\x08\x05\x12\x04\x87\x01\x02\x08\n\r\n\x05\x04\x01\x02\x08\
-    \x01\x12\x04\x87\x01\t\x12\n\r\n\x05\x04\x01\x02\x08\x03\x12\x04\x87\x01\
-    \x15\x17\nX\n\x04\x04\x01\x02\t\x12\x04\x89\x01\x02\x1c\x1aJ\x20The\x20s\
-    tring\x20value\x20of\x20the\x20default\x20value\x20of\x20this\x20field.\
-    \x20Proto2\x20syntax\x20only.\n\n\r\n\x05\x04\x01\x02\t\x05\x12\x04\x89\
-    \x01\x02\x08\n\r\n\x05\x04\x01\x02\t\x01\x12\x04\x89\x01\t\x16\n\r\n\x05\
-    \x04\x01\x02\t\x03\x12\x04\x89\x01\x19\x1b\n%\n\x02\x04\x02\x12\x06\x8d\
-    \x01\0\x98\x01\x01\x1a\x17\x20Enum\x20type\x20definition.\n\n\x0b\n\x03\
-    \x04\x02\x01\x12\x04\x8d\x01\x08\x0c\n\x1f\n\x04\x04\x02\x02\0\x12\x04\
-    \x8f\x01\x02\x12\x1a\x11\x20Enum\x20type\x20name.\n\n\r\n\x05\x04\x02\
-    \x02\0\x05\x12\x04\x8f\x01\x02\x08\n\r\n\x05\x04\x02\x02\0\x01\x12\x04\
-    \x8f\x01\t\r\n\r\n\x05\x04\x02\x02\0\x03\x12\x04\x8f\x01\x10\x11\n'\n\
-    \x04\x04\x02\x02\x01\x12\x04\x91\x01\x02#\x1a\x19\x20Enum\x20value\x20de\
-    finitions.\n\n\r\n\x05\x04\x02\x02\x01\x04\x12\x04\x91\x01\x02\n\n\r\n\
-    \x05\x04\x02\x02\x01\x06\x12\x04\x91\x01\x0b\x14\n\r\n\x05\x04\x02\x02\
-    \x01\x01\x12\x04\x91\x01\x15\x1e\n\r\n\x05\x04\x02\x02\x01\x03\x12\x04\
-    \x91\x01!\"\n(\n\x04\x04\x02\x02\x02\x12\x04\x93\x01\x02\x1e\x1a\x1a\x20\
-    Protocol\x20buffer\x20options.\n\n\r\n\x05\x04\x02\x02\x02\x04\x12\x04\
-    \x93\x01\x02\n\n\r\n\x05\x04\x02\x02\x02\x06\x12\x04\x93\x01\x0b\x11\n\r\
-    \n\x05\x04\x02\x02\x02\x01\x12\x04\x93\x01\x12\x19\n\r\n\x05\x04\x02\x02\
-    \x02\x03\x12\x04\x93\x01\x1c\x1d\n#\n\x04\x04\x02\x02\x03\x12\x04\x95\
-    \x01\x02#\x1a\x15\x20The\x20source\x20context.\n\n\r\n\x05\x04\x02\x02\
-    \x03\x06\x12\x04\x95\x01\x02\x0f\n\r\n\x05\x04\x02\x02\x03\x01\x12\x04\
-    \x95\x01\x10\x1e\n\r\n\x05\x04\x02\x02\x03\x03\x12\x04\x95\x01!\"\n\"\n\
-    \x04\x04\x02\x02\x04\x12\x04\x97\x01\x02\x14\x1a\x14\x20The\x20source\
-    \x20syntax.\n\n\r\n\x05\x04\x02\x02\x04\x06\x12\x04\x97\x01\x02\x08\n\r\
-    \n\x05\x04\x02\x02\x04\x01\x12\x04\x97\x01\t\x0f\n\r\n\x05\x04\x02\x02\
-    \x04\x03\x12\x04\x97\x01\x12\x13\n&\n\x02\x04\x03\x12\x06\x9b\x01\0\xa2\
-    \x01\x01\x1a\x18\x20Enum\x20value\x20definition.\n\n\x0b\n\x03\x04\x03\
-    \x01\x12\x04\x9b\x01\x08\x11\n\x20\n\x04\x04\x03\x02\0\x12\x04\x9d\x01\
-    \x02\x12\x1a\x12\x20Enum\x20value\x20name.\n\n\r\n\x05\x04\x03\x02\0\x05\
-    \x12\x04\x9d\x01\x02\x08\n\r\n\x05\x04\x03\x02\0\x01\x12\x04\x9d\x01\t\r\
-    \n\r\n\x05\x04\x03\x02\0\x03\x12\x04\x9d\x01\x10\x11\n\"\n\x04\x04\x03\
-    \x02\x01\x12\x04\x9f\x01\x02\x13\x1a\x14\x20Enum\x20value\x20number.\n\n\
-    \r\n\x05\x04\x03\x02\x01\x05\x12\x04\x9f\x01\x02\x07\n\r\n\x05\x04\x03\
-    \x02\x01\x01\x12\x04\x9f\x01\x08\x0e\n\r\n\x05\x04\x03\x02\x01\x03\x12\
-    \x04\x9f\x01\x11\x12\n(\n\x04\x04\x03\x02\x02\x12\x04\xa1\x01\x02\x1e\
-    \x1a\x1a\x20Protocol\x20buffer\x20options.\n\n\r\n\x05\x04\x03\x02\x02\
-    \x04\x12\x04\xa1\x01\x02\n\n\r\n\x05\x04\x03\x02\x02\x06\x12\x04\xa1\x01\
-    \x0b\x11\n\r\n\x05\x04\x03\x02\x02\x01\x12\x04\xa1\x01\x12\x19\n\r\n\x05\
-    \x04\x03\x02\x02\x03\x12\x04\xa1\x01\x1c\x1d\ng\n\x02\x04\x04\x12\x06\
-    \xa6\x01\0\xab\x01\x01\x1aY\x20A\x20protocol\x20buffer\x20option,\x20whi\
-    ch\x20can\x20be\x20attached\x20to\x20a\x20message,\x20field,\n\x20enumer\
-    ation,\x20etc.\n\n\x0b\n\x03\x04\x04\x01\x12\x04\xa6\x01\x08\x0e\nA\n\
-    \x04\x04\x04\x02\0\x12\x04\xa8\x01\x02\x12\x1a3\x20The\x20option's\x20na\
-    me.\x20For\x20example,\x20`\"java_package\"`.\n\n\r\n\x05\x04\x04\x02\0\
-    \x05\x12\x04\xa8\x01\x02\x08\n\r\n\x05\x04\x04\x02\0\x01\x12\x04\xa8\x01\
-    \t\r\n\r\n\x05\x04\x04\x02\0\x03\x12\x04\xa8\x01\x10\x11\nI\n\x04\x04\
-    \x04\x02\x01\x12\x04\xaa\x01\x02\x10\x1a;\x20The\x20option's\x20value.\
-    \x20For\x20example,\x20`\"com.google.protobuf\"`.\n\n\r\n\x05\x04\x04\
-    \x02\x01\x06\x12\x04\xaa\x01\x02\x05\n\r\n\x05\x04\x04\x02\x01\x01\x12\
-    \x04\xaa\x01\x06\x0b\n\r\n\x05\x04\x04\x02\x01\x03\x12\x04\xaa\x01\x0e\
-    \x0f\nI\n\x02\x05\0\x12\x06\xae\x01\0\xb3\x01\x01\x1a;\x20The\x20syntax\
-    \x20in\x20which\x20a\x20protocol\x20buffer\x20element\x20is\x20defined.\
-    \n\n\x0b\n\x03\x05\0\x01\x12\x04\xae\x01\x05\x0b\n\x20\n\x04\x05\0\x02\0\
-    \x12\x04\xb0\x01\x02\x14\x1a\x12\x20Syntax\x20`proto2`.\n\n\r\n\x05\x05\
-    \0\x02\0\x01\x12\x04\xb0\x01\x02\x0f\n\r\n\x05\x05\0\x02\0\x02\x12\x04\
-    \xb0\x01\x12\x13\n\x20\n\x04\x05\0\x02\x01\x12\x04\xb2\x01\x02\x14\x1a\
-    \x12\x20Syntax\x20`proto3`.\n\n\r\n\x05\x05\0\x02\x01\x01\x12\x04\xb2\
-    \x01\x02\x0f\n\r\n\x05\x05\0\x02\x01\x02\x12\x04\xb2\x01\x12\x13b\x06pro\
-    to3\
+    PROTO2\x10\0\x12\x11\n\rSYNTAX_PROTO3\x10\x01B}\n\x13com.google.protobuf\
+    B\tTypeProtoP\x01Z/google.golang.org/genproto/protobuf/ptype;ptype\xf8\
+    \x01\x01\xa2\x02\x03GPB\xaa\x02\x1eGoogle.Protobuf.WellKnownTypesJ\xc38\
+    \n\x07\x12\x05\x1e\0\xba\x01\x01\n\xcc\x0c\n\x01\x0c\x12\x03\x1e\0\x122\
+    \xc1\x0c\x20Protocol\x20Buffers\x20-\x20Google's\x20data\x20interchange\
+    \x20format\n\x20Copyright\x202008\x20Google\x20Inc.\x20\x20All\x20rights\
+    \x20reserved.\n\x20https://developers.google.com/protocol-buffers/\n\n\
+    \x20Redistribution\x20and\x20use\x20in\x20source\x20and\x20binary\x20for\
+    ms,\x20with\x20or\x20without\n\x20modification,\x20are\x20permitted\x20p\
+    rovided\x20that\x20the\x20following\x20conditions\x20are\n\x20met:\n\n\
+    \x20\x20\x20\x20\x20*\x20Redistributions\x20of\x20source\x20code\x20must\
+    \x20retain\x20the\x20above\x20copyright\n\x20notice,\x20this\x20list\x20\
+    of\x20conditions\x20and\x20the\x20following\x20disclaimer.\n\x20\x20\x20\
+    \x20\x20*\x20Redistributions\x20in\x20binary\x20form\x20must\x20reproduc\
+    e\x20the\x20above\n\x20copyright\x20notice,\x20this\x20list\x20of\x20con\
+    ditions\x20and\x20the\x20following\x20disclaimer\n\x20in\x20the\x20docum\
+    entation\x20and/or\x20other\x20materials\x20provided\x20with\x20the\n\
+    \x20distribution.\n\x20\x20\x20\x20\x20*\x20Neither\x20the\x20name\x20of\
+    \x20Google\x20Inc.\x20nor\x20the\x20names\x20of\x20its\n\x20contributors\
+    \x20may\x20be\x20used\x20to\x20endorse\x20or\x20promote\x20products\x20d\
+    erived\x20from\n\x20this\x20software\x20without\x20specific\x20prior\x20\
+    written\x20permission.\n\n\x20THIS\x20SOFTWARE\x20IS\x20PROVIDED\x20BY\
+    \x20THE\x20COPYRIGHT\x20HOLDERS\x20AND\x20CONTRIBUTORS\n\x20\"AS\x20IS\"\
+    \x20AND\x20ANY\x20EXPRESS\x20OR\x20IMPLIED\x20WARRANTIES,\x20INCLUDING,\
+    \x20BUT\x20NOT\n\x20LIMITED\x20TO,\x20THE\x20IMPLIED\x20WARRANTIES\x20OF\
+    \x20MERCHANTABILITY\x20AND\x20FITNESS\x20FOR\n\x20A\x20PARTICULAR\x20PUR\
+    POSE\x20ARE\x20DISCLAIMED.\x20IN\x20NO\x20EVENT\x20SHALL\x20THE\x20COPYR\
+    IGHT\n\x20OWNER\x20OR\x20CONTRIBUTORS\x20BE\x20LIABLE\x20FOR\x20ANY\x20D\
+    IRECT,\x20INDIRECT,\x20INCIDENTAL,\n\x20SPECIAL,\x20EXEMPLARY,\x20OR\x20\
+    CONSEQUENTIAL\x20DAMAGES\x20(INCLUDING,\x20BUT\x20NOT\n\x20LIMITED\x20TO\
+    ,\x20PROCUREMENT\x20OF\x20SUBSTITUTE\x20GOODS\x20OR\x20SERVICES;\x20LOSS\
+    \x20OF\x20USE,\n\x20DATA,\x20OR\x20PROFITS;\x20OR\x20BUSINESS\x20INTERRU\
+    PTION)\x20HOWEVER\x20CAUSED\x20AND\x20ON\x20ANY\n\x20THEORY\x20OF\x20LIA\
+    BILITY,\x20WHETHER\x20IN\x20CONTRACT,\x20STRICT\x20LIABILITY,\x20OR\x20T\
+    ORT\n\x20(INCLUDING\x20NEGLIGENCE\x20OR\x20OTHERWISE)\x20ARISING\x20IN\
+    \x20ANY\x20WAY\x20OUT\x20OF\x20THE\x20USE\n\x20OF\x20THIS\x20SOFTWARE,\
+    \x20EVEN\x20IF\x20ADVISED\x20OF\x20THE\x20POSSIBILITY\x20OF\x20SUCH\x20D\
+    AMAGE.\n\n\x08\n\x01\x02\x12\x03\x20\0\x18\n\t\n\x02\x03\0\x12\x03\"\0#\
+    \n\t\n\x02\x03\x01\x12\x03#\0.\n\x08\n\x01\x08\x12\x03%\0;\n\t\n\x02\x08\
+    %\x12\x03%\0;\n\x08\n\x01\x08\x12\x03&\0\x1f\n\t\n\x02\x08\x1f\x12\x03&\
+    \0\x1f\n\x08\n\x01\x08\x12\x03'\0,\n\t\n\x02\x08\x01\x12\x03'\0,\n\x08\n\
+    \x01\x08\x12\x03(\0*\n\t\n\x02\x08\x08\x12\x03(\0*\n\x08\n\x01\x08\x12\
+    \x03)\0\"\n\t\n\x02\x08\n\x12\x03)\0\"\n\x08\n\x01\x08\x12\x03*\0!\n\t\n\
+    \x02\x08$\x12\x03*\0!\n\x08\n\x01\x08\x12\x03+\0F\n\t\n\x02\x08\x0b\x12\
+    \x03+\0F\n-\n\x02\x04\0\x12\x04.\0;\x01\x1a!\x20A\x20protocol\x20buffer\
+    \x20message\x20type.\n\n\n\n\x03\x04\0\x01\x12\x03.\x08\x0c\n0\n\x04\x04\
+    \0\x02\0\x12\x030\x02\x12\x1a#\x20The\x20fully\x20qualified\x20message\
+    \x20name.\n\n\x0c\n\x05\x04\0\x02\0\x05\x12\x030\x02\x08\n\x0c\n\x05\x04\
+    \0\x02\0\x01\x12\x030\t\r\n\x0c\n\x05\x04\0\x02\0\x03\x12\x030\x10\x11\n\
+    \"\n\x04\x04\0\x02\x01\x12\x032\x02\x1c\x1a\x15\x20The\x20list\x20of\x20\
+    fields.\n\n\x0c\n\x05\x04\0\x02\x01\x04\x12\x032\x02\n\n\x0c\n\x05\x04\0\
+    \x02\x01\x06\x12\x032\x0b\x10\n\x0c\n\x05\x04\0\x02\x01\x01\x12\x032\x11\
+    \x17\n\x0c\n\x05\x04\0\x02\x01\x03\x12\x032\x1a\x1b\nO\n\x04\x04\0\x02\
+    \x02\x12\x034\x02\x1d\x1aB\x20The\x20list\x20of\x20types\x20appearing\
+    \x20in\x20`oneof`\x20definitions\x20in\x20this\x20type.\n\n\x0c\n\x05\
+    \x04\0\x02\x02\x04\x12\x034\x02\n\n\x0c\n\x05\x04\0\x02\x02\x05\x12\x034\
+    \x0b\x11\n\x0c\n\x05\x04\0\x02\x02\x01\x12\x034\x12\x18\n\x0c\n\x05\x04\
+    \0\x02\x02\x03\x12\x034\x1b\x1c\n+\n\x04\x04\0\x02\x03\x12\x036\x02\x1e\
+    \x1a\x1e\x20The\x20protocol\x20buffer\x20options.\n\n\x0c\n\x05\x04\0\
+    \x02\x03\x04\x12\x036\x02\n\n\x0c\n\x05\x04\0\x02\x03\x06\x12\x036\x0b\
+    \x11\n\x0c\n\x05\x04\0\x02\x03\x01\x12\x036\x12\x19\n\x0c\n\x05\x04\0\
+    \x02\x03\x03\x12\x036\x1c\x1d\n\"\n\x04\x04\0\x02\x04\x12\x038\x02#\x1a\
+    \x15\x20The\x20source\x20context.\n\n\x0c\n\x05\x04\0\x02\x04\x06\x12\
+    \x038\x02\x0f\n\x0c\n\x05\x04\0\x02\x04\x01\x12\x038\x10\x1e\n\x0c\n\x05\
+    \x04\0\x02\x04\x03\x12\x038!\"\n!\n\x04\x04\0\x02\x05\x12\x03:\x02\x14\
+    \x1a\x14\x20The\x20source\x20syntax.\n\n\x0c\n\x05\x04\0\x02\x05\x06\x12\
+    \x03:\x02\x08\n\x0c\n\x05\x04\0\x02\x05\x01\x12\x03:\t\x0f\n\x0c\n\x05\
+    \x04\0\x02\x05\x03\x12\x03:\x12\x13\n0\n\x02\x04\x01\x12\x05>\0\x8b\x01\
+    \x01\x1a#\x20A\x20single\x20field\x20of\x20a\x20message\x20type.\n\n\n\n\
+    \x03\x04\x01\x01\x12\x03>\x08\r\n\"\n\x04\x04\x01\x04\0\x12\x04@\x02g\
+    \x03\x1a\x14\x20Basic\x20field\x20types.\n\n\x0c\n\x05\x04\x01\x04\0\x01\
+    \x12\x03@\x07\x0b\n$\n\x06\x04\x01\x04\0\x02\0\x12\x03B\x04\x15\x1a\x15\
+    \x20Field\x20type\x20unknown.\n\n\x0e\n\x07\x04\x01\x04\0\x02\0\x01\x12\
+    \x03B\x04\x10\n\x0e\n\x07\x04\x01\x04\0\x02\0\x02\x12\x03B\x13\x14\n#\n\
+    \x06\x04\x01\x04\0\x02\x01\x12\x03D\x04\x14\x1a\x14\x20Field\x20type\x20\
+    double.\n\n\x0e\n\x07\x04\x01\x04\0\x02\x01\x01\x12\x03D\x04\x0f\n\x0e\n\
+    \x07\x04\x01\x04\0\x02\x01\x02\x12\x03D\x12\x13\n\"\n\x06\x04\x01\x04\0\
+    \x02\x02\x12\x03F\x04\x13\x1a\x13\x20Field\x20type\x20float.\n\n\x0e\n\
+    \x07\x04\x01\x04\0\x02\x02\x01\x12\x03F\x04\x0e\n\x0e\n\x07\x04\x01\x04\
+    \0\x02\x02\x02\x12\x03F\x11\x12\n\"\n\x06\x04\x01\x04\0\x02\x03\x12\x03H\
+    \x04\x13\x1a\x13\x20Field\x20type\x20int64.\n\n\x0e\n\x07\x04\x01\x04\0\
+    \x02\x03\x01\x12\x03H\x04\x0e\n\x0e\n\x07\x04\x01\x04\0\x02\x03\x02\x12\
+    \x03H\x11\x12\n#\n\x06\x04\x01\x04\0\x02\x04\x12\x03J\x04\x14\x1a\x14\
+    \x20Field\x20type\x20uint64.\n\n\x0e\n\x07\x04\x01\x04\0\x02\x04\x01\x12\
+    \x03J\x04\x0f\n\x0e\n\x07\x04\x01\x04\0\x02\x04\x02\x12\x03J\x12\x13\n\"\
+    \n\x06\x04\x01\x04\0\x02\x05\x12\x03L\x04\x13\x1a\x13\x20Field\x20type\
+    \x20int32.\n\n\x0e\n\x07\x04\x01\x04\0\x02\x05\x01\x12\x03L\x04\x0e\n\
+    \x0e\n\x07\x04\x01\x04\0\x02\x05\x02\x12\x03L\x11\x12\n$\n\x06\x04\x01\
+    \x04\0\x02\x06\x12\x03N\x04\x15\x1a\x15\x20Field\x20type\x20fixed64.\n\n\
+    \x0e\n\x07\x04\x01\x04\0\x02\x06\x01\x12\x03N\x04\x10\n\x0e\n\x07\x04\
+    \x01\x04\0\x02\x06\x02\x12\x03N\x13\x14\n$\n\x06\x04\x01\x04\0\x02\x07\
+    \x12\x03P\x04\x15\x1a\x15\x20Field\x20type\x20fixed32.\n\n\x0e\n\x07\x04\
+    \x01\x04\0\x02\x07\x01\x12\x03P\x04\x10\n\x0e\n\x07\x04\x01\x04\0\x02\
+    \x07\x02\x12\x03P\x13\x14\n!\n\x06\x04\x01\x04\0\x02\x08\x12\x03R\x04\
+    \x12\x1a\x12\x20Field\x20type\x20bool.\n\n\x0e\n\x07\x04\x01\x04\0\x02\
+    \x08\x01\x12\x03R\x04\r\n\x0e\n\x07\x04\x01\x04\0\x02\x08\x02\x12\x03R\
+    \x10\x11\n#\n\x06\x04\x01\x04\0\x02\t\x12\x03T\x04\x14\x1a\x14\x20Field\
+    \x20type\x20string.\n\n\x0e\n\x07\x04\x01\x04\0\x02\t\x01\x12\x03T\x04\
+    \x0f\n\x0e\n\x07\x04\x01\x04\0\x02\t\x02\x12\x03T\x12\x13\nF\n\x06\x04\
+    \x01\x04\0\x02\n\x12\x03V\x04\x14\x1a7\x20Field\x20type\x20group.\x20Pro\
+    to2\x20syntax\x20only,\x20and\x20deprecated.\n\n\x0e\n\x07\x04\x01\x04\0\
+    \x02\n\x01\x12\x03V\x04\x0e\n\x0e\n\x07\x04\x01\x04\0\x02\n\x02\x12\x03V\
+    \x11\x13\n$\n\x06\x04\x01\x04\0\x02\x0b\x12\x03X\x04\x16\x1a\x15\x20Fiel\
+    d\x20type\x20message.\n\n\x0e\n\x07\x04\x01\x04\0\x02\x0b\x01\x12\x03X\
+    \x04\x10\n\x0e\n\x07\x04\x01\x04\0\x02\x0b\x02\x12\x03X\x13\x15\n\"\n\
+    \x06\x04\x01\x04\0\x02\x0c\x12\x03Z\x04\x14\x1a\x13\x20Field\x20type\x20\
+    bytes.\n\n\x0e\n\x07\x04\x01\x04\0\x02\x0c\x01\x12\x03Z\x04\x0e\n\x0e\n\
+    \x07\x04\x01\x04\0\x02\x0c\x02\x12\x03Z\x11\x13\n#\n\x06\x04\x01\x04\0\
+    \x02\r\x12\x03\\\x04\x15\x1a\x14\x20Field\x20type\x20uint32.\n\n\x0e\n\
+    \x07\x04\x01\x04\0\x02\r\x01\x12\x03\\\x04\x0f\n\x0e\n\x07\x04\x01\x04\0\
+    \x02\r\x02\x12\x03\\\x12\x14\n!\n\x06\x04\x01\x04\0\x02\x0e\x12\x03^\x04\
+    \x13\x1a\x12\x20Field\x20type\x20enum.\n\n\x0e\n\x07\x04\x01\x04\0\x02\
+    \x0e\x01\x12\x03^\x04\r\n\x0e\n\x07\x04\x01\x04\0\x02\x0e\x02\x12\x03^\
+    \x10\x12\n%\n\x06\x04\x01\x04\0\x02\x0f\x12\x03`\x04\x17\x1a\x16\x20Fiel\
+    d\x20type\x20sfixed32.\n\n\x0e\n\x07\x04\x01\x04\0\x02\x0f\x01\x12\x03`\
+    \x04\x11\n\x0e\n\x07\x04\x01\x04\0\x02\x0f\x02\x12\x03`\x14\x16\n%\n\x06\
+    \x04\x01\x04\0\x02\x10\x12\x03b\x04\x17\x1a\x16\x20Field\x20type\x20sfix\
+    ed64.\n\n\x0e\n\x07\x04\x01\x04\0\x02\x10\x01\x12\x03b\x04\x11\n\x0e\n\
+    \x07\x04\x01\x04\0\x02\x10\x02\x12\x03b\x14\x16\n#\n\x06\x04\x01\x04\0\
+    \x02\x11\x12\x03d\x04\x15\x1a\x14\x20Field\x20type\x20sint32.\n\n\x0e\n\
+    \x07\x04\x01\x04\0\x02\x11\x01\x12\x03d\x04\x0f\n\x0e\n\x07\x04\x01\x04\
+    \0\x02\x11\x02\x12\x03d\x12\x14\n#\n\x06\x04\x01\x04\0\x02\x12\x12\x03f\
+    \x04\x15\x1a\x14\x20Field\x20type\x20sint64.\n\n\x0e\n\x07\x04\x01\x04\0\
+    \x02\x12\x01\x12\x03f\x04\x0f\n\x0e\n\x07\x04\x01\x04\0\x02\x12\x02\x12\
+    \x03f\x12\x14\nC\n\x04\x04\x01\x04\x01\x12\x04j\x02s\x03\x1a5\x20Whether\
+    \x20a\x20field\x20is\x20optional,\x20required,\x20or\x20repeated.\n\n\
+    \x0c\n\x05\x04\x01\x04\x01\x01\x12\x03j\x07\x12\n5\n\x06\x04\x01\x04\x01\
+    \x02\0\x12\x03l\x04\x1c\x1a&\x20For\x20fields\x20with\x20unknown\x20card\
+    inality.\n\n\x0e\n\x07\x04\x01\x04\x01\x02\0\x01\x12\x03l\x04\x17\n\x0e\
+    \n\x07\x04\x01\x04\x01\x02\0\x02\x12\x03l\x1a\x1b\n%\n\x06\x04\x01\x04\
+    \x01\x02\x01\x12\x03n\x04\x1d\x1a\x16\x20For\x20optional\x20fields.\n\n\
+    \x0e\n\x07\x04\x01\x04\x01\x02\x01\x01\x12\x03n\x04\x18\n\x0e\n\x07\x04\
+    \x01\x04\x01\x02\x01\x02\x12\x03n\x1b\x1c\n9\n\x06\x04\x01\x04\x01\x02\
+    \x02\x12\x03p\x04\x1d\x1a*\x20For\x20required\x20fields.\x20Proto2\x20sy\
+    ntax\x20only.\n\n\x0e\n\x07\x04\x01\x04\x01\x02\x02\x01\x12\x03p\x04\x18\
+    \n\x0e\n\x07\x04\x01\x04\x01\x02\x02\x02\x12\x03p\x1b\x1c\n%\n\x06\x04\
+    \x01\x04\x01\x02\x03\x12\x03r\x04\x1d\x1a\x16\x20For\x20repeated\x20fiel\
+    ds.\n\n\x0e\n\x07\x04\x01\x04\x01\x02\x03\x01\x12\x03r\x04\x18\n\x0e\n\
+    \x07\x04\x01\x04\x01\x02\x03\x02\x12\x03r\x1b\x1c\n\x1e\n\x04\x04\x01\
+    \x02\0\x12\x03v\x02\x10\x1a\x11\x20The\x20field\x20type.\n\n\x0c\n\x05\
+    \x04\x01\x02\0\x06\x12\x03v\x02\x06\n\x0c\n\x05\x04\x01\x02\0\x01\x12\
+    \x03v\x07\x0b\n\x0c\n\x05\x04\x01\x02\0\x03\x12\x03v\x0e\x0f\n%\n\x04\
+    \x04\x01\x02\x01\x12\x03x\x02\x1e\x1a\x18\x20The\x20field\x20cardinality\
+    .\n\n\x0c\n\x05\x04\x01\x02\x01\x06\x12\x03x\x02\r\n\x0c\n\x05\x04\x01\
+    \x02\x01\x01\x12\x03x\x0e\x19\n\x0c\n\x05\x04\x01\x02\x01\x03\x12\x03x\
+    \x1c\x1d\n\x20\n\x04\x04\x01\x02\x02\x12\x03z\x02\x13\x1a\x13\x20The\x20\
+    field\x20number.\n\n\x0c\n\x05\x04\x01\x02\x02\x05\x12\x03z\x02\x07\n\
+    \x0c\n\x05\x04\x01\x02\x02\x01\x12\x03z\x08\x0e\n\x0c\n\x05\x04\x01\x02\
+    \x02\x03\x12\x03z\x11\x12\n\x1e\n\x04\x04\x01\x02\x03\x12\x03|\x02\x12\
+    \x1a\x11\x20The\x20field\x20name.\n\n\x0c\n\x05\x04\x01\x02\x03\x05\x12\
+    \x03|\x02\x08\n\x0c\n\x05\x04\x01\x02\x03\x01\x12\x03|\t\r\n\x0c\n\x05\
+    \x04\x01\x02\x03\x03\x12\x03|\x10\x11\n\x96\x01\n\x04\x04\x01\x02\x04\
+    \x12\x03\x7f\x02\x16\x1a\x88\x01\x20The\x20field\x20type\x20URL,\x20with\
+    out\x20the\x20scheme,\x20for\x20message\x20or\x20enumeration\n\x20types.\
+    \x20Example:\x20`\"type.googleapis.com/google.protobuf.Timestamp\"`.\n\n\
+    \x0c\n\x05\x04\x01\x02\x04\x05\x12\x03\x7f\x02\x08\n\x0c\n\x05\x04\x01\
+    \x02\x04\x01\x12\x03\x7f\t\x11\n\x0c\n\x05\x04\x01\x02\x04\x03\x12\x03\
+    \x7f\x14\x15\n\xa5\x01\n\x04\x04\x01\x02\x05\x12\x04\x82\x01\x02\x18\x1a\
+    \x96\x01\x20The\x20index\x20of\x20the\x20field\x20type\x20in\x20`Type.on\
+    eofs`,\x20for\x20message\x20or\x20enumeration\n\x20types.\x20The\x20firs\
+    t\x20type\x20has\x20index\x201;\x20zero\x20means\x20the\x20type\x20is\
+    \x20not\x20in\x20the\x20list.\n\n\r\n\x05\x04\x01\x02\x05\x05\x12\x04\
+    \x82\x01\x02\x07\n\r\n\x05\x04\x01\x02\x05\x01\x12\x04\x82\x01\x08\x13\n\
+    \r\n\x05\x04\x01\x02\x05\x03\x12\x04\x82\x01\x16\x17\nF\n\x04\x04\x01\
+    \x02\x06\x12\x04\x84\x01\x02\x12\x1a8\x20Whether\x20to\x20use\x20alterna\
+    tive\x20packed\x20wire\x20representation.\n\n\r\n\x05\x04\x01\x02\x06\
+    \x05\x12\x04\x84\x01\x02\x06\n\r\n\x05\x04\x01\x02\x06\x01\x12\x04\x84\
+    \x01\x07\r\n\r\n\x05\x04\x01\x02\x06\x03\x12\x04\x84\x01\x10\x11\n,\n\
+    \x04\x04\x01\x02\x07\x12\x04\x86\x01\x02\x1e\x1a\x1e\x20The\x20protocol\
+    \x20buffer\x20options.\n\n\r\n\x05\x04\x01\x02\x07\x04\x12\x04\x86\x01\
+    \x02\n\n\r\n\x05\x04\x01\x02\x07\x06\x12\x04\x86\x01\x0b\x11\n\r\n\x05\
+    \x04\x01\x02\x07\x01\x12\x04\x86\x01\x12\x19\n\r\n\x05\x04\x01\x02\x07\
+    \x03\x12\x04\x86\x01\x1c\x1d\n$\n\x04\x04\x01\x02\x08\x12\x04\x88\x01\
+    \x02\x18\x1a\x16\x20The\x20field\x20JSON\x20name.\n\n\r\n\x05\x04\x01\
+    \x02\x08\x05\x12\x04\x88\x01\x02\x08\n\r\n\x05\x04\x01\x02\x08\x01\x12\
+    \x04\x88\x01\t\x12\n\r\n\x05\x04\x01\x02\x08\x03\x12\x04\x88\x01\x15\x17\
+    \nX\n\x04\x04\x01\x02\t\x12\x04\x8a\x01\x02\x1c\x1aJ\x20The\x20string\
+    \x20value\x20of\x20the\x20default\x20value\x20of\x20this\x20field.\x20Pr\
+    oto2\x20syntax\x20only.\n\n\r\n\x05\x04\x01\x02\t\x05\x12\x04\x8a\x01\
+    \x02\x08\n\r\n\x05\x04\x01\x02\t\x01\x12\x04\x8a\x01\t\x16\n\r\n\x05\x04\
+    \x01\x02\t\x03\x12\x04\x8a\x01\x19\x1b\n%\n\x02\x04\x02\x12\x06\x8e\x01\
+    \0\x99\x01\x01\x1a\x17\x20Enum\x20type\x20definition.\n\n\x0b\n\x03\x04\
+    \x02\x01\x12\x04\x8e\x01\x08\x0c\n\x1f\n\x04\x04\x02\x02\0\x12\x04\x90\
+    \x01\x02\x12\x1a\x11\x20Enum\x20type\x20name.\n\n\r\n\x05\x04\x02\x02\0\
+    \x05\x12\x04\x90\x01\x02\x08\n\r\n\x05\x04\x02\x02\0\x01\x12\x04\x90\x01\
+    \t\r\n\r\n\x05\x04\x02\x02\0\x03\x12\x04\x90\x01\x10\x11\n'\n\x04\x04\
+    \x02\x02\x01\x12\x04\x92\x01\x02#\x1a\x19\x20Enum\x20value\x20definition\
+    s.\n\n\r\n\x05\x04\x02\x02\x01\x04\x12\x04\x92\x01\x02\n\n\r\n\x05\x04\
+    \x02\x02\x01\x06\x12\x04\x92\x01\x0b\x14\n\r\n\x05\x04\x02\x02\x01\x01\
+    \x12\x04\x92\x01\x15\x1e\n\r\n\x05\x04\x02\x02\x01\x03\x12\x04\x92\x01!\
+    \"\n(\n\x04\x04\x02\x02\x02\x12\x04\x94\x01\x02\x1e\x1a\x1a\x20Protocol\
+    \x20buffer\x20options.\n\n\r\n\x05\x04\x02\x02\x02\x04\x12\x04\x94\x01\
+    \x02\n\n\r\n\x05\x04\x02\x02\x02\x06\x12\x04\x94\x01\x0b\x11\n\r\n\x05\
+    \x04\x02\x02\x02\x01\x12\x04\x94\x01\x12\x19\n\r\n\x05\x04\x02\x02\x02\
+    \x03\x12\x04\x94\x01\x1c\x1d\n#\n\x04\x04\x02\x02\x03\x12\x04\x96\x01\
+    \x02#\x1a\x15\x20The\x20source\x20context.\n\n\r\n\x05\x04\x02\x02\x03\
+    \x06\x12\x04\x96\x01\x02\x0f\n\r\n\x05\x04\x02\x02\x03\x01\x12\x04\x96\
+    \x01\x10\x1e\n\r\n\x05\x04\x02\x02\x03\x03\x12\x04\x96\x01!\"\n\"\n\x04\
+    \x04\x02\x02\x04\x12\x04\x98\x01\x02\x14\x1a\x14\x20The\x20source\x20syn\
+    tax.\n\n\r\n\x05\x04\x02\x02\x04\x06\x12\x04\x98\x01\x02\x08\n\r\n\x05\
+    \x04\x02\x02\x04\x01\x12\x04\x98\x01\t\x0f\n\r\n\x05\x04\x02\x02\x04\x03\
+    \x12\x04\x98\x01\x12\x13\n&\n\x02\x04\x03\x12\x06\x9c\x01\0\xa3\x01\x01\
+    \x1a\x18\x20Enum\x20value\x20definition.\n\n\x0b\n\x03\x04\x03\x01\x12\
+    \x04\x9c\x01\x08\x11\n\x20\n\x04\x04\x03\x02\0\x12\x04\x9e\x01\x02\x12\
+    \x1a\x12\x20Enum\x20value\x20name.\n\n\r\n\x05\x04\x03\x02\0\x05\x12\x04\
+    \x9e\x01\x02\x08\n\r\n\x05\x04\x03\x02\0\x01\x12\x04\x9e\x01\t\r\n\r\n\
+    \x05\x04\x03\x02\0\x03\x12\x04\x9e\x01\x10\x11\n\"\n\x04\x04\x03\x02\x01\
+    \x12\x04\xa0\x01\x02\x13\x1a\x14\x20Enum\x20value\x20number.\n\n\r\n\x05\
+    \x04\x03\x02\x01\x05\x12\x04\xa0\x01\x02\x07\n\r\n\x05\x04\x03\x02\x01\
+    \x01\x12\x04\xa0\x01\x08\x0e\n\r\n\x05\x04\x03\x02\x01\x03\x12\x04\xa0\
+    \x01\x11\x12\n(\n\x04\x04\x03\x02\x02\x12\x04\xa2\x01\x02\x1e\x1a\x1a\
+    \x20Protocol\x20buffer\x20options.\n\n\r\n\x05\x04\x03\x02\x02\x04\x12\
+    \x04\xa2\x01\x02\n\n\r\n\x05\x04\x03\x02\x02\x06\x12\x04\xa2\x01\x0b\x11\
+    \n\r\n\x05\x04\x03\x02\x02\x01\x12\x04\xa2\x01\x12\x19\n\r\n\x05\x04\x03\
+    \x02\x02\x03\x12\x04\xa2\x01\x1c\x1d\ng\n\x02\x04\x04\x12\x06\xa7\x01\0\
+    \xb2\x01\x01\x1aY\x20A\x20protocol\x20buffer\x20option,\x20which\x20can\
+    \x20be\x20attached\x20to\x20a\x20message,\x20field,\n\x20enumeration,\
+    \x20etc.\n\n\x0b\n\x03\x04\x04\x01\x12\x04\xa7\x01\x08\x0e\n\xfc\x01\n\
+    \x04\x04\x04\x02\0\x12\x04\xac\x01\x02\x12\x1a\xed\x01\x20The\x20option'\
+    s\x20name.\x20For\x20protobuf\x20built-in\x20options\x20(options\x20defi\
+    ned\x20in\n\x20descriptor.proto),\x20this\x20is\x20the\x20short\x20name.\
+    \x20For\x20example,\x20`\"map_entry\"`.\n\x20For\x20custom\x20options,\
+    \x20it\x20should\x20be\x20the\x20fully-qualified\x20name.\x20For\x20exam\
+    ple,\n\x20`\"google.api.http\"`.\n\n\r\n\x05\x04\x04\x02\0\x05\x12\x04\
+    \xac\x01\x02\x08\n\r\n\x05\x04\x04\x02\0\x01\x12\x04\xac\x01\t\r\n\r\n\
+    \x05\x04\x04\x02\0\x03\x12\x04\xac\x01\x10\x11\n\xa0\x02\n\x04\x04\x04\
+    \x02\x01\x12\x04\xb1\x01\x02\x10\x1a\x91\x02\x20The\x20option's\x20value\
+    \x20packed\x20in\x20an\x20Any\x20message.\x20If\x20the\x20value\x20is\
+    \x20a\x20primitive,\n\x20the\x20corresponding\x20wrapper\x20type\x20defi\
+    ned\x20in\x20google/protobuf/wrappers.proto\n\x20should\x20be\x20used.\
+    \x20If\x20the\x20value\x20is\x20an\x20enum,\x20it\x20should\x20be\x20sto\
+    red\x20as\x20an\x20int32\n\x20value\x20using\x20the\x20google.protobuf.I\
+    nt32Value\x20type.\n\n\r\n\x05\x04\x04\x02\x01\x06\x12\x04\xb1\x01\x02\
+    \x05\n\r\n\x05\x04\x04\x02\x01\x01\x12\x04\xb1\x01\x06\x0b\n\r\n\x05\x04\
+    \x04\x02\x01\x03\x12\x04\xb1\x01\x0e\x0f\nI\n\x02\x05\0\x12\x06\xb5\x01\
+    \0\xba\x01\x01\x1a;\x20The\x20syntax\x20in\x20which\x20a\x20protocol\x20\
+    buffer\x20element\x20is\x20defined.\n\n\x0b\n\x03\x05\0\x01\x12\x04\xb5\
+    \x01\x05\x0b\n\x20\n\x04\x05\0\x02\0\x12\x04\xb7\x01\x02\x14\x1a\x12\x20\
+    Syntax\x20`proto2`.\n\n\r\n\x05\x05\0\x02\0\x01\x12\x04\xb7\x01\x02\x0f\
+    \n\r\n\x05\x05\0\x02\0\x02\x12\x04\xb7\x01\x12\x13\n\x20\n\x04\x05\0\x02\
+    \x01\x12\x04\xb9\x01\x02\x14\x1a\x12\x20Syntax\x20`proto3`.\n\n\r\n\x05\
+    \x05\0\x02\x01\x01\x12\x04\xb9\x01\x02\x0f\n\r\n\x05\x05\0\x02\x01\x02\
+    \x12\x04\xb9\x01\x12\x13b\x06proto3\
 ";
-
-static file_descriptor_proto_lazy: crate::rt::Lazy<crate::descriptor::FileDescriptorProto> = crate::rt::Lazy::INIT;
-
-fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
-    crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
-}
 
 /// `FileDescriptorProto` object which was a source for this generated file
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
+    static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
     file_descriptor_proto_lazy.get(|| {
-        parse_descriptor_proto()
+        crate::Message::parse_from_bytes(file_descriptor_proto_data).unwrap()
     })
+}
+
+/// `FileDescriptor` object which allows dynamic access to files
+pub fn file_descriptor() -> crate::reflect::FileDescriptor {
+    static file_descriptor_lazy: crate::rt::LazyV2<crate::reflect::GeneratedFileDescriptor> = crate::rt::LazyV2::INIT;
+    let file_descriptor = file_descriptor_lazy.get(|| {
+        let mut deps = ::std::vec::Vec::new();
+        deps.push(crate::well_known_types::file_descriptors::any());
+        deps.push(crate::well_known_types::file_descriptors::source_context());
+        let mut messages = ::std::vec::Vec::new();
+        messages.push(Type::generated_message_descriptor_data());
+        messages.push(Field::generated_message_descriptor_data());
+        messages.push(Enum::generated_message_descriptor_data());
+        messages.push(EnumValue::generated_message_descriptor_data());
+        messages.push(Option::generated_message_descriptor_data());
+        let mut enums = ::std::vec::Vec::new();
+        enums.push(Syntax::generated_enum_descriptor_data());
+        enums.push(field::Kind::generated_enum_descriptor_data());
+        enums.push(field::Cardinality::generated_enum_descriptor_data());
+        crate::reflect::GeneratedFileDescriptor::new_generated(
+            file_descriptor_proto(),
+            deps,
+            messages,
+            enums,
+        )
+    });
+    crate::reflect::FileDescriptor::new_generated_2(file_descriptor)
 }
